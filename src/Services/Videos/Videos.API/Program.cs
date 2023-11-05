@@ -16,4 +16,8 @@ app.UseCustomNotFoundResponseHandler();
 
 app.MapEndpoint<YouTubeEndpoint>();
 
+app.MapGet("/boom", () => Task.FromException<string>(new Exception("Boom!")));
+
 app.Run();
+
+public partial class Program;

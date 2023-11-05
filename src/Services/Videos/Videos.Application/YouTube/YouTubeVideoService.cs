@@ -19,11 +19,10 @@ public sealed class YouTubeVideoService(Client<YouTubeVideo> client) : IYouTubeV
             return new Video
             {
                 Title = video.Title,
-                Uri = new Uri(video.Uri),
+                Uri = new Uri(await video.GetUriAsync()),
                 FileExtension = video.FileExtension,
                 Author = video.Info.Author,
-                Length = video.Info.LengthSeconds,
-                ContentLength = video.ContentLength
+                LengthSeconds = video.Info.LengthSeconds
             };
         }
         catch (UnavailableStreamException)

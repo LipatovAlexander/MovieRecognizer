@@ -40,6 +40,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiExtensions", "src\BuildingBlocks\WebApiExtensions\WebApiExtensions.csproj", "{F82B2EF9-06D2-42CC-9C6F-E0B58E2AAA74}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{61437735-01F9-4458-9214-B66230333193}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Videos.IntegrationTests", "tests\Videos.IntegrationTests\Videos.IntegrationTests.csproj", "{2AC58CF0-131F-4C02-957C-87B88CD48594}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +69,7 @@ Global
 		{7376DCD6-4D61-4FD8-8220-36C24714D58B} = {90FE0FA9-7FDC-4411-A247-37CA1812F8F2}
 		{3E78B5DD-1494-4D64-B2F5-76F932D37A34} = {2649DB16-37F9-4696-920A-641ABDA3D1AC}
 		{F82B2EF9-06D2-42CC-9C6F-E0B58E2AAA74} = {3E78B5DD-1494-4D64-B2F5-76F932D37A34}
+		{2AC58CF0-131F-4C02-957C-87B88CD48594} = {61437735-01F9-4458-9214-B66230333193}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D85B80D9-5E07-4F54-BF81-BAE7C4DEDB7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -119,5 +124,9 @@ Global
 		{F82B2EF9-06D2-42CC-9C6F-E0B58E2AAA74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F82B2EF9-06D2-42CC-9C6F-E0B58E2AAA74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F82B2EF9-06D2-42CC-9C6F-E0B58E2AAA74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AC58CF0-131F-4C02-957C-87B88CD48594}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AC58CF0-131F-4C02-957C-87B88CD48594}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AC58CF0-131F-4C02-957C-87B88CD48594}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AC58CF0-131F-4C02-957C-87B88CD48594}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
