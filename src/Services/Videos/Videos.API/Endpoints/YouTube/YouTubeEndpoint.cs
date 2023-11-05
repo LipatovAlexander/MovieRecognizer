@@ -2,13 +2,17 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Videos.Application.YouTube;
 using WebApiExtensions.ApiResponses;
-using WebApiExtensions.MinimalApi;
+using WebApiExtensions.Endpoints;
+using WebApiExtensions.Validation;
 
 namespace Videos.API.Endpoints.YouTube;
 
-public sealed class YouTubeEndpoint(IYouTubeVideoService videoService) : IEndpoint<YouTubeRequest, Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>>>
+public sealed class YouTubeEndpoint : IEndpoint<Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>, BadRequest<ErrorResponse>>, YouTubeRequest, IYouTubeVideoService>
 {
-    public async Task<Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>>> HandleAsync([AsParameters, Validate] YouTubeRequest request, CancellationToken cancellationToken)
+    public static async Task<Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>, BadRequest<ErrorResponse>>> HandleAsync(
+        [AsParameters, Validate] YouTubeRequest request,
+        IYouTubeVideoService videoService,
+        CancellationToken cancellationToken)
     {
         var source = new YouTubeSource
         {
@@ -17,13 +21,15 @@ public sealed class YouTubeEndpoint(IYouTubeVideoService videoService) : IEndpoi
 
         var result = await videoService.FindAsync(source, cancellationToken);
 
-        return result.Match<Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>>>(
+        return result.Match<Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>, BadRequest<ErrorResponse>>>(
             video => TypedResults.Ok(Responses.Success(video)),
-            _ => TypedResults.NotFound(Responses.Error(CommonErrorCodes.NotFound)));
+            _ => TypedResults.NotFound(Responses.Error(CommonErrorCodes.NotFound, "No video found at this URL")),
+            error => TypedResults.BadRequest(Responses.Error(CommonErrorCodes.InvalidRequest, error.Value)));
     }
 
-    public void AddRoute(IEndpointRouteBuilder app)
+    public static void AddRoute(IEndpointRouteBuilder builder)
     {
-        app.MapGet("youtube", HandleAsync);
+        builder.MapGet("youtube", HandleAsync)
+            .AddValidationFilter();
     }
 }

@@ -9,7 +9,7 @@ public sealed class YouTubeRequestValidator : AbstractValidator<YouTubeRequest>
         RuleFor(x => x.Uri)
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
-            .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
+            .Must(uri => Uri.IsWellFormedUriString(uri, UriKind.Absolute))
             .WithMessage("Invalid uri");
     }
 }

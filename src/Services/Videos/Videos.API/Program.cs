@@ -1,22 +1,19 @@
-using Videos.Application.YouTube;
 using VideoLibrary;
-using WebApiExtensions.Middlewares;
-using WebApiExtensions.MinimalApi;
+using Videos.API.Endpoints.YouTube;
+using Videos.Application.YouTube;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(Client.For(YouTube.Default));
 builder.Services.AddSingleton<IYouTubeVideoService, YouTubeVideoService>();
 
-builder.Services.AddEndpoints<Program>();
-builder.Services.AddValidators<Program>();
+builder.Services.AddValidator<YouTubeRequest, YouTubeRequestValidator>();
 
 var app = builder.Build();
 
 app.UseHttpExceptionHandler();
 app.UseCustomNotFoundResponseHandler();
 
-app.MapEndpoints()
-    .AddValidationFilter();
+app.MapEndpoint<YouTubeEndpoint>();
 
 app.Run();

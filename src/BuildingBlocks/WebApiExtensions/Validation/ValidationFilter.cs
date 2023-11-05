@@ -3,12 +3,10 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using WebApiExtensions.ApiResponses;
 
-namespace WebApiExtensions.MinimalApi;
+namespace WebApiExtensions.Validation;
 
 [AttributeUsage(AttributeTargets.Parameter)]
-public sealed class ValidateAttribute : Attribute
-{
-}
+public sealed class ValidateAttribute : Attribute;
 
 public static class ValidationFilter
 {
@@ -18,7 +16,7 @@ public static class ValidationFilter
     {
         var validationDescriptors = GetValidators(context.MethodInfo, context.ApplicationServices);
 
-        return validationDescriptors.Any()
+        return validationDescriptors.Length != 0
             ? invocationContext => Validate(validationDescriptors, invocationContext, next)
             : next;
     }
@@ -45,7 +43,7 @@ public static class ValidationFilter
                 continue;
             }
 
-            var details = validationResult.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}").ToArray();
+            var details = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
             return Results.BadRequest(Responses.Error(CommonErrorCodes.InvalidRequest, details));
         }
 
@@ -86,7 +84,7 @@ public static class ValidationFilter
         return validators.ToArray();
     }
 
-    private class ValidationDescriptor
+    private sealed class ValidationDescriptor
     {
         public required int ArgumentIndex { get; init; }
         public required IValidator Validator { get; init; }

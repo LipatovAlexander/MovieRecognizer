@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using WebApiExtensions.ApiResponses;
 
-namespace WebApiExtensions.Middlewares;
+// ReSharper disable once CheckNamespace
+namespace Microsoft.AspNetCore.Builder;
 
 public sealed class HttpExceptionHandler(RequestDelegate next, ILogger<HttpExceptionHandler> logger)
 {
@@ -16,7 +16,7 @@ public sealed class HttpExceptionHandler(RequestDelegate next, ILogger<HttpExcep
         catch (BadHttpRequestException exception)
         {
             context.Response.StatusCode = exception.StatusCode;
-            var response = Responses.Error(CommonErrorCodes.InvalidRequest, new[] { exception.Message });
+            var response = Responses.Error(CommonErrorCodes.InvalidRequest, exception.Message);
             await context.Response.WriteAsJsonAsync(response);
         }
         catch (Exception e)
@@ -24,7 +24,8 @@ public sealed class HttpExceptionHandler(RequestDelegate next, ILogger<HttpExcep
             logger.LogError(e, "Unhandled exception occurred");
             
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await context.Response.WriteAsJsonAsync(Responses.Error(CommonErrorCodes.InternalError));
+            var response = Responses.Error(CommonErrorCodes.InternalError);
+            await context.Response.WriteAsJsonAsync(response);
         }
     }
 }

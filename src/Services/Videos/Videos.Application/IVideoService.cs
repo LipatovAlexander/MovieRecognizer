@@ -6,5 +6,5 @@ namespace Videos.Application;
 
 public interface IVideoService<in TSource> where TSource : class, ISource
 {
-    Task<OneOf<Video, NotFound>> FindAsync(TSource source, CancellationToken cancellationToken);
+    Task<OneOf<Video, NotFound, Error<string>>> FindAsync(TSource source, CancellationToken cancellationToken);
 }

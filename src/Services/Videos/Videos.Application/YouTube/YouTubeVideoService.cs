@@ -10,12 +10,12 @@ public interface IYouTubeVideoService : IVideoService<YouTubeSource>;
 
 public sealed class YouTubeVideoService(Client<YouTubeVideo> client) : IYouTubeVideoService
 {
-    public async Task<OneOf<Video, NotFound>> FindAsync(YouTubeSource source, CancellationToken cancellationToken)
+    public async Task<OneOf<Video, NotFound, Error<string>>> FindAsync(YouTubeSource source, CancellationToken cancellationToken)
     {
         try
         {
             var video = await client.GetVideoAsync(source.Uri.ToString());
-        
+
             return new Video
             {
                 Title = video.Title,
@@ -29,6 +29,10 @@ public sealed class YouTubeVideoService(Client<YouTubeVideo> client) : IYouTubeV
         catch (UnavailableStreamException)
         {
             return new NotFound();
+        }
+        catch (ArgumentException)
+        {
+            return new Error<string>("Uri is not a valid YouTube URI");
         }
     }
 }

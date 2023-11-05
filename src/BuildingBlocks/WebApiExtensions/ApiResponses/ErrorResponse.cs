@@ -1,7 +1,11 @@
-﻿namespace WebApiExtensions.ApiResponses;
+﻿using System.Text.Json.Serialization;
+
+namespace WebApiExtensions.ApiResponses;
 
 public class ErrorResponse(string code, string[]? details) : Response(false)
 {
     public string Code { get; } = code;
-    public string[]? Details { get; } = details;
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string[]? Details { get; } = details?.Length > 0 ? details : null;
 }

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using WebApiExtensions.ApiResponses;
 
-namespace WebApiExtensions.Middlewares;
+// ReSharper disable once CheckNamespace
+namespace Microsoft.AspNetCore.Builder;
 
 public sealed class CustomNotFoundResponseHandler(RequestDelegate next)
 {
@@ -10,7 +10,7 @@ public sealed class CustomNotFoundResponseHandler(RequestDelegate next)
     {
         await next(context);
         
-        if (context.Response.StatusCode != StatusCodes.Status404NotFound)
+        if (context.Response.StatusCode != StatusCodes.Status404NotFound || context.Response.HasStarted)
         {
             return;
         }
