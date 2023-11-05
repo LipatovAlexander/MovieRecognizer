@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using WebApiExtensions.ApiResponses;
 
-// ReSharper disable once CheckNamespace
-namespace Microsoft.AspNetCore.Builder;
+namespace WebApiExtensions.Middlewares;
 
 public sealed class CustomNotFoundResponseHandler(RequestDelegate next)
 {
@@ -17,10 +16,4 @@ public sealed class CustomNotFoundResponseHandler(RequestDelegate next)
 
         await context.Response.WriteAsJsonAsync(Responses.Error(CommonErrorCodes.NotFound));
     }
-}
-
-public static class CustomNotFoundResponseHandlerConfiguration
-{
-    public static IApplicationBuilder UseCustomNotFoundResponseHandler(this IApplicationBuilder app) =>
-        app.UseMiddleware<CustomNotFoundResponseHandler>();
 }

@@ -2,8 +2,7 @@
 using Microsoft.Extensions.Logging;
 using WebApiExtensions.ApiResponses;
 
-// ReSharper disable once CheckNamespace
-namespace Microsoft.AspNetCore.Builder;
+namespace WebApiExtensions.Middlewares;
 
 public sealed class HttpExceptionHandler(RequestDelegate next, ILogger<HttpExceptionHandler> logger)
 {
@@ -28,10 +27,4 @@ public sealed class HttpExceptionHandler(RequestDelegate next, ILogger<HttpExcep
             await context.Response.WriteAsJsonAsync(response);
         }
     }
-}
-
-public static class HttpExceptionHandlerConfiguration
-{
-    public static IApplicationBuilder UseHttpExceptionHandler(this IApplicationBuilder app) =>
-        app.UseMiddleware<HttpExceptionHandler>();
 }
