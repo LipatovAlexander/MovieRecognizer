@@ -1,11 +1,13 @@
 ﻿using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Domain;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Videos.IntegrationTests;
 
-public sealed class YouTubeEndpointTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+public sealed class GetVideoEndpointTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
 {
     [Fact]
     public async Task ShouldReturnVideoInfo_WhenVideoFound()
@@ -14,12 +16,15 @@ public sealed class YouTubeEndpointTests(WebApplicationFactory<Program> factory)
         var client = factory.CreateClient();
 
         // Act
-        var httpResponse = await client.GetAsync("/youtube?uri=https://youtube.com/watch?v=dQw4w9WgXcQ");
+        var httpResponse = await client.GetAsync("/video?uri=https://youtube.com/watch?v=dQw4w9WgXcQ");
 
         // Assert
         httpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<Video>>(jsonSerializerOptions);
         
-        var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<Video>>();
         apiResponse.Should().NotBeNull();
         apiResponse?.Ok.Should().BeTrue();
         apiResponse?.Value.Should().Match<Video>(x =>
@@ -27,7 +32,8 @@ public sealed class YouTubeEndpointTests(WebApplicationFactory<Program> factory)
             && x.Author == "Rick Astley"
             && x.FileExtension == ".mp4"
             && x.LengthSeconds == 212
-            && x.Uri.IsWellFormedOriginalString());
+            && x.Uri.IsWellFormedOriginalString()
+            && x.Source == VideoSource.YouTube);
     }
     
     [Fact]
@@ -37,7 +43,7 @@ public sealed class YouTubeEndpointTests(WebApplicationFactory<Program> factory)
         var client = factory.CreateClient();
 
         // Act
-        var httpResponse = await client.GetAsync("/youtube?uri=https://youtube.com/watch?v=69");
+        var httpResponse = await client.GetAsync("/video?uri=https://youtube.com/watch?v=69");
 
         // Assert
         httpResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -49,13 +55,13 @@ public sealed class YouTubeEndpointTests(WebApplicationFactory<Program> factory)
     }
     
     [Fact]
-    public async Task ShouldReturnBadRequest_WhenUriInvalid()
+    public async Task ShouldReturnInvalidRequest_WhenUriInvalid()
     {
         // Arrange
         var client = factory.CreateClient();
 
         // Act
-        var httpResponse = await client.GetAsync("/youtube?uri=69");
+        var httpResponse = await client.GetAsync("/video?uri=69");
 
         // Assert
         httpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -67,13 +73,13 @@ public sealed class YouTubeEndpointTests(WebApplicationFactory<Program> factory)
     }
     
     [Fact]
-    public async Task ShouldReturnBadRequest_WhenUriNotPassed()
+    public async Task ShouldReturnInvalidRequest_WhenUriNotPassed()
     {
         // Arrange
         var client = factory.CreateClient();
 
         // Act
-        var httpResponse = await client.GetAsync("/youtube");
+        var httpResponse = await client.GetAsync("/video");
 
         // Assert
         httpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -85,13 +91,13 @@ public sealed class YouTubeEndpointTests(WebApplicationFactory<Program> factory)
     }
     
     [Fact]
-    public async Task ShouldReturnBadRequest_WhenUriIsNotValidYouTubeUri()
+    public async Task ShouldReturnUnsupportedSource_WhenUriIsNotValidYouTubeUri()
     {
         // Arrange
         var client = factory.CreateClient();
 
         // Act
-        var httpResponse = await client.GetAsync("/youtube?uri=https://google.com");
+        var httpResponse = await client.GetAsync("/video?uri=https://google.com");
 
         // Assert
         httpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -99,6 +105,6 @@ public sealed class YouTubeEndpointTests(WebApplicationFactory<Program> factory)
         var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<Video>>();
         apiResponse.Should().NotBeNull();
         apiResponse?.Ok.Should().BeFalse();
-        apiResponse?.Code.Should().Be("invalid_request");
+        apiResponse?.Code.Should().Be("unsupported_source");
     }
 }
