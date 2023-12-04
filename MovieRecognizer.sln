@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{61437735
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Videos.IntegrationTests", "tests\Videos.IntegrationTests\Videos.IntegrationTests.csproj", "{2AC58CF0-131F-4C02-957C-87B88CD48594}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.IntegrationTests", "tests\Movies.IntegrationTests\Movies.IntegrationTests.csproj", "{2AB2EC13-558D-4135-8BE2-F79FB50562FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,7 @@ Global
 		{3E78B5DD-1494-4D64-B2F5-76F932D37A34} = {2649DB16-37F9-4696-920A-641ABDA3D1AC}
 		{F82B2EF9-06D2-42CC-9C6F-E0B58E2AAA74} = {3E78B5DD-1494-4D64-B2F5-76F932D37A34}
 		{2AC58CF0-131F-4C02-957C-87B88CD48594} = {61437735-01F9-4458-9214-B66230333193}
+		{2AB2EC13-558D-4135-8BE2-F79FB50562FB} = {61437735-01F9-4458-9214-B66230333193}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D85B80D9-5E07-4F54-BF81-BAE7C4DEDB7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -128,5 +131,9 @@ Global
 		{2AC58CF0-131F-4C02-957C-87B88CD48594}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AC58CF0-131F-4C02-957C-87B88CD48594}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AC58CF0-131F-4C02-957C-87B88CD48594}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AB2EC13-558D-4135-8BE2-F79FB50562FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AB2EC13-558D-4135-8BE2-F79FB50562FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AB2EC13-558D-4135-8BE2-F79FB50562FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AB2EC13-558D-4135-8BE2-F79FB50562FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
