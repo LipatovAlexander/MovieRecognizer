@@ -4,7 +4,7 @@ using OneOf.Types;
 
 namespace Videos.Application;
 
-public interface IVideoService<in TSource> where TSource : class, ISource
+public interface IVideoService
 {
-    Task<OneOf<Video, NotFound, Error<string>>> FindAsync(TSource source, CancellationToken cancellationToken);
+    Task<OneOf<Video, NotFound, UnsupportedSource>> FindAsync(Uri uri, CancellationToken cancellationToken);
 }

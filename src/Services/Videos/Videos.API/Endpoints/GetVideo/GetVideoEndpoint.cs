@@ -1,35 +1,30 @@
 ﻿using Domain;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Videos.Application.YouTube;
+using Videos.Application;
 using WebApiExtensions.ApiResponses;
 using WebApiExtensions.Endpoints;
 using WebApiExtensions.Validation;
 
-namespace Videos.API.Endpoints.YouTube;
+namespace Videos.API.Endpoints.GetVideo;
 
-public sealed class YouTubeEndpoint : IEndpoint<Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>, BadRequest<ErrorResponse>>, YouTubeRequest, IYouTubeVideoService>
+public sealed class GetVideoEndpoint : IEndpoint<Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>, BadRequest<ErrorResponse>>, GetVideoRequest, IVideoFinder>
 {
     public static async Task<Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>, BadRequest<ErrorResponse>>> HandleAsync(
-        [AsParameters, Validate] YouTubeRequest request,
-        IYouTubeVideoService videoService,
+        [AsParameters, Validate] GetVideoRequest request,
+        IVideoFinder videoFinder,
         CancellationToken cancellationToken)
     {
-        var source = new YouTubeSource
-        {
-            Uri = new Uri(request.Uri)
-        };
-
-        var result = await videoService.FindAsync(source, cancellationToken);
+        var result = await videoFinder.FindAsync(request.Uri, cancellationToken);
 
         return result.Match<Results<Ok<SuccessResponse<Video>>, NotFound<ErrorResponse>, BadRequest<ErrorResponse>>>(
             video => TypedResults.Ok(Responses.Success(video)),
             _ => TypedResults.NotFound(Responses.Error(CommonErrorCodes.NotFound, "No video found at this URL")),
-            error => TypedResults.BadRequest(Responses.Error(CommonErrorCodes.InvalidRequest, error.Value)));
+            _ => TypedResults.BadRequest(Responses.Error("unsupported_source")));
     }
 
     public static void AddRoute(IEndpointRouteBuilder builder)
     {
-        builder.MapGet("youtube", HandleAsync)
+        builder.MapGet("video", HandleAsync)
             .AddValidationFilter();
     }
 }

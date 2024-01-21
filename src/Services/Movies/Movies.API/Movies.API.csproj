@@ -1,9 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+        <UserSecretsId>ec028e0b-d14c-431e-b127-31792fe200f7</UserSecretsId>
+  </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\BuildingBlocks\WebApiExtensions\WebApiExtensions.csproj" />
+      <ProjectReference Include="..\Movies.Application\Movies.Application.csproj" />
+    </ItemGroup>
 
 </Project>
