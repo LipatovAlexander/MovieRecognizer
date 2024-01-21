@@ -6,4 +6,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\BuildingBlocks\WebApiExtensions\WebApiExtensions.csproj" />
+      <ProjectReference Include="..\Recognizer.Application\Recognizer.Application.csproj" />
+    </ItemGroup>
+
 </Project>
