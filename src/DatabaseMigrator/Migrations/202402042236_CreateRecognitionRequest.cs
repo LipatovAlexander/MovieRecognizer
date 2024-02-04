@@ -1,6 +1,6 @@
 using FluentMigrator;
 
-namespace DatabaseMigrator;
+namespace DatabaseMigrator.Migrations;
 
 [TimestampedMigration(2024, 02, 04, 22, 36)]
 public class CreateRecognitionRequest : ForwardOnlyMigration

@@ -1,27 +1,42 @@
 using DatabaseCreation;
-using DatabaseMigrator;
 using FluentMigrator.Runner;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-var builder = Host.CreateApplicationBuilder(args);
+await using var services = CreateServices();
+using var scope = services.CreateScope();
+await scope.ServiceProvider.EnsureDatabaseCreatedAsync("application");
+var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-var services = builder.Services;
-var configuration = builder.Configuration;
-var environment = builder.Environment;
-
-services
-    .AddFluentMigratorCore()
-    .ConfigureRunner(rb => rb
-        .AddPostgres()
-        .WithGlobalConnectionString(configuration.GetConnectionString("application"))
-        .ScanIn(typeof(Program).Assembly).For.Migrations());
-
-services.AddHostedService<Worker>();
-
-var host = builder.Build();
-
-if (environment.IsDevelopment())
+if (migrationRunner.HasMigrationsToApplyUp())
 {
-    await host.EnsureDatabaseCreatedAsync("application");
+    logger.LogInformation("Applying migrations");
+
+    migrationRunner.MigrateUp();
+}
+else
+{
+    logger.LogInformation("The database is already up to date");
 }
 
-host.Run();
+return;
+
+
+static ServiceProvider CreateServices()
+{
+    var configuration = new ConfigurationBuilder()
+        .AddEnvironmentVariables()
+        .Build();
+
+    return new ServiceCollection()
+        .AddSingleton<IConfiguration>(configuration)
+        .AddFluentMigratorCore()
+        .ConfigureRunner(rb => rb
+            .AddPostgres()
+            .WithGlobalConnectionString(configuration.GetConnectionString("application"))
+            .ScanIn(typeof(Program).Assembly).For.Migrations())
+        .AddLogging(lb => lb.AddConsole())
+        .BuildServiceProvider(false);
+}

@@ -1,13 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace DatabaseCreation;
 
 public static class HostExtensions
 {
-    public static async Task EnsureDatabaseCreatedAsync(this IHost host, string databaseName, int interval = 200, int maxRetries = 10)
+    public static async Task EnsureDatabaseCreatedAsync(this IServiceProvider serviceProvider, string databaseName, int interval = 200, int maxRetries = 20)
     {
-        var databaseCreator = ActivatorUtilities.CreateInstance<DatabaseCreator>(host.Services);
+        var databaseCreator = ActivatorUtilities.CreateInstance<DatabaseCreator>(serviceProvider);
         await databaseCreator.EnsureDatabaseCreatedAsync(databaseName, interval, maxRetries);
     }
 }

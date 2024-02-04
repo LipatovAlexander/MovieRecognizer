@@ -24,7 +24,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    await app.EnsureDatabaseCreatedAsync("hangfire", 500);
+    await app.Services.EnsureDatabaseCreatedAsync("hangfire", 500);
 }
 
 app.MapDefaultEndpoints();
