@@ -5,13 +5,13 @@ namespace SerpApi;
 public abstract class SerpSearchMetadata
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
 
     [JsonPropertyName("status")]
-    public string Status { get; set; }
+    public string Status { get; set; } = null!;
 
     [JsonPropertyName("json_endpoint")]
-    public Uri JsonEndpoint { get; set; }
+    public Uri JsonEndpoint { get; set; } = null!;
 
     [JsonPropertyName("created_at")]
     public DateTimeOffset CreatedAt { get; set; }
@@ -20,7 +20,7 @@ public abstract class SerpSearchMetadata
     public DateTimeOffset ProcessedAt { get; set; }
 
     [JsonPropertyName("raw_html_file")]
-    public Uri RawHtmlFile { get; set; }
+    public Uri RawHtmlFile { get; set; } = null!;
 
     [JsonPropertyName("total_time_taken")]
     public double TotalTimeTaken { get; set; }
@@ -29,7 +29,7 @@ public abstract class SerpSearchMetadata
 public abstract class SerpSearchParameters
 {
     [JsonPropertyName("engine")]
-    public string Engine { get; set; }
+    public string Engine { get; set; } = null!;
 }
 
 public abstract class SerpSearchResponse<TSearchMetadata, TSearchParameters>
@@ -37,8 +37,8 @@ public abstract class SerpSearchResponse<TSearchMetadata, TSearchParameters>
     where TSearchParameters : SerpSearchParameters
 {
     [JsonPropertyName("search_metadata")]
-    public TSearchMetadata SearchMetadata { get; set; }
-    
+    public TSearchMetadata SearchMetadata { get; set; } = null!;
+
     [JsonPropertyName("search_parameters")]
-    public TSearchParameters SearchParameters { get; set; }
+    public TSearchParameters SearchParameters { get; set; } = null!;
 }
