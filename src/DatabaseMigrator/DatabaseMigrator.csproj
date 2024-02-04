@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-DatabaseMigrator-F45BCEB4-0D17-49DB-B26F-AF6106B970EF</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentMigrator" Version="5.0.0" />
+        <PackageReference Include="FluentMigrator.Runner" Version="5.0.0" />
+        <PackageReference Include="FluentMigrator.Runner.Postgres" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0"/>
+        <PackageReference Include="Npgsql" Version="8.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BuildingBlocks\DatabaseCreation\DatabaseCreation.csproj" />
+    </ItemGroup>
+</Project>

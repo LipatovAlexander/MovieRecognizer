@@ -17,6 +17,15 @@ var postgres = builder
     .WithVolumeMount("VolumeMount.postgres.data", "/var/lib/postgresql/data", VolumeMountType.Named);
 
 var hangfireDatabase = postgres.AddDatabase("hangfire");
+var applicationDatabase = postgres.AddDatabase("application");
+
+builder.AddProject<Projects.DatabaseMigrator>("database-migrator")
+    .WithReference(postgres)
+    .WithReference(applicationDatabase);
+
+builder.AddProject<Projects.WebApi>("web-api")
+    .WithReference(hangfireDatabase)
+    .WithReference(applicationDatabase);
 
 builder.AddProject<Projects.BackgroundWorker_Host>("background-worker")
     .WithReference(postgres)

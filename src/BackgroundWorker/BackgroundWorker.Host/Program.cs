@@ -1,4 +1,4 @@
-using BackgroundWorker.Host;
+using DatabaseCreation;
 using Hangfire;
 using Hangfire.PostgreSql;
 
@@ -24,7 +24,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    await app.EnsureDatabaseCreatedAsync();
+    await app.EnsureDatabaseCreatedAsync("hangfire", 500);
 }
 
 app.MapDefaultEndpoints();
