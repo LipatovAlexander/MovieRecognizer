@@ -13,8 +13,7 @@ services
     .ConfigureRunner(rb => rb
         .AddPostgres()
         .WithGlobalConnectionString(configuration.GetConnectionString("application"))
-        .ScanIn(typeof(Program).Assembly).For.Migrations())
-    .AddLogging(lb => lb.AddFluentMigratorConsole());
+        .ScanIn(typeof(Program).Assembly).For.Migrations());
 
 services.AddHostedService<Worker>();
 

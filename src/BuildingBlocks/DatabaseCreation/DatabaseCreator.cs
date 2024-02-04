@@ -30,7 +30,7 @@ public class DatabaseCreator(ILogger<DatabaseCreator> logger, IConfiguration con
                       $do$;
                       """;
         
-        _logger.LogInformation("Creating database '{Database}' if not exists", databaseName);
+        _logger.LogInformation("Creating database if not exists. Database name: {Database}", databaseName);
         
         while (true)
         {
@@ -57,6 +57,6 @@ public class DatabaseCreator(ILogger<DatabaseCreator> logger, IConfiguration con
             }
         }
         
-        _logger.LogInformation("Database '{Database}' created or already existed", databaseName);
+        _logger.LogInformation("Database created or already existed. Database name: {Database}", databaseName);
     }
 }
