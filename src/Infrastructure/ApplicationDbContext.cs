@@ -6,7 +6,7 @@ namespace Infrastructure;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IApplicationDbContext
 {
-    public DbSet<RecognitionRequest> RecognitionRequests => Set<RecognitionRequest>();
+    public DbSet<MovieRecognition> MovieRecognitions => Set<MovieRecognition>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

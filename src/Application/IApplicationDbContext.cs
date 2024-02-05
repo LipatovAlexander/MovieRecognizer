@@ -5,7 +5,7 @@ namespace Application;
 
 public interface IApplicationDbContext
 {
-    DbSet<RecognitionRequest> RecognitionRequests { get; }
+    DbSet<MovieRecognition> MovieRecognitions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

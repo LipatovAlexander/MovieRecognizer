@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 using Application;
-using Domain;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Infrastructure;
-using Microsoft.EntityFrameworkCore;
+using WebApi.Endpoints.CreateMovieRecognition;
+using WebApi.Endpoints.GetMovieRecognition;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,28 +29,16 @@ services.AddHangfire(config =>
     });
 });
 
+services.AddValidator<CreateMovieRecognitionRequest, CreateMovieRecognitionRequestValidator>();
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
-app.MapPost("recognize", async (Uri videoUrl, IApplicationDbContext dbContext, IBackgroundJobClient backgroundJob) =>
-{
-    var request = new RecognitionRequest(videoUrl, DateTimeOffset.UtcNow, RecognitionRequestStatus.Created);
-    dbContext.RecognitionRequests.Add(request);
-    await dbContext.SaveChangesAsync();
+app.UseCustomNotFoundResponseHandler();
+app.UseHttpExceptionHandler();
 
-    backgroundJob.Enqueue(() => Console.WriteLine($"Request {request.Id} created"));
-
-    return Results.Created("recognize", new { id = request.Id });
-});
-
-app.MapGet("recognize/{id:guid}", async (Guid id, IApplicationDbContext dbContext) =>
-{
-    var request = await dbContext.RecognitionRequests.FirstOrDefaultAsync(r => r.Id == id);
-
-    return request is null
-        ? Results.NotFound()
-        : Results.Ok(request);
-});
+app.MapEndpoint<CreateMovieRecognitionEndpoint>();
+app.MapEndpoint<GetMovieRecognitionEndpoint>();
 
 app.Run();

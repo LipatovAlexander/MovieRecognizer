@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.EntityTypeConfigurations;
 
-public class RecognitionRequestConfiguration : IEntityTypeConfiguration<RecognitionRequest>
+public class RecognitionRequestConfiguration : IEntityTypeConfiguration<MovieRecognition>
 {
-    public void Configure(EntityTypeBuilder<RecognitionRequest> builder)
+    public void Configure(EntityTypeBuilder<MovieRecognition> builder)
     {
         builder.Property(x => x.Status)
             .HasConversion<string>();
