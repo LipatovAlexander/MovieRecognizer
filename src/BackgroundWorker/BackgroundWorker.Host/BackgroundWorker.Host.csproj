@@ -15,7 +15,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Application\Application.csproj" />
       <ProjectReference Include="..\..\Aspire\Aspire.ServiceDefaults\Aspire.ServiceDefaults.csproj" />
-      <ProjectReference Include="..\..\BuildingBlocks\DatabaseCreation\DatabaseCreation.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 

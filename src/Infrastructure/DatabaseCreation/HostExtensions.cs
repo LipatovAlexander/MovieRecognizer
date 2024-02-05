@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DatabaseCreation;
+namespace Infrastructure.DatabaseCreation;
 
 public static class HostExtensions
 {

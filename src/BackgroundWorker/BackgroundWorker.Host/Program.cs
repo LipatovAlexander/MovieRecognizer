@@ -1,30 +1,18 @@
-using Application;
-using DatabaseCreation;
 using Hangfire;
-using Hangfire.PostgreSql;
 using Infrastructure;
+using Infrastructure.DatabaseCreation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
-var configuration = builder.Configuration;
 
 builder.AddServiceDefaults();
 
-builder.AddNpgsqlDbContext<ApplicationDbContext>("application");
-services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
-
-services.AddHangfire(config =>
-{
-    config.UsePostgreSqlStorage(c =>
-    {
-        c.UseNpgsqlConnection(configuration.GetConnectionString("hangfire"));
-    });
-});
-
-services.AddHangfireServer();
-
+builder.AddApplicationDbContext();
 services.AddApplicationCommands();
+
+services.AddHangfireWithStorage();
+services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -35,6 +23,6 @@ if (app.Environment.IsDevelopment())
 
 app.MapDefaultEndpoints();
 
-app.UseHangfireDashboard();
+app.UseHangfireDashboard("");
 
 app.Run();

@@ -1,5 +1,5 @@
-using DatabaseCreation;
 using FluentMigrator.Runner;
+using Infrastructure.DatabaseCreation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

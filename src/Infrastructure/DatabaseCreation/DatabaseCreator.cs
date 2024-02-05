@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace DatabaseCreation;
+namespace Infrastructure.DatabaseCreation;
 
 public class DatabaseCreator(ILogger<DatabaseCreator> logger, IConfiguration configuration)
 {
