@@ -1,4 +1,5 @@
 using Application;
+using Application.Commands;
 using Application.Commands.StartMovieRecognition;
 using Domain;
 using Hangfire;
@@ -26,8 +27,8 @@ public class CreateMovieRecognitionEndpoint : IEndpoint<
         await dbContext.SaveChangesAsync(cancellationToken);
 
         var startRecognitionCommand = new StartMovieRecognitionCommand(movieRecognition.Id);
-        backgroundJobClient.Enqueue<IStartMovieRecognitionCommandHandler>(handler =>
-            handler.HandleAsync(startRecognitionCommand, CancellationToken.None));
+        backgroundJobClient.Enqueue<ICommandHandler<StartMovieRecognitionCommand>>(
+            handler => handler.HandleAsync(startRecognitionCommand, CancellationToken.None));
         
         return Responses.Success(movieRecognition);
     }

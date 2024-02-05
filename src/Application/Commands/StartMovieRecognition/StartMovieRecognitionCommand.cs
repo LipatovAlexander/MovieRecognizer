@@ -1,3 +1,3 @@
 namespace Application.Commands.StartMovieRecognition;
 
-public record StartMovieRecognitionCommand(Guid MovieRecognitionId);
+public record StartMovieRecognitionCommand(Guid MovieRecognitionId) : ICommand;
