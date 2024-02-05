@@ -17,7 +17,7 @@ public class StartMovieRecognitionCommandHandler(IApplicationDbContext dbContext
     public async Task HandleAsync(StartMovieRecognitionCommand command, CancellationToken cancellationToken)
     {
         var movieRecognition = await _dbContext.MovieRecognitions
-            .FirstOrDefaultAsync(r => r.Id == command.MovieRecognitionId, cancellationToken);
+            .FirstOrDefaultAsync(MovieRecognition.WithId(command.MovieRecognitionId), cancellationToken);
 
         if (movieRecognition is null)
         {

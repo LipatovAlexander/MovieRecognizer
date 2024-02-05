@@ -18,7 +18,7 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
         CancellationToken cancellationToken)
     {
         var recognitionRequest = await dbContext.MovieRecognitions
-            .FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(MovieRecognition.WithId(request.Id), cancellationToken);
 
         if (recognitionRequest is null)
         {

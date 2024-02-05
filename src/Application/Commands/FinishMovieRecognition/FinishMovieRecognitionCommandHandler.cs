@@ -10,7 +10,7 @@ public class FinishMovieRecognitionCommandHandler(IApplicationDbContext dbContex
     public async Task HandleAsync(FinishMovieRecognitionCommand command, CancellationToken cancellationToken)
     {
         var movieRecognition = await _dbContext.MovieRecognitions
-            .FirstOrDefaultAsync(r => r.Id == command.MovieRecognitionId, cancellationToken);
+            .FirstOrDefaultAsync(MovieRecognition.WithId(command.MovieRecognitionId), cancellationToken);
 
         if (movieRecognition is null)
         {
