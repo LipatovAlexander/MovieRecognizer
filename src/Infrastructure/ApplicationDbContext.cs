@@ -1,5 +1,5 @@
 using Application;
-using Domain;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;

@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Infrastructure;
+using Infrastructure.Configurations;
 using WebApi.Endpoints.CreateMovieRecognition;
 using WebApi.Endpoints.GetMovieRecognition;
 

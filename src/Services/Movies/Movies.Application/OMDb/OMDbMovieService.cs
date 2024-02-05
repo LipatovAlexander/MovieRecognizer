@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using Domain;
+using Domain.Entities;
 using Microsoft.Extensions.Options;
 using OneOf;
 using OneOf.Types;

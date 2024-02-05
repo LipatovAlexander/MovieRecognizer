@@ -1,5 +1,5 @@
 using Hangfire;
-using Infrastructure;
+using Infrastructure.Configurations;
 using Infrastructure.DatabaseCreation;
 
 var builder = WebApplication.CreateBuilder(args);

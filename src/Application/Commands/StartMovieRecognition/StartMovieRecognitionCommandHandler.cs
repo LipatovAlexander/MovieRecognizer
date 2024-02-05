@@ -2,7 +2,7 @@ using Application.Commands.ExtractFrames;
 using Application.Commands.FinishMovieRecognition;
 using Application.Commands.RecognizeMovie;
 using Application.Commands.ScrapeVideoInformation;
-using Domain;
+using Domain.Entities;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 

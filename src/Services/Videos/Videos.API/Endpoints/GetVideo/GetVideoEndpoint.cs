@@ -1,4 +1,4 @@
-﻿using Domain;
+﻿using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Videos.Application;
 using WebApiExtensions.ApiResponses;

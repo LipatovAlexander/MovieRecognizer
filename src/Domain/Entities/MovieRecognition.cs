@@ -1,4 +1,4 @@
-namespace Domain;
+namespace Domain.Entities;
 
 public class MovieRecognition(Uri videoUrl, DateTimeOffset createdAt, MovieRecognitionStatus status)
 {

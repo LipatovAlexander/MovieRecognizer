@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using Domain;
+using Domain.Entities;
 using Recognizer.Application.Extensions;
 
 namespace Recognizer.Application;

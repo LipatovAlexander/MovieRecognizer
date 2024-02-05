@@ -1,9 +1,9 @@
-﻿using Domain;
+﻿using Domain.Entities;
 using OneOf;
 using OneOf.Types;
 using VideoLibrary;
 using VideoLibrary.Exceptions;
-using Video = Domain.Video;
+using Video = Domain.Entities.Video;
 
 namespace Videos.Application.YouTube;
 

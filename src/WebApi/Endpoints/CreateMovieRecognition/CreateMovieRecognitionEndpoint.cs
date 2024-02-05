@@ -1,7 +1,7 @@
 using Application;
 using Application.Commands;
 using Application.Commands.StartMovieRecognition;
-using Domain;
+using Domain.Entities;
 using Hangfire;
 using WebApiExtensions.ApiResponses;
 using WebApiExtensions.Endpoints;

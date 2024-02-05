@@ -2,7 +2,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Domain;
+using Domain.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 
