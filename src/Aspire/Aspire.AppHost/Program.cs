@@ -29,6 +29,7 @@ builder.AddProject<Projects.WebApi>("web-api")
 
 builder.AddProject<Projects.BackgroundWorker_Host>("background-worker")
     .WithReference(postgres)
+    .WithReference(applicationDatabase)
     .WithReference(hangfireDatabase);
 
 builder.Build().Run();
