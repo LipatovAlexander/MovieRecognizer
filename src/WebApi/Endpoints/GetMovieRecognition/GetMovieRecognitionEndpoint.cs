@@ -1,9 +1,9 @@
 using Application;
 using Domain.Entities;
+using Infrastructure.WebApi.ApiResponses;
+using Infrastructure.WebApi.Endpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using WebApiExtensions.ApiResponses;
-using WebApiExtensions.Endpoints;
 
 namespace WebApi.Endpoints.GetMovieRecognition;
 

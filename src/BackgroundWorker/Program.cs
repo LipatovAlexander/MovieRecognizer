@@ -1,7 +1,7 @@
+using Hangfire;
 using Infrastructure;
 using Infrastructure.BackgroundJobs;
-using WebApi.Endpoints.CreateMovieRecognition;
-using WebApi.Endpoints.GetMovieRecognition;
+using Infrastructure.DatabaseCreation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,14 +12,17 @@ builder.AddServiceDefaults();
 builder.AddApplicationDbContext();
 
 services.AddBackgroundJobs();
-
-services.AddValidator<CreateMovieRecognitionRequest, CreateMovieRecognitionRequestValidator>();
+services.AddHangfireServer();
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    await app.Services.EnsureDatabaseCreatedAsync("hangfire", 500);
+}
+
 app.MapDefaultEndpoints();
 
-app.MapEndpoint<CreateMovieRecognitionEndpoint>();
-app.MapEndpoint<GetMovieRecognitionEndpoint>();
+app.UseHangfireDashboard("");
 
 app.Run();

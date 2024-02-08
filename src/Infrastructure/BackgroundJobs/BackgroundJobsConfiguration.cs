@@ -2,7 +2,7 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using IBackgroundJobClient = Application.IBackgroundJobClient;
+using IBackgroundJobClient = Application.Jobs.IBackgroundJobClient;
 
 namespace Infrastructure.BackgroundJobs;
 

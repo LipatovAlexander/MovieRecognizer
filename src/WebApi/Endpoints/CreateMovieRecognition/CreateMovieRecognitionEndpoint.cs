@@ -1,9 +1,9 @@
 using Application;
 using Application.Jobs;
 using Domain.Entities;
-using WebApiExtensions.ApiResponses;
-using WebApiExtensions.Endpoints;
-using WebApiExtensions.Validation;
+using Infrastructure.WebApi.ApiResponses;
+using Infrastructure.WebApi.Endpoints;
+using Infrastructure.WebApi.Validation;
 
 namespace WebApi.Endpoints.CreateMovieRecognition;
 
