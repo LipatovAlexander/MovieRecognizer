@@ -2,6 +2,7 @@ using Application.Commands.ExtractFrames;
 using Application.Commands.FinishMovieRecognition;
 using Application.Commands.RecognizeMovie;
 using Application.Commands.ScrapeVideoInformation;
+using Application.Extensions;
 using Domain.Entities;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
@@ -28,22 +29,15 @@ public class StartMovieRecognitionCommandHandler(IApplicationDbContext dbContext
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         var scrapeVideoInformationCommand = new ScrapeVideoInformationCommand(movieRecognition.Id);
-        var scrapeVideoInformationJobId = _backgroundJobClient.Enqueue<ICommandHandler<ScrapeVideoInformationCommand>>(
-            handler => handler.HandleAsync(scrapeVideoInformationCommand, CancellationToken.None));
-
+        var scrapeVideoInformationJobId = _backgroundJobClient.EnqueueCommand(scrapeVideoInformationCommand);
+        
         var extractFramesCommand = new ExtractFramesCommand(movieRecognition.Id);
-        var extractFramesJobId = _backgroundJobClient.ContinueJobWith<ICommandHandler<ExtractFramesCommand>>(
-            scrapeVideoInformationJobId,
-            handler => handler.HandleAsync(extractFramesCommand, CancellationToken.None));
+        var extractFramesJobId = _backgroundJobClient.ContinueWithCommand(scrapeVideoInformationJobId, extractFramesCommand);
 
         var recognizeMovieCommand = new RecognizeMovieCommand(movieRecognition.Id);
-        var recognizeMovieJobId = _backgroundJobClient.ContinueJobWith<ICommandHandler<RecognizeMovieCommand>>(
-            extractFramesJobId,
-            handler => handler.HandleAsync(recognizeMovieCommand, CancellationToken.None));
+        var recognizeMovieJobId = _backgroundJobClient.ContinueWithCommand(extractFramesJobId, recognizeMovieCommand);
 
         var finishMovieRecognitionCommand = new FinishMovieRecognitionCommand(movieRecognition.Id);
-        _backgroundJobClient.ContinueJobWith<ICommandHandler<FinishMovieRecognitionCommand>>(
-            recognizeMovieJobId,
-            handler => handler.HandleAsync(finishMovieRecognitionCommand, CancellationToken.None));
+        _backgroundJobClient.ContinueWithCommand(recognizeMovieJobId, finishMovieRecognitionCommand);
     }
 }

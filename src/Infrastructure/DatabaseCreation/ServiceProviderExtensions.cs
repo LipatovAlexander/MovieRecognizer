@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.DatabaseCreation;
 
-public static class HostExtensions
+public static class ServiceProviderExtensions
 {
     public static async Task EnsureDatabaseCreatedAsync(this IServiceProvider serviceProvider, string databaseName, int interval = 200, int maxRetries = 20)
     {
