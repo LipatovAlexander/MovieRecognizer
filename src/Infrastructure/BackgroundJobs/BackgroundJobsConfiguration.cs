@@ -2,12 +2,13 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using IBackgroundJobClient = Application.IBackgroundJobClient;
 
-namespace Infrastructure.Configurations;
+namespace Infrastructure.BackgroundJobs;
 
-public static class HangfireConfiguration
+public static class BackgroundJobsConfiguration
 {
-    public static void AddHangfireWithStorage(this IServiceCollection services)
+    public static void AddBackgroundJobs(this IServiceCollection services)
     {
         services.AddHangfire((sp, config) =>
         {
@@ -23,5 +24,7 @@ public static class HangfireConfiguration
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings();
         });
+
+        services.AddSingleton<IBackgroundJobClient, BackgroundJobClient>();
     }
 }

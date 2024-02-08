@@ -1,4 +1,5 @@
 using Hangfire;
+using Infrastructure.BackgroundJobs;
 using Infrastructure.Configurations;
 using Infrastructure.DatabaseCreation;
 
@@ -9,9 +10,8 @@ var services = builder.Services;
 builder.AddServiceDefaults();
 
 builder.AddApplicationDbContext();
-services.AddApplicationCommands();
 
-services.AddHangfireWithStorage();
+services.AddBackgroundJobs();
 services.AddHangfireServer();
 
 var app = builder.Build();

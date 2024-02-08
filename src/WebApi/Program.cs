@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Infrastructure.BackgroundJobs;
 using Infrastructure.Configurations;
 using WebApi.Endpoints.CreateMovieRecognition;
 using WebApi.Endpoints.GetMovieRecognition;
@@ -16,7 +17,7 @@ services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
-services.AddHangfireWithStorage();
+services.AddBackgroundJobs();
 
 services.AddValidator<CreateMovieRecognitionRequest, CreateMovieRecognitionRequestValidator>();
 

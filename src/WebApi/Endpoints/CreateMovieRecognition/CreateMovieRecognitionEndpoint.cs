@@ -1,9 +1,6 @@
 using Application;
-using Application.Commands;
-using Application.Commands.StartMovieRecognition;
-using Application.Extensions;
+using Application.Jobs;
 using Domain.Entities;
-using Hangfire;
 using WebApiExtensions.ApiResponses;
 using WebApiExtensions.Endpoints;
 using WebApiExtensions.Validation;
@@ -27,8 +24,8 @@ public class CreateMovieRecognitionEndpoint : IEndpoint<
         dbContext.MovieRecognitions.Add(movieRecognition);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        var startRecognitionCommand = new StartMovieRecognitionCommand(movieRecognition.Id);
-        backgroundJobClient.EnqueueCommand(startRecognitionCommand);
+        var movieRecognitionContext = new MovieRecognitionContext(movieRecognition.Id);
+        backgroundJobClient.Enqueue<StartMovieRecognitionBackgroundJob, MovieRecognitionContext>(movieRecognitionContext);
         
         return Responses.Success(movieRecognition);
     }

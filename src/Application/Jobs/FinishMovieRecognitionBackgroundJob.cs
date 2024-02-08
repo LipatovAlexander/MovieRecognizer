@@ -1,16 +1,16 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Commands.FinishMovieRecognition;
+namespace Application.Jobs;
 
-public class FinishMovieRecognitionCommandHandler(IApplicationDbContext dbContext) : ICommandHandler<FinishMovieRecognitionCommand>
+public class FinishMovieRecognitionBackgroundJob(IApplicationDbContext dbContext) : IBackgroundJob<MovieRecognitionContext>
 {
     private readonly IApplicationDbContext _dbContext = dbContext;
     
-    public async Task HandleAsync(FinishMovieRecognitionCommand command, CancellationToken cancellationToken)
+    public async Task HandleAsync(MovieRecognitionContext context, CancellationToken cancellationToken)
     {
         var movieRecognition = await _dbContext.MovieRecognitions
-            .FirstOrDefaultAsync(MovieRecognition.WithId(command.MovieRecognitionId), cancellationToken);
+            .FirstOrDefaultAsync(MovieRecognition.WithId(context.MovieRecognitionId), cancellationToken);
 
         if (movieRecognition is null)
         {
