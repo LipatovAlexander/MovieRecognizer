@@ -15,38 +15,21 @@ public class DatabaseCreator(ILogger<DatabaseCreator> logger, IConfiguration con
         await using var connection = new NpgsqlConnection(connectionString);
         
         var retry = 0;
-
-        var commandText = $"""
-                      DO
-                      $do$
-                      BEGIN
-                         IF EXISTS (SELECT FROM pg_database WHERE datname = '{databaseName}') THEN
-                            RAISE NOTICE 'Database already exists';  -- optional
-                         ELSE
-                            PERFORM dblink_exec('dbname=' || current_database()  -- current db
-                                              , 'CREATE DATABASE {databaseName}');
-                         END IF;
-                      END
-                      $do$;
-                      """;
         
-        _logger.LogInformation("Creating database if not exists. Database name: {Database}", databaseName);
+        _logger.LogInformation("Creating database {Database} if not exists", databaseName);
         
         while (true)
         {
             try
             {
                 await connection.OpenAsync();
-                await using var command = connection.CreateCommand();
-                command.CommandText = commandText;
-                await command.ExecuteNonQueryAsync();
                 break;
             }
             catch (NpgsqlException)
             {
                 if (retry < maxRetries)
                 {
-                    _logger.LogInformation("Retrying {Retry} times", retry);
+                    _logger.LogInformation("Retrying to connect {Retry} times", retry);
                     
                     retry++;
                     await Task.Delay(interval);
@@ -56,7 +39,23 @@ public class DatabaseCreator(ILogger<DatabaseCreator> logger, IConfiguration con
                 throw;
             }
         }
-        
-        _logger.LogInformation("Database created or already existed. Database name: {Database}", databaseName);
+
+        await using var checkIfDatabaseExistsCommand = connection.CreateCommand();
+        checkIfDatabaseExistsCommand.CommandText = $"SELECT 1 FROM pg_database WHERE datname = '{databaseName}';";
+        var checkIfDatabaseExistsResult = await checkIfDatabaseExistsCommand.ExecuteScalarAsync();
+
+        if (checkIfDatabaseExistsResult is null)
+        {
+            
+            await using var createDatabaseCommand = connection.CreateCommand();
+            createDatabaseCommand.CommandText = $"CREATE DATABASE {databaseName};";
+            await createDatabaseCommand.ExecuteNonQueryAsync();
+            
+            _logger.LogInformation("Database {Database} created", databaseName);
+        }
+        else
+        {
+            _logger.LogInformation("Database {Database} already existed", databaseName);
+        }
     }
 }
