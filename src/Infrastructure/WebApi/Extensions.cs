@@ -75,7 +75,8 @@ public static class Extensions
 
                 tracing.AddAspNetCoreInstrumentation()
                     .AddGrpcClientInstrumentation()
-                    .AddHttpClientInstrumentation();
+                    .AddHttpClientInstrumentation()
+                    .AddHangfireInstrumentation();
             });
 
         builder.AddOpenTelemetryExporters();
