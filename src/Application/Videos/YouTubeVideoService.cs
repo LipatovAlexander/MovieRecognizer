@@ -1,11 +1,9 @@
-﻿using Domain.Entities;
-using OneOf;
+﻿using OneOf;
 using OneOf.Types;
 using VideoLibrary;
 using VideoLibrary.Exceptions;
-using Video = Domain.Entities.Video;
 
-namespace Application.YouTube;
+namespace Application.Videos;
 
 public sealed class YouTubeVideoService(Client<YouTubeVideo> client) : IVideoService
 {

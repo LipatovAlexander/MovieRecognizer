@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities;
+﻿namespace Application.Movies;
 
 public sealed class Movie
 {

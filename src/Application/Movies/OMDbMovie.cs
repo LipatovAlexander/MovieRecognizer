@@ -1,4 +1,4 @@
-﻿namespace Application.OMDb;
+﻿namespace Application.Movies;
 
 public sealed class OMDbMovie
 {

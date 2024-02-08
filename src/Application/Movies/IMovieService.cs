@@ -1,8 +1,7 @@
-﻿using Domain.Entities;
-using OneOf;
+﻿using OneOf;
 using OneOf.Types;
 
-namespace Movies.Application;
+namespace Application.Movies;
 
 public interface IMovieService
 {

@@ -1,10 +1,8 @@
 ﻿using System.Net.Http.Json;
-using Domain.Entities;
 using Microsoft.Extensions.Options;
-using Movies.Application;
 using OneOf.Types;
 
-namespace Application.OMDb;
+namespace Application.Movies;
 
 public sealed class OMDbMovieService(IOptions<OMDbSettings> settings, HttpClient httpClient) : IMovieService
 {

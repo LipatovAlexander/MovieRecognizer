@@ -1,3 +1,3 @@
-﻿namespace Application.YouTube;
+﻿namespace Application.Videos;
 
 public readonly struct UnsupportedSource;

@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities;
+﻿namespace Application.Videos;
 
 public sealed class Video
 {

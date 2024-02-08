@@ -1,8 +1,7 @@
-﻿using Domain.Entities;
-using OneOf;
+﻿using OneOf;
 using OneOf.Types;
 
-namespace Application.YouTube;
+namespace Application.Videos;
 
 public interface IVideoService
 {
