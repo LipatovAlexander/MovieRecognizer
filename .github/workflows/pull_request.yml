@@ -31,22 +31,3 @@ jobs:
 #        dotnet user-secrets set "OMDb:ApiKey" "${{ secrets.OMDB_API_KEY }}"
     - name: Test
       run: dotnet test --no-build --verbosity normal
-
-  render_docs:
-    
-    runs-on: ubuntu-latest
-    
-    permissions:
-      contents: write
-    
-    steps:
-      - uses: actions/checkout@v3
-      - uses: severgroup-tt/actions-drawio-cli@v0.0.2
-        with:
-          source: docs/MovieRecognizer.drawio
-          destination: docs/MovieRecognizer.png
-          format: png
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          file_pattern: docs/*.png
-          commit_message: Update diagrams
