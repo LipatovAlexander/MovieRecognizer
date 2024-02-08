@@ -1,7 +1,7 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Jobs;
+namespace Application.BackgroundJobs.Jobs;
 
 public class FinishMovieRecognitionBackgroundJob(IApplicationDbContext dbContext) : IBackgroundJob<MovieRecognitionContext>
 {

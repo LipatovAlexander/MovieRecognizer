@@ -1,5 +1,6 @@
 using Application;
-using Application.Jobs;
+using Application.BackgroundJobs;
+using Application.BackgroundJobs.Jobs;
 using Domain.Entities;
 using Infrastructure.WebApi.ApiResponses;
 using Infrastructure.WebApi.Endpoints;

@@ -1,14 +1,12 @@
-using Application;
-using Application.Jobs;
+using Application.BackgroundJobs;
 using Hangfire.Common;
 using Hangfire.States;
-using IBackgroundJobClient = Application.Jobs.IBackgroundJobClient;
+using BackgroundJobs_IBackgroundJobClient = Application.BackgroundJobs.IBackgroundJobClient;
 using IHangfireBackgroundJobClient = Hangfire.IBackgroundJobClient;
-using Jobs_IBackgroundJobClient = Application.Jobs.IBackgroundJobClient;
 
 namespace Infrastructure.BackgroundJobs;
 
-public class BackgroundJobClient(IHangfireBackgroundJobClient hangfireBackgroundJobClient) : Jobs_IBackgroundJobClient
+public class BackgroundJobClient(IHangfireBackgroundJobClient hangfireBackgroundJobClient) : BackgroundJobs_IBackgroundJobClient
 {
     private readonly IHangfireBackgroundJobClient _hangfireBackgroundJobClient = hangfireBackgroundJobClient;
     

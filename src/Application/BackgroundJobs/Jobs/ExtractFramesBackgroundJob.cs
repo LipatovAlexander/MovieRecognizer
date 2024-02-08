@@ -1,4 +1,4 @@
-namespace Application.Jobs;
+namespace Application.BackgroundJobs.Jobs;
 
 public class ExtractFramesBackgroundJob : IBackgroundJob<MovieRecognitionContext>
 {
