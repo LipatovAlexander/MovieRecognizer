@@ -16,6 +16,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseMigrator", "src\DatabaseMigrator\DatabaseMigrator.csproj", "{75BD1700-0165-4020-B65B-EE4013C3360D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DD019AB4-865D-49B1-94B1-F3C43DE8E1BD}"
+	ProjectSection(SolutionItems) = preProject
+		docs\MovieRecognizer.drawio = docs\MovieRecognizer.drawio
+		docs\MovieRecognizer.png = docs\MovieRecognizer.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
