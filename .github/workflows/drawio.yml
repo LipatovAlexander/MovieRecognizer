@@ -1,0 +1,17 @@
+name: Render diagrams
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Convert diagram file to png image
+        uses: ./
+        with:
+          src: docs/MovieRecognizer.drawio
+          dest: test.png
