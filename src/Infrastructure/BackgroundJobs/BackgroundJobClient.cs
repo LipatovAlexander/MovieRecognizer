@@ -16,7 +16,7 @@ public class BackgroundJobClient(IHangfireBackgroundJobClient hangfireBackground
         where TBackgroundJob : IBackgroundJob
     {
         var jobId = _hangfireBackgroundJobClient.Create(
-            HangfireJob.FromExpression<TBackgroundJob>(job => job.HandleAsync(movieRecognition.Id, CancellationToken.None)),
+            HangfireJob.FromExpression<TBackgroundJob>(job => job.RunAsync(movieRecognition.Id, CancellationToken.None)),
             new EnqueuedState());
 
         var job = new Job(jobId, TBackgroundJob.Type)
@@ -34,7 +34,7 @@ public class BackgroundJobClient(IHangfireBackgroundJobClient hangfireBackground
         where TBackgroundJob : IBackgroundJob
     {
         var jobId = _hangfireBackgroundJobClient.Create(
-            HangfireJob.FromExpression<TBackgroundJob>(job => job.HandleAsync(movieRecognition.Id, CancellationToken.None)),
+            HangfireJob.FromExpression<TBackgroundJob>(job => job.RunAsync(movieRecognition.Id, CancellationToken.None)),
             new AwaitingState(parentJob.ExternalId));
         
         var job = new Job(jobId, TBackgroundJob.Type)

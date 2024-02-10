@@ -4,5 +4,5 @@ public interface IBackgroundJob
 {
     static abstract string Type { get; }
     
-    Task HandleAsync(Guid movieRecognitionId, CancellationToken cancellationToken);
+    Task RunAsync(Guid movieRecognitionId, CancellationToken cancellationToken);
 }

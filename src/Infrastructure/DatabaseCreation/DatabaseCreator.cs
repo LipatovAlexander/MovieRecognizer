@@ -46,7 +46,6 @@ public class DatabaseCreator(ILogger<DatabaseCreator> logger, IConfiguration con
 
         if (checkIfDatabaseExistsResult is null)
         {
-            
             await using var createDatabaseCommand = connection.CreateCommand();
             createDatabaseCommand.CommandText = $"CREATE DATABASE {databaseName};";
             await createDatabaseCommand.ExecuteNonQueryAsync();

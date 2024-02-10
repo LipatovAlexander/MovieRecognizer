@@ -10,7 +10,7 @@ public class FinishMovieRecognitionBackgroundJob(IApplicationDbContext dbContext
 
     public static string Type => "FinishMovieRecognition";
 
-    public async Task HandleAsync(Guid movieRecognitionId, CancellationToken cancellationToken)
+    public async Task RunAsync(Guid movieRecognitionId, CancellationToken cancellationToken)
     {
         var movieRecognition = await _dbContext.MovieRecognitions
             .FirstOrDefaultAsync(Specification.ById<MovieRecognition>(movieRecognitionId), cancellationToken);
