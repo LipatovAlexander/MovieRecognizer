@@ -1,20 +1,18 @@
 namespace Domain.Entities;
 
-public class MovieRecognition(Uri videoUrl, DateTimeOffset createdAt, MovieRecognitionStatus status)
+public class MovieRecognition(Uri videoUrl) : BaseEntity
 {
-    public MovieRecognition(Uri videoUrl) : this(videoUrl, DateTimeOffset.UtcNow, MovieRecognitionStatus.Created)
-    {
-    }
-
-    public Guid Id { get; set; } = Guid.NewGuid();
-
     public Uri VideoUrl { get; set; } = videoUrl;
 
-    public DateTimeOffset CreatedAt { get; set; } = createdAt;
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
-    public MovieRecognitionStatus Status { get; set; } = status;
+    public MovieRecognitionStatus Status { get; set; } = MovieRecognitionStatus.Created;
+    
+    public Video? Video { get; set; }
+    
+    public Movie? Movie { get; set; }
 
-    public static Specification<MovieRecognition> WithId(Guid id) => new(recognition => recognition.Id == id);
+    public ICollection<Job> Jobs { get; set; } = new List<Job>();
 }
 
 public enum MovieRecognitionStatus
@@ -22,5 +20,6 @@ public enum MovieRecognitionStatus
     Created,
     InProgress,
     Failed,
-    Succeeded
+    Succeeded,
+    Cancelled
 }

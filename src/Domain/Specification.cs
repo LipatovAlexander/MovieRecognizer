@@ -19,6 +19,11 @@ public sealed class Specification<T>(Expression<Func<T, bool>> expression)
         => new(spec._expression.Not());
 }
 
+public static class Specification
+{
+    public static Specification<T> ById<T>(Guid id) where T : BaseEntity => new(entity => entity.Id == id);
+}
+
 file static class ExpressionExtensions
 {
     public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> expression1, Expression<Func<T, bool>> expression2)

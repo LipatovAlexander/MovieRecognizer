@@ -1,4 +1,5 @@
 using Application;
+using Domain;
 using Domain.Entities;
 using Infrastructure.WebApi.ApiResponses;
 using Infrastructure.WebApi.Endpoints;
@@ -18,7 +19,7 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
         CancellationToken cancellationToken)
     {
         var recognitionRequest = await dbContext.MovieRecognitions
-            .FirstOrDefaultAsync(MovieRecognition.WithId(request.Id), cancellationToken);
+            .FirstOrDefaultAsync(Specification.ById<MovieRecognition>(request.Id), cancellationToken);
 
         if (recognitionRequest is null)
         {

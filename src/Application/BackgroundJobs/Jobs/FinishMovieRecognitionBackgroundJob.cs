@@ -1,3 +1,4 @@
+using Domain;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,7 @@ public class FinishMovieRecognitionBackgroundJob(IApplicationDbContext dbContext
     public async Task HandleAsync(MovieRecognitionContext context, CancellationToken cancellationToken)
     {
         var movieRecognition = await _dbContext.MovieRecognitions
-            .FirstOrDefaultAsync(MovieRecognition.WithId(context.MovieRecognitionId), cancellationToken);
+            .FirstOrDefaultAsync(Specification.ById<MovieRecognition>(context.MovieRecognitionId), cancellationToken);
 
         if (movieRecognition is null)
         {
