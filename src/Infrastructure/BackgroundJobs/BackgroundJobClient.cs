@@ -2,7 +2,6 @@ using Application;
 using Application.BackgroundJobs;
 using Domain.Entities;
 using Hangfire.States;
-using Microsoft.EntityFrameworkCore;
 using IHangfireBackgroundJobClient = Hangfire.IBackgroundJobClient;
 using HangfireJob = Hangfire.Common.Job;
 
@@ -13,7 +12,7 @@ public class BackgroundJobClient(IHangfireBackgroundJobClient hangfireBackground
     private readonly IHangfireBackgroundJobClient _hangfireBackgroundJobClient = hangfireBackgroundJobClient;
     private readonly IApplicationDbContext _dbContext = dbContext;
     
-    public async Task<string> EnqueueAsync<TBackgroundJob>(MovieRecognition movieRecognition, CancellationToken cancellationToken)
+    public async Task<Job> EnqueueAsync<TBackgroundJob>(MovieRecognition movieRecognition, CancellationToken cancellationToken)
         where TBackgroundJob : IBackgroundJob
     {
         var jobId = _hangfireBackgroundJobClient.Create(
@@ -28,23 +27,15 @@ public class BackgroundJobClient(IHangfireBackgroundJobClient hangfireBackground
         _dbContext.Jobs.Add(job);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return jobId;
+        return job;
     }
 
-    public async Task<string> ContinueWithAsync<TBackgroundJob>(string parentJobId, MovieRecognition movieRecognition, CancellationToken cancellationToken)
+    public async Task<Job> ContinueWithAsync<TBackgroundJob>(Job parentJob, MovieRecognition movieRecognition, CancellationToken cancellationToken)
         where TBackgroundJob : IBackgroundJob
     {
-        var parentJob = await _dbContext.Jobs
-            .FirstOrDefaultAsync(Job.WithExternalId(parentJobId), cancellationToken);
-
-        if (parentJob is null)
-        {
-            throw new InvalidOperationException("Parent job not found");
-        }
-        
         var jobId = _hangfireBackgroundJobClient.Create(
             HangfireJob.FromExpression<TBackgroundJob>(job => job.HandleAsync(movieRecognition.Id, CancellationToken.None)),
-            new AwaitingState(parentJobId));
+            new AwaitingState(parentJob.ExternalId));
         
         var job = new Job(jobId, TBackgroundJob.Type)
         {
@@ -55,6 +46,6 @@ public class BackgroundJobClient(IHangfireBackgroundJobClient hangfireBackground
         _dbContext.Jobs.Add(job);
         await _dbContext.SaveChangesAsync(cancellationToken);
         
-        return jobId;
+        return job;
     }
 }

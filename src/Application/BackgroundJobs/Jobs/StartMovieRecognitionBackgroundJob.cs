@@ -25,13 +25,13 @@ public class StartMovieRecognitionBackgroundJob(IApplicationDbContext dbContext,
         movieRecognition.Status = MovieRecognitionStatus.InProgress;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        var scrapeVideoInformationJobId = await _backgroundJobClient
+        var scrapeVideoInformationJob = await _backgroundJobClient
             .EnqueueAsync<ScrapeVideoInformationBackgroundJob>(movieRecognition, cancellationToken);
-        var extractFramesJobId = await _backgroundJobClient
-            .ContinueWithAsync<ExtractFramesBackgroundJob>(scrapeVideoInformationJobId, movieRecognition, cancellationToken);
-        var recognizeMovieJobId = await _backgroundJobClient
-            .ContinueWithAsync<RecognizeMovieBackgroundJob>(extractFramesJobId, movieRecognition, cancellationToken);
+        var extractFramesJob = await _backgroundJobClient
+            .ContinueWithAsync<ExtractFramesBackgroundJob>(scrapeVideoInformationJob, movieRecognition, cancellationToken);
+        var recognizeMovieJob = await _backgroundJobClient
+            .ContinueWithAsync<RecognizeMovieBackgroundJob>(extractFramesJob, movieRecognition, cancellationToken);
         await _backgroundJobClient
-            .ContinueWithAsync<FinishMovieRecognitionBackgroundJob>(recognizeMovieJobId, movieRecognition, cancellationToken);
+            .ContinueWithAsync<FinishMovieRecognitionBackgroundJob>(recognizeMovieJob, movieRecognition, cancellationToken);
     }
 }
