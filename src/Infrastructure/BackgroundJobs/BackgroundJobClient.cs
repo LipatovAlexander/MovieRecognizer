@@ -1,26 +1,26 @@
 using Application.BackgroundJobs;
-using Hangfire.Common;
+using Domain.Entities;
 using Hangfire.States;
-using BackgroundJobs_IBackgroundJobClient = Application.BackgroundJobs.IBackgroundJobClient;
 using IHangfireBackgroundJobClient = Hangfire.IBackgroundJobClient;
+using Job = Hangfire.Common.Job;
 
 namespace Infrastructure.BackgroundJobs;
 
-public class BackgroundJobClient(IHangfireBackgroundJobClient hangfireBackgroundJobClient) : BackgroundJobs_IBackgroundJobClient
+public class BackgroundJobClient(IHangfireBackgroundJobClient hangfireBackgroundJobClient) : IBackgroundJobClient
 {
     private readonly IHangfireBackgroundJobClient _hangfireBackgroundJobClient = hangfireBackgroundJobClient;
     
-    public string Enqueue<TBackgroundJob, TContext>(TContext context) where TBackgroundJob : IBackgroundJob<TContext>
+    public string Enqueue<TBackgroundJob>(MovieRecognition movieRecognition) where TBackgroundJob : IBackgroundJob
     {
         return _hangfireBackgroundJobClient.Create(
-            Job.FromExpression<TBackgroundJob>(job => job.HandleAsync(context, CancellationToken.None)),
+            Job.FromExpression<TBackgroundJob>(job => job.HandleAsync(movieRecognition.Id, CancellationToken.None)),
             new EnqueuedState());
     }
 
-    public string ContinueWith<TBackgroundJob, TContext>(string parentJobId, TContext context) where TBackgroundJob : IBackgroundJob<TContext>
+    public string ContinueWith<TBackgroundJob>(string parentJobId, MovieRecognition movieRecognition) where TBackgroundJob : IBackgroundJob
     {
         return _hangfireBackgroundJobClient.Create(
-            Job.FromExpression<TBackgroundJob>(job => job.HandleAsync(context, CancellationToken.None)),
+            Job.FromExpression<TBackgroundJob>(job => job.HandleAsync(movieRecognition.Id, CancellationToken.None)),
             new AwaitingState(parentJobId));
     }
 }

@@ -1,7 +1,9 @@
+using Domain.Entities;
+
 namespace Application.BackgroundJobs;
 
 public interface IBackgroundJobClient
 {
-    string Enqueue<TBackgroundJob, TContext>(TContext context) where TBackgroundJob : IBackgroundJob<TContext>;
-    string ContinueWith<TBackgroundJob, TContext>(string parentJobId, TContext context) where TBackgroundJob : IBackgroundJob<TContext>;
+    string Enqueue<TBackgroundJob>(MovieRecognition movieRecognition) where TBackgroundJob : IBackgroundJob;
+    string ContinueWith<TBackgroundJob>(string parentJobId, MovieRecognition movieRecognition) where TBackgroundJob : IBackgroundJob;
 }

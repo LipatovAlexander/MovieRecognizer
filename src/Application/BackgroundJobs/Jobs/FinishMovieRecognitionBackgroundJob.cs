@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.BackgroundJobs.Jobs;
 
-public class FinishMovieRecognitionBackgroundJob(IApplicationDbContext dbContext) : IBackgroundJob<MovieRecognitionContext>
+public class FinishMovieRecognitionBackgroundJob(IApplicationDbContext dbContext) : IBackgroundJob
 {
     private readonly IApplicationDbContext _dbContext = dbContext;
     
-    public async Task HandleAsync(MovieRecognitionContext context, CancellationToken cancellationToken)
+    public async Task HandleAsync(Guid movieRecognitionId, CancellationToken cancellationToken)
     {
         var movieRecognition = await _dbContext.MovieRecognitions
-            .FirstOrDefaultAsync(Specification.ById<MovieRecognition>(context.MovieRecognitionId), cancellationToken);
+            .FirstOrDefaultAsync(Specification.ById<MovieRecognition>(movieRecognitionId), cancellationToken);
 
         if (movieRecognition is null)
         {

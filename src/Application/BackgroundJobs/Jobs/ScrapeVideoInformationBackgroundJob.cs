@@ -1,8 +1,8 @@
 namespace Application.BackgroundJobs.Jobs;
 
-public class ScrapeVideoInformationBackgroundJob : IBackgroundJob<MovieRecognitionContext>
+public class ScrapeVideoInformationBackgroundJob : IBackgroundJob
 {
-    public Task HandleAsync(MovieRecognitionContext context, CancellationToken cancellationToken)
+    public Task HandleAsync(Guid movieRecognitionId, CancellationToken cancellationToken)
     {
         Console.WriteLine("Scraping video");
         return Task.CompletedTask;

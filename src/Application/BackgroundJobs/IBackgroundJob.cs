@@ -1,6 +1,6 @@
 namespace Application.BackgroundJobs;
 
-public interface IBackgroundJob<in TContext>
+public interface IBackgroundJob
 {
-    Task HandleAsync(TContext context, CancellationToken cancellationToken);
+    Task HandleAsync(Guid movieRecognitionId, CancellationToken cancellationToken);
 }

@@ -1,8 +1,8 @@
 namespace Application.BackgroundJobs.Jobs;
 
-public class ExtractFramesBackgroundJob : IBackgroundJob<MovieRecognitionContext>
+public class ExtractFramesBackgroundJob : IBackgroundJob
 {
-    public Task HandleAsync(MovieRecognitionContext context, CancellationToken cancellationToken)
+    public Task HandleAsync(Guid movieRecognitionId, CancellationToken cancellationToken)
     {
         Console.WriteLine("Extracting frames");
         return Task.CompletedTask;
