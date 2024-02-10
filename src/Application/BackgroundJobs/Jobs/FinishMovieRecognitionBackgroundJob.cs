@@ -7,7 +7,9 @@ namespace Application.BackgroundJobs.Jobs;
 public class FinishMovieRecognitionBackgroundJob(IApplicationDbContext dbContext) : IBackgroundJob
 {
     private readonly IApplicationDbContext _dbContext = dbContext;
-    
+
+    public static string Type => "FinishMovieRecognition";
+
     public async Task HandleAsync(Guid movieRecognitionId, CancellationToken cancellationToken)
     {
         var movieRecognition = await _dbContext.MovieRecognitions

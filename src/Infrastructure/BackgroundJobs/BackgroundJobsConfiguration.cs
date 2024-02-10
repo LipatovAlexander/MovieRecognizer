@@ -25,6 +25,6 @@ public static class BackgroundJobsConfiguration
                 .UseRecommendedSerializerSettings();
         });
 
-        services.AddSingleton<IBackgroundJobClient, BackgroundJobClient>();
+        services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();
     }
 }

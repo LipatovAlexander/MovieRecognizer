@@ -9,7 +9,9 @@ public class StartMovieRecognitionBackgroundJob(IApplicationDbContext dbContext,
 {
     private readonly IApplicationDbContext _dbContext = dbContext;
     private readonly IBackgroundJobClient _backgroundJobClient = backgroundJobClient;
-    
+
+    public static string Type => "StartMovieRecognition";
+
     public async Task HandleAsync(Guid movieRecognitionId, CancellationToken cancellationToken)
     {
         var movieRecognition = await _dbContext.MovieRecognitions
@@ -23,13 +25,13 @@ public class StartMovieRecognitionBackgroundJob(IApplicationDbContext dbContext,
         movieRecognition.Status = MovieRecognitionStatus.InProgress;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        var scrapeVideoInformationJobId = _backgroundJobClient
-            .Enqueue<ScrapeVideoInformationBackgroundJob>(movieRecognition);
-        var extractFramesJobId = _backgroundJobClient
-            .ContinueWith<ExtractFramesBackgroundJob>(scrapeVideoInformationJobId, movieRecognition);
-        var recognizeMovieJobId = _backgroundJobClient
-            .ContinueWith<RecognizeMovieBackgroundJob>(extractFramesJobId, movieRecognition);
-        _backgroundJobClient
-            .ContinueWith<FinishMovieRecognitionBackgroundJob>(recognizeMovieJobId, movieRecognition);
+        var scrapeVideoInformationJobId = await _backgroundJobClient
+            .EnqueueAsync<ScrapeVideoInformationBackgroundJob>(movieRecognition, cancellationToken);
+        var extractFramesJobId = await _backgroundJobClient
+            .ContinueWithAsync<ExtractFramesBackgroundJob>(scrapeVideoInformationJobId, movieRecognition, cancellationToken);
+        var recognizeMovieJobId = await _backgroundJobClient
+            .ContinueWithAsync<RecognizeMovieBackgroundJob>(extractFramesJobId, movieRecognition, cancellationToken);
+        await _backgroundJobClient
+            .ContinueWithAsync<FinishMovieRecognitionBackgroundJob>(recognizeMovieJobId, movieRecognition, cancellationToken);
     }
 }

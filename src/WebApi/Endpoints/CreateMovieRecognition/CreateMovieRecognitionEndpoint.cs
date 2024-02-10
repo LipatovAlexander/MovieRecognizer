@@ -5,16 +5,18 @@ using Domain.Entities;
 using Infrastructure.WebApi.ApiResponses;
 using Infrastructure.WebApi.Endpoints;
 using Infrastructure.WebApi.Validation;
+using WebApi.Mappers;
+using WebApi.Models;
 
 namespace WebApi.Endpoints.CreateMovieRecognition;
 
 public class CreateMovieRecognitionEndpoint : IEndpoint<
-    SuccessResponse<MovieRecognition>,
+    SuccessResponse<MovieRecognitionDto>,
     CreateMovieRecognitionRequest,
     IApplicationDbContext,
     IBackgroundJobClient>
 {
-    public static async Task<SuccessResponse<MovieRecognition>> HandleAsync(
+    public static async Task<SuccessResponse<MovieRecognitionDto>> HandleAsync(
         [AsParameters, Validate] CreateMovieRecognitionRequest request,
         IApplicationDbContext dbContext,
         IBackgroundJobClient backgroundJobClient,
@@ -25,9 +27,9 @@ public class CreateMovieRecognitionEndpoint : IEndpoint<
         dbContext.MovieRecognitions.Add(movieRecognition);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        backgroundJobClient.Enqueue<StartMovieRecognitionBackgroundJob>(movieRecognition);
+        await backgroundJobClient.EnqueueAsync<StartMovieRecognitionBackgroundJob>(movieRecognition, cancellationToken);
         
-        return Responses.Success(movieRecognition);
+        return Responses.Success(movieRecognition.ToDto());
     }
 
     public static void AddRoute(IEndpointRouteBuilder builder)

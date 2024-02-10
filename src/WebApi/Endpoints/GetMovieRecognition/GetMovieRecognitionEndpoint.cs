@@ -5,20 +5,27 @@ using Infrastructure.WebApi.ApiResponses;
 using Infrastructure.WebApi.Endpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Mappers;
+using WebApi.Models;
 
 namespace WebApi.Endpoints.GetMovieRecognition;
 
 public class GetMovieRecognitionEndpoint : IEndpoint<
-    Results<Ok<SuccessResponse<MovieRecognition>>, NotFound<ErrorResponse>>,
+    Results<Ok<SuccessResponse<MovieRecognitionDto>>, NotFound<ErrorResponse>>,
     GetMovieRecognitionRequest,
     IApplicationDbContext>
 {
-    public static async Task<Results<Ok<SuccessResponse<MovieRecognition>>, NotFound<ErrorResponse>>> HandleAsync(
+    public static async Task<Results<Ok<SuccessResponse<MovieRecognitionDto>>, NotFound<ErrorResponse>>> HandleAsync(
         [AsParameters] GetMovieRecognitionRequest request,
         IApplicationDbContext dbContext,
         CancellationToken cancellationToken)
     {
         var recognitionRequest = await dbContext.MovieRecognitions
+            .Include(movieRecognition => movieRecognition.Video)
+            .ThenInclude(video => video!.VideoFrames)
+            .Include(movieRecognition => movieRecognition.Movie)
+            .Include(movieRecognition => movieRecognition.Jobs)
+            .ThenInclude(job => job.ParentJob)
             .FirstOrDefaultAsync(Specification.ById<MovieRecognition>(request.Id), cancellationToken);
 
         if (recognitionRequest is null)
@@ -26,7 +33,7 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
             return TypedResults.NotFound(Responses.Error(CommonErrorCodes.NotFound));
         }
 
-        return TypedResults.Ok(Responses.Success(recognitionRequest));
+        return TypedResults.Ok(Responses.Success(recognitionRequest.ToDto()));
     }
 
     public static void AddRoute(IEndpointRouteBuilder builder)
