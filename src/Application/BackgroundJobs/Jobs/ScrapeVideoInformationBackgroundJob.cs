@@ -37,6 +37,7 @@ public class ScrapeVideoInformationBackgroundJob(IApplicationDbContext dbContext
             _ => throw new WebSiteNotSupportedException());
 
         movieRecognition.Video = video;
+        _dbContext.Videos.Add(video);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
