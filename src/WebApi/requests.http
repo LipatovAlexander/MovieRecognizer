@@ -3,6 +3,6 @@ Accept: application/json
 
 ###
 
-POST http://localhost:5296/recognition?videoUrl=https://example{{$randomInt}}.com
+POST http://localhost:5296/recognition?videoUrl=https://youtube.com/shorts/Rz0teFp0qRw?si=hfgLqPjapZWUZbY9
 
 ###

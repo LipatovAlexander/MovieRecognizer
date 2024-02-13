@@ -23,6 +23,11 @@ public static class BackgroundJobsConfiguration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings();
+
+            GlobalJobFilters.Filters.Clear();
+            config.UseFilter(new FailOnApplicationExceptionFilter { Order = 0 });
+            config.UseFilter(new AutomaticRetryAttribute { Attempts = 3, OnlyOn = [typeof(BackgroundJobExecutionException)], DelaysInSeconds = [1, 2, 3], Order = 1 });
+            config.UseFilter(new HandleFailedJobsFilter(sp.GetRequiredService<IServiceScopeFactory>()) { Order = 2 });
         });
 
         services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();

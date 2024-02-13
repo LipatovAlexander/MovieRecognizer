@@ -14,6 +14,8 @@ builder.AddApplicationDbContext();
 services.AddBackgroundJobs();
 services.AddHangfireServer();
 
+services.AddApplicationServices();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

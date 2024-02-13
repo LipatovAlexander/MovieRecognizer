@@ -1,6 +1,8 @@
 using Application;
+using Application.Videos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VideoLibrary;
 
 namespace Infrastructure;
 
@@ -18,5 +20,11 @@ public static class ApplicationConfiguration
             });
     
         builder.Services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
+    }
+
+    public static void AddApplicationServices(this IServiceCollection services)
+    {
+        services.AddSingleton(Client.For(YouTube.Default));
+        services.AddSingleton<IVideoService, VideoService>();
     }
 }

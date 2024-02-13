@@ -12,4 +12,5 @@ public interface IApplicationDbContext
     DbSet<Job> Jobs { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    int SaveChanges();
 }
