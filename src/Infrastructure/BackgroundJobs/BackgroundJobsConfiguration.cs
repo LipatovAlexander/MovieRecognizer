@@ -28,6 +28,7 @@ public static class BackgroundJobsConfiguration
             config.UseFilter(new FailOnApplicationExceptionFilter { Order = 0 });
             config.UseFilter(new AutomaticRetryAttribute { Attempts = 3, OnlyOn = [typeof(BackgroundJobExecutionException)], DelaysInSeconds = [1, 2, 3], Order = 1 });
             config.UseFilter(new HandleFailedJobsFilter(sp.GetRequiredService<IServiceScopeFactory>()) { Order = 2 });
+            config.UseFilter(new ContinuationsSupportAttribute { Order = 3 });
         });
 
         services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();

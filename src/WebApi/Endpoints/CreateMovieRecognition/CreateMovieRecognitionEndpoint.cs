@@ -27,7 +27,7 @@ public class CreateMovieRecognitionEndpoint : IEndpoint<
         dbContext.MovieRecognitions.Add(movieRecognition);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        await backgroundJobClient.EnqueueAsync<ScrapeVideoInformationBackgroundJob>(movieRecognition, cancellationToken);
+        await backgroundJobClient.EnqueueAsync<StartMovieRecognitionBackgroundJob>(movieRecognition, cancellationToken);
         
         return Responses.Success(movieRecognition.ToDto());
     }

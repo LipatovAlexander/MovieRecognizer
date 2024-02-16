@@ -17,7 +17,7 @@ public class FinishMovieRecognitionBackgroundJob(IApplicationDbContext dbContext
 
         if (movieRecognition is null)
         {
-            return;
+            throw new InvalidOperationException("MovieRecognition not found");
         }
 
         movieRecognition.Status = MovieRecognitionStatus.Succeeded;
