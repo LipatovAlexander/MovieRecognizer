@@ -14,6 +14,7 @@ if (builder.Environment.IsDevelopment() && string.IsNullOrEmpty(postgresPassword
 
 var postgres = builder
     .AddPostgresContainer("postgres", password: postgresPassword)
+    .WithPgAdmin()
     .WithVolumeMount("VolumeMount.postgres.data", "/var/lib/postgresql/data", VolumeMountType.Named);
 
 var hangfireDatabase = postgres.AddDatabase("hangfire");
