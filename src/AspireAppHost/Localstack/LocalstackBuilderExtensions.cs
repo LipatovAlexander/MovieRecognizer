@@ -21,8 +21,9 @@ public static class LocalstackBuilderExtensions
                 context.EnvironmentVariables.Add("AWS_ACCESS_KEY_ID", "user");
                 context.EnvironmentVariables.Add("AWS_SECRET_ACCESS_KEY", "password");
             })
-            .WithVolumeMount("VolumeMount.localstack.data", "/var/lib/localstack", VolumeMountType.Named)
-            .WithVolumeMount("VolumeMount.docker_sock.data", "/var/run/docker.sock", VolumeMountType.Named)
+            .WithVolumeMount("VolumeMount.localstack.volume", "/var/lib/localstack", VolumeMountType.Named)
+            .WithVolumeMount("VolumeMount.localstack.docker_sock", "/var/run/docker.sock", VolumeMountType.Named)
+            .WithVolumeMount("./Localstack/create-resources.sh", "/etc/localstack/init/ready.d/create-resources.sh")
             .ExcludeFromManifest();
     }
 
