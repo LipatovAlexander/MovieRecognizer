@@ -1,3 +1,4 @@
+using Amazon.S3;
 using Application;
 using Application.Videos;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,24 @@ public static class ApplicationConfiguration
             });
     
         builder.Services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
+    }
+
+    public static void AddAmazonS3Client(this IServiceCollection services)
+    {
+        var serviceUrl = Environment.GetEnvironmentVariable("AWS_SERVICE_URL");
+
+        if (serviceUrl is null)
+        {
+            services.AddAWSService<IAmazonS3>();
+        }
+        else
+        {
+            services.AddSingleton<IAmazonS3>(new AmazonS3Client(new AmazonS3Config
+            {
+                ServiceURL = serviceUrl,
+                ForcePathStyle = true
+            }));
+        }
     }
 
     public static void AddApplicationServices(this IServiceCollection services)

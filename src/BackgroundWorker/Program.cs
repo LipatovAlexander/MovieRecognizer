@@ -14,6 +14,7 @@ builder.AddApplicationDbContext();
 services.AddBackgroundJobs();
 services.AddHangfireServer();
 
+services.AddAmazonS3Client();
 services.AddApplicationServices();
 
 var app = builder.Build();
