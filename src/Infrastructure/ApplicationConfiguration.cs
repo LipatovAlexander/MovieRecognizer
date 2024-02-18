@@ -1,6 +1,7 @@
 using Amazon.S3;
 using Application;
 using Application.Videos;
+using Infrastructure.Videos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VideoLibrary;

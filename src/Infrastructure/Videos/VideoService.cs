@@ -1,21 +1,16 @@
-﻿using OneOf;
-using OneOf.Types;
+﻿using Application.Videos;
+using OneOf;
 using VideoLibrary;
 using VideoLibrary.Exceptions;
 using Video = Domain.Entities.Video;
 
-namespace Application.Videos;
-
-public interface IVideoService
-{
-    Task<OneOf<Video, NotFound, WebSiteNotSupported>> FindAsync(Uri videoUrl, CancellationToken cancellationToken);
-}
+namespace Infrastructure.Videos;
 
 public class VideoService(Client<YouTubeVideo> youtubeVideoClient) : IVideoService
 {
     private readonly Client<YouTubeVideo> _youtubeVideoClient = youtubeVideoClient;
     
-    public async Task<OneOf<Video, NotFound, WebSiteNotSupported>> FindAsync(Uri videoUrl, CancellationToken cancellationToken)
+    public async Task<OneOf<Video, VideoNotFound, WebSiteNotSupported>> FindAsync(Uri videoUrl, CancellationToken cancellationToken)
     {
         try
         {
@@ -31,7 +26,7 @@ public class VideoService(Client<YouTubeVideo> youtubeVideoClient) : IVideoServi
         }
         catch (UnavailableStreamException)
         {
-            return new NotFound();
+            return new VideoNotFound();
         }
         catch (ArgumentException)
         {

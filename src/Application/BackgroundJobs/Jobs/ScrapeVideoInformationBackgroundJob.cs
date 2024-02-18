@@ -1,4 +1,3 @@
-using Application.Exceptions;
 using Application.Videos;
 using Domain;
 using Domain.Entities;

@@ -1,3 +1,3 @@
-namespace Application.Exceptions;
+namespace Application;
 
 public abstract class ApplicationException : Exception;

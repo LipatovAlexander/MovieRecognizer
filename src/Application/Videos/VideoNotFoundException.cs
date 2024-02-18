@@ -1,3 +1,3 @@
-namespace Application.Exceptions;
+namespace Application.Videos;
 
 public class VideoNotFoundException : ApplicationException;

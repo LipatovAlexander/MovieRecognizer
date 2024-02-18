@@ -1,6 +1,5 @@
 using Hangfire.Common;
 using Hangfire.States;
-using ApplicationException = Application.Exceptions.ApplicationException;
 
 namespace Infrastructure.BackgroundJobs;
 
