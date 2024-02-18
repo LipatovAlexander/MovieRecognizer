@@ -9,8 +9,7 @@ var postgres = builder
 var hangfireDatabase = postgres.AddDatabase("hangfire");
 var applicationDatabase = postgres.AddDatabase("application");
 
-var localstack = builder.AddLocalstack("localstack")
-    .AddS3();
+var localstack = builder.AddLocalstack("localstack");
 
 builder.AddProject<Projects.DatabaseMigrator>("database-migrator")
     .WithReference(postgres)

@@ -49,6 +49,12 @@ public static class ApplicationConfiguration
         services.AddSingleton(new YoutubeClient());
         services.AddScoped<IVideoService, VideoService>();
         services.AddSingleton<IVideoConverter, VideoConverter>();
+
+        services.AddOptions<FileStorageSettings>()
+            .BindConfiguration(FileStorageSettings.SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+        
         services.AddSingleton<IFileStorage, FileStorage>();
     }
 }

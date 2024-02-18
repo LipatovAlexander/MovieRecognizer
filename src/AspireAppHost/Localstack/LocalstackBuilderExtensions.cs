@@ -16,7 +16,7 @@ public static class LocalstackBuilderExtensions
             .WithAnnotation(new ContainerImageAnnotation { Image = "localstack/localstack", Tag = "latest" })
             .WithEnvironment(context =>
             {
-                context.EnvironmentVariables.Add("SERVICES", string.Join(',', localstack.Services));
+                context.EnvironmentVariables.Add("SERVICES", "s3");
                 context.EnvironmentVariables.Add("AWS_DEFAULT_REGION", "us-east-1");
                 context.EnvironmentVariables.Add("AWS_ACCESS_KEY_ID", "user");
                 context.EnvironmentVariables.Add("AWS_SECRET_ACCESS_KEY", "password");
@@ -27,25 +27,12 @@ public static class LocalstackBuilderExtensions
             .ExcludeFromManifest();
     }
 
-    public static IResourceBuilder<LocalstackS3Resource> AddS3(this IResourceBuilder<LocalstackResource> builder)
-    {
-        var localstack = builder.Resource;
-        var localstackS3 = new LocalstackS3Resource(localstack);
-        
-        localstack.Services.Add("s3");
-
-        return builder.ApplicationBuilder
-            .AddResource(localstackS3)
-            .ExcludeFromManifest();
-    }
-
-    public static IResourceBuilder<TDestination> WithReference<TDestination, TLocalstackServiceResource>(
+    public static IResourceBuilder<TDestination> WithReference<TDestination>(
         this IResourceBuilder<TDestination> builder,
-        IResourceBuilder<TLocalstackServiceResource> source)
+        IResourceBuilder<LocalstackResource> source)
         where TDestination : IResourceWithEnvironment
-        where TLocalstackServiceResource : IResourceWithParent<LocalstackResource>
     {
-        var localstack = source.Resource.Parent;
+        var localstack = source.Resource;
         
         return builder
             .WithEnvironment(context =>
@@ -66,6 +53,8 @@ public static class LocalstackBuilderExtensions
                 context.EnvironmentVariables.TryAdd("AWS_DEFAULT_REGION", "us-east-1");
                 context.EnvironmentVariables.TryAdd("AWS_ACCESS_KEY_ID", "user");
                 context.EnvironmentVariables.TryAdd("AWS_SECRET_ACCESS_KEY", "password");
+
+                context.EnvironmentVariables.TryAdd("FileStorage__BucketName", "application");
             });
     }
 }
