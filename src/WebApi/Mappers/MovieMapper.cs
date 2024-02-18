@@ -17,7 +17,7 @@ public static class MovieMapper
             Title = movie.Title,
             Type = movie.Type,
             Year = movie.Year,
-            ImdbId = movie.ImdbId,
+            ExternalId = movie.ExternalId,
             PosterUrl = movie.PosterUrl
         };
     }

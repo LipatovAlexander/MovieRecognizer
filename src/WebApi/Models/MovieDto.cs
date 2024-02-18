@@ -6,7 +6,7 @@ public class MovieDto
 {
     public required Guid Id { get; set; }
     
-    public required string ImdbId { get; set; }
+    public required string ExternalId { get; set; }
 
     public required string Title { get; set; }
 

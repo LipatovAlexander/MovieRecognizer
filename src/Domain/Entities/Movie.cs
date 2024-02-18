@@ -1,7 +1,7 @@
 namespace Domain.Entities;
 
 public class Movie(
-    string imdbId,
+    string externalId,
     string title,
     string year,
     IReadOnlyCollection<string> genres,
@@ -11,7 +11,7 @@ public class Movie(
     Uri posterUrl,
     MovieType type) : BaseEntity
 {
-    public string ImdbId { get; set; } = imdbId;
+    public string ExternalId { get; set; } = externalId;
 
     public string Title { get; set; } = title;
 

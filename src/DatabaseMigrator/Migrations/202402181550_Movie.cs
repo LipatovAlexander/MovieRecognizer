@@ -9,7 +9,7 @@ public class Movie : ForwardOnlyMigration
     {
         Create.Table("Movie")
             .WithColumn("Id").AsGuid().PrimaryKey()
-            .WithColumn("ImdbId").AsString().NotNullable().Indexed()
+            .WithColumn("ExternalId").AsString().NotNullable().Indexed()
             .WithColumn("Title").AsString().NotNullable()
             .WithColumn("Year").AsString().NotNullable()
             .WithColumn("Genres").AsString().NotNullable()
