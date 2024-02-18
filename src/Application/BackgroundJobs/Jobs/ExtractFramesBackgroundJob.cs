@@ -48,7 +48,7 @@ public class ExtractFramesBackgroundJob(
 
             var videoFrame = new VideoFrame(timestamp)
             {
-                File = await _fileStorage.SaveAsync(snapshot, cancellationToken)
+                File = await _fileStorage.UploadAsync(snapshot, cancellationToken)
             };
             
             video.VideoFrames.Add(videoFrame);

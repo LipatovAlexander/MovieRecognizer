@@ -4,5 +4,5 @@ namespace Application.Files;
 
 public interface IFileStorage
 {
-    Task<File> SaveAsync(TempFile tempFile, CancellationToken cancellationToken);
+    Task<File> UploadAsync(TempFile tempFile, CancellationToken cancellationToken);
 }
