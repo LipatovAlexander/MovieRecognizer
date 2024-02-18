@@ -2,12 +2,12 @@ using FluentMigrator;
 
 namespace DatabaseMigrator.Migrations;
 
-[TimestampedMigration(2024, 02, 04, 22, 36)]
-public class CreateRecognitionRequest : ForwardOnlyMigration
+[TimestampedMigration(2024, 02, 18, 15, 45)]
+public class MovieRecognition : ForwardOnlyMigration
 {
     public override void Up()
     {
-        Create.Table("RecognitionRequests")
+        Create.Table("MovieRecognition")
             .WithColumn("Id").AsGuid().PrimaryKey()
             .WithColumn("VideoUrl").AsString().NotNullable()
             .WithColumn("CreatedAt").AsDateTimeOffset().NotNullable()

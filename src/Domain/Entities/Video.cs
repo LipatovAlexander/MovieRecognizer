@@ -1,16 +1,14 @@
 namespace Domain.Entities;
 
-public class Video(string title, string author, TimeSpan duration, Uri fileUrl, Uri webSiteUrl) : BaseEntity
+public class Video(string externalId, string title, string author, TimeSpan? duration) : BaseEntity
 {
+    public string ExternalId { get; set; } = externalId;
+    
     public string Title { get; set; } = title;
 
     public string Author { get; set; } = author;
 
-    public TimeSpan Duration { get; set; } = duration;
-
-    public Uri FileUrl { get; set; } = fileUrl;
-
-    public Uri WebSiteUrl { get; set; } = webSiteUrl;
+    public TimeSpan? Duration { get; set; } = duration;
 
     public ICollection<VideoFrame> VideoFrames { get; set; } = new List<VideoFrame>();
 }

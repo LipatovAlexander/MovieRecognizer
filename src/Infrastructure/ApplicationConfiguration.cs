@@ -4,7 +4,7 @@ using Application.Videos;
 using Infrastructure.Videos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using VideoLibrary;
+using YoutubeExplode;
 
 namespace Infrastructure;
 
@@ -44,7 +44,7 @@ public static class ApplicationConfiguration
 
     public static void AddApplicationServices(this IServiceCollection services)
     {
-        services.AddSingleton(Client.For(YouTube.Default));
+        services.AddSingleton(new YoutubeClient());
         services.AddSingleton<IVideoService, VideoService>();
     }
 }

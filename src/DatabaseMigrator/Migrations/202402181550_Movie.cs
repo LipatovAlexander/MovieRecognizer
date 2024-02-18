@@ -2,8 +2,8 @@ using FluentMigrator;
 
 namespace DatabaseMigrator.Migrations;
 
-[TimestampedMigration(2024, 02, 10, 18, 51)]
-public class CreateMovieTable : ForwardOnlyMigration
+[TimestampedMigration(2024, 02, 18, 15, 50)]
+public class Movie : ForwardOnlyMigration
 {
     public override void Up()
     {
