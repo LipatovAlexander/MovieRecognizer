@@ -17,13 +17,9 @@ builder.AddProject<Projects.DatabaseMigrator>("database-migrator")
     .WithReference(applicationDatabase);
 
 builder.AddProject<Projects.WebApi>("web-api")
-    .WithReference(hangfireDatabase)
-    .WithReference(applicationDatabase);
-
-builder.AddProject<Projects.BackgroundWorker>("background-worker")
     .WithReference(postgres)
-    .WithReference(applicationDatabase)
     .WithReference(hangfireDatabase)
+    .WithReference(applicationDatabase)
     .WithReference(localstack);
 
 builder.Build().Run();

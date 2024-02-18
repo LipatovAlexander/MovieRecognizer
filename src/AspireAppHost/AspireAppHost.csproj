@@ -15,7 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BackgroundWorker\BackgroundWorker.csproj" />
       <ProjectReference Include="..\DatabaseMigrator\DatabaseMigrator.csproj" />
       <ProjectReference Include="..\WebApi\WebApi.csproj" />
     </ItemGroup>
