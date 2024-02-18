@@ -3,6 +3,7 @@ namespace Application.Files;
 public class TempFile : IDisposable
 {
     public string FilePath { get; }
+    public string FileName { get; }
     
     private bool _disposed;
 
@@ -14,6 +15,8 @@ public class TempFile : IDisposable
         {
             FilePath = Path.ChangeExtension(FilePath, extension);
         }
+
+        FileName = Path.GetFileName(FilePath);
 
         File.Create(FilePath).Dispose();
     }
