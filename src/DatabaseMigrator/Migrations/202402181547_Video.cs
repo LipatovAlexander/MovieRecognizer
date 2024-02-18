@@ -12,7 +12,7 @@ public class Video : ForwardOnlyMigration
             .WithColumn("ExternalId").AsString().NotNullable().Indexed()
             .WithColumn("Title").AsString().NotNullable()
             .WithColumn("Author").AsString().NotNullable()
-            .WithColumn("Duration").AsCustom("interval").Nullable();
+            .WithColumn("Duration").AsCustom("interval").NotNullable();
 
         Create.Column("VideoId").OnTable("MovieRecognition")
             .AsGuid().Nullable().ForeignKey("Video", "Id").Indexed();

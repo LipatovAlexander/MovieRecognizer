@@ -3,6 +3,7 @@ using Application;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using File = Domain.Entities.File;
 
 namespace Infrastructure;
 
@@ -13,6 +14,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<VideoFrame> VideoFrames => Set<VideoFrame>();
     public DbSet<Movie> Movies => Set<Movie>();
     public DbSet<Job> Jobs => Set<Job>();
+    public DbSet<File> Files => Set<File>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

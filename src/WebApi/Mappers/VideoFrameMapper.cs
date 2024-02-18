@@ -11,7 +11,7 @@ public static class VideoFrameMapper
         {
             Id = videoFrame.Id,
             Timestamp = videoFrame.Timestamp,
-            StorageUrl = videoFrame.StorageUrl
+            File = videoFrame.File.ToDto()
         };
     }
 }

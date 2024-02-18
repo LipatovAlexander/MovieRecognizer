@@ -1,6 +1,8 @@
 using Amazon.S3;
 using Application;
+using Application.Files;
 using Application.Videos;
+using Infrastructure.Files;
 using Infrastructure.Videos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,6 +47,8 @@ public static class ApplicationConfiguration
     public static void AddApplicationServices(this IServiceCollection services)
     {
         services.AddSingleton(new YoutubeClient());
-        services.AddSingleton<IVideoService, VideoService>();
+        services.AddScoped<IVideoService, VideoService>();
+        services.AddSingleton<IVideoConverter, VideoConverter>();
+        services.AddSingleton<IFileStorage, FileStorage>();
     }
 }

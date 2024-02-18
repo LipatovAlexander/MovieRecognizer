@@ -10,7 +10,6 @@ public class VideoFrame : ForwardOnlyMigration
         Create.Table("VideoFrame")
             .WithColumn("Id").AsGuid().PrimaryKey()
             .WithColumn("VideoId").AsGuid().NotNullable().ForeignKey("Video", "Id").Indexed()
-            .WithColumn("StorageUrl").AsString().NotNullable()
             .WithColumn("Timestamp").AsCustom("interval").NotNullable();
     }
 }

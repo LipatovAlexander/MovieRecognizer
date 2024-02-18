@@ -1,10 +1,12 @@
 ﻿using Application;
+using Application.Files;
 using Application.Videos;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
 using YoutubeExplode;
 using YoutubeExplode.Exceptions;
 using YoutubeExplode.Videos;
+using YoutubeExplode.Videos.Streams;
 using Video = Domain.Entities.Video;
 
 namespace Infrastructure.Videos;
@@ -33,7 +35,8 @@ public class VideoService(YoutubeClient youtubeClient, IApplicationDbContext dbC
 
             var title = youtubeVideo.Title;
             var author = youtubeVideo.Author.ChannelTitle;
-            var duration = youtubeVideo.Duration;
+            var duration = youtubeVideo.Duration
+                ?? throw new InvalidOperationException("Video duration is null");
 
             return new Video(videoId.Value, title, author, duration);
         }
@@ -45,5 +48,17 @@ public class VideoService(YoutubeClient youtubeClient, IApplicationDbContext dbC
         {
             return new VideoNotFound();
         }
+    }
+
+    public async Task<TempFile> DownloadAsync(Video video, CancellationToken cancellationToken)
+    {
+        var streamManifest = await _youtubeClient.Videos.Streams.GetManifestAsync(video.ExternalId, cancellationToken);
+
+        var stream = streamManifest.GetMuxedStreams().GetWithHighestVideoQuality();
+
+        var tempFile = new TempFile(stream.Container.Name);
+        await _youtubeClient.Videos.Streams.DownloadAsync(stream, tempFile.FilePath, cancellationToken: cancellationToken);
+
+        return tempFile;
     }
 }
