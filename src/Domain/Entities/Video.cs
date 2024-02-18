@@ -11,4 +11,7 @@ public class Video(string externalId, string title, string author, TimeSpan? dur
     public TimeSpan? Duration { get; set; } = duration;
 
     public ICollection<VideoFrame> VideoFrames { get; set; } = new List<VideoFrame>();
+
+    public static Specification<Video> WithExternalId(string externalId) =>
+        new(video => video.ExternalId == externalId);
 }
