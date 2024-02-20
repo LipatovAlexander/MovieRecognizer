@@ -21,4 +21,10 @@ public class FileStorage(IAmazonS3 amazonS3, IOptionsMonitor<FileStorageSettings
 
         await _amazonS3.PutObjectAsync(request, cancellationToken);
     }
+
+    public Uri GetPublicUrl(string key)
+    {
+        return new Uri(
+            $"https://{_fileStorageSettings.CurrentValue.PublicDomain}/{_fileStorageSettings.CurrentValue.BucketName}/{key}");
+    }
 }

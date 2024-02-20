@@ -8,4 +8,7 @@ public class FileStorageSettings
 
     [Required]
     public required string BucketName { get; set; }
+
+    [Required]
+    public required string PublicDomain { get; set; }
 }

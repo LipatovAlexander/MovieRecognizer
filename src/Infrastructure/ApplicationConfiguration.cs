@@ -44,7 +44,7 @@ public static class ApplicationConfiguration
         }
     }
 
-    public static void AddApplicationServices(this IServiceCollection services)
+    public static void AddApplicationServices(this IServiceCollection services, IHostEnvironment environment)
     {
         services.AddSingleton(new YoutubeClient());
         services.AddScoped<IVideoService, VideoService>();
@@ -56,5 +56,10 @@ public static class ApplicationConfiguration
             .ValidateOnStart();
         
         services.AddSingleton<IFileStorage, FileStorage>();
+
+        if (environment.IsDevelopment())
+        {
+            services.AddHostedService<NgrokBackgroundService>();
+        }
     }
 }
