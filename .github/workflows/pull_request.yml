@@ -3,12 +3,8 @@ name: .NET
 on:
   push:
     branches: [ "master" ]
-    paths:
-      - 'movie-recognizer/**'
   pull_request:
     branches: [ "master" ]
-    paths:
-      - 'movie-recognizer/**'
 
 jobs:
   build:
