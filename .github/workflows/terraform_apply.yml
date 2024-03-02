@@ -48,3 +48,6 @@ jobs:
         backend_config: |
           access_key=${{ secrets.YC_SA_ACCESS_KEY }}
           secret_key=${{ secrets.YC_SA_SECRET_KEY }}
+        variables: |
+          deployer_access_key = "${{ secrets.YC_SA_ACCESS_KEY }}"
+          deployer_secret_key = "${{ secrets.YC_SA_SECRET_KEY }}"
