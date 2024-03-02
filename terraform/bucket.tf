@@ -3,7 +3,7 @@ locals {
 }
 
 resource "yandex_storage_bucket" "bucket" {
-  bucket = locals.bucket_name
+  bucket = local.bucket_name
   access_key = var.deployer_access_key
   secret_key = var.deployer_secret_key
 
@@ -15,8 +15,8 @@ resource "yandex_storage_bucket" "bucket" {
 }
 
 resource "yandex_iam_service_account" "sa_bucket" {
-  name        = "${locals.bucket_name}-sa"
-  description = "Service account to manage ${locals.bucket_name}"
+  name        = "${local.bucket_name}-sa"
+  description = "Service account to manage ${local.bucket_name}"
 }
 
 resource "yandex_iam_service_account_static_access_key" "sa_key_bucket" {
