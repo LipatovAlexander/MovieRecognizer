@@ -6,8 +6,15 @@ public class FileStorageSettings
 {
     public const string SectionName = "FileStorage";
 
-    public string? ServiceUrl { get; set; }
+    [Required]
+    public required string ServiceUrl { get; set; }
     
     [Required]
     public required string BucketName { get; set; }
+    
+    [Required]
+    public required string AccessKey { get; set; }
+    
+    [Required]
+    public required string SecretKey { get; set; }
 }
