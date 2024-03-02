@@ -23,7 +23,6 @@ terraform {
 }
 
 provider "yandex" {
-  profile = "terraform"
   zone = "ru-central1-a"
 }
 
