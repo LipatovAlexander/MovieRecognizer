@@ -1,7 +1,7 @@
-name: Terraform plan
+name: Terraform apply
 
 on:
-  pull_request:
+  push:
     branches: [ "master" ]
 
 permissions:
@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  plan:
+  apply:
 
     runs-on: ubuntu-latest
     env:
@@ -41,8 +41,8 @@ jobs:
         echo "YC_CLOUD_ID=$(yc config get cloud-id)" >> $GITHUB_ENV
         echo "YC_FOLDER_ID=$(yc config get folder-id)" >> $GITHUB_ENV
 
-    - name: Terraform plan
-      uses: dflook/terraform-plan@v1
+    - name: Terraform apply
+      uses: dflook/terraform-apply@v1
       with:
         path: terraform
         backend_config: |
