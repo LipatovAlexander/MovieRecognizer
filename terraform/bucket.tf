@@ -12,6 +12,11 @@ resource "yandex_storage_bucket" "bucket" {
     type        = "CanonicalUser"
     permissions = ["READ", "WRITE"]
   }
+
+  anonymous_access_flags {
+    read = true
+    list = false
+  }
 }
 
 resource "yandex_iam_service_account" "sa_bucket" {
