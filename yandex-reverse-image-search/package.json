@@ -1,0 +1,14 @@
+{
+  "name": "yandex-reverse-image-search",
+  "version": "0.0.1",
+  "type": "module",
+  "dependencies": {
+    "crawlee": "^3.0.0"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "devDependencies": {
+    "prettier": "3.2.5"
+  }
+}
