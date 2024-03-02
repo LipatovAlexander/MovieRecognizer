@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
+  plan:
 
     runs-on: ubuntu-latest
     env:
@@ -24,7 +24,10 @@ jobs:
 
     - run: yc config profile create terraform
 
-    - run: echo "${{ secrets.YC_SA_JSON_CREDENTIALS }}" > key.json
+    - run: echo "$YC_SA_JSON_CREDENTIALS" > key.json
+      env:
+        YC_SA_JSON_CREDENTIALS: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
     - run: |
         yc config set service-account-key key.json
         yc config set cloud-id ${{ secrets.YC_CLOUD_ID }}
