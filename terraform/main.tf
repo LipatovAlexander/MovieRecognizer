@@ -27,5 +27,5 @@ provider "yandex" {
 }
 
 resource "yandex_storage_bucket" "test" {
-  bucket = "movie-recognizer-test"
+  bucket = "movie-recognizer"
 }
