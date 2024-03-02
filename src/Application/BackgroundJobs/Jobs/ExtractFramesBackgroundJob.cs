@@ -3,7 +3,6 @@ using Application.Videos;
 using Domain;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using File = Domain.Entities.File;
 
 namespace Application.BackgroundJobs.Jobs;
 
@@ -48,10 +47,7 @@ public class ExtractFramesBackgroundJob(
             using var snapshot = await _videoConverter.SnapshotAsync(videoFile, timestamp, cancellationToken);
             await _fileStorage.UploadAsync(snapshot, snapshot.FileName, cancellationToken);
             
-            var videoFrame = new VideoFrame(timestamp)
-            {
-                File = new File(snapshot.FileName)
-            };
+            var videoFrame = new VideoFrame(snapshot.FileName, timestamp);
             
             video.VideoFrames.Add(videoFrame);
             _dbContext.VideoFrames.Add(videoFrame);

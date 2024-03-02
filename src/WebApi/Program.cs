@@ -16,7 +16,7 @@ builder.AddApplicationDbContext();
 services.AddBackgroundJobs();
 services.AddHangfireServer();
 
-services.AddAmazonS3Client();
+services.AddAmazonS3Client(builder.Configuration);
 services.AddApplicationServices(builder.Environment);
 
 services.AddValidator<CreateMovieRecognitionRequest, CreateMovieRecognitionRequestValidator>();

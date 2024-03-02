@@ -10,8 +10,8 @@ public static class VideoFrameMapper
         return new VideoFrameDto
         {
             Id = videoFrame.Id,
-            Timestamp = videoFrame.Timestamp,
-            File = videoFrame.File.ToDto()
+            ExternalId = videoFrame.ExternalId,
+            Timestamp = videoFrame.Timestamp
         };
     }
 }

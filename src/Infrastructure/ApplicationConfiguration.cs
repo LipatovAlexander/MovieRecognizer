@@ -4,6 +4,7 @@ using Application.Files;
 using Application.Videos;
 using Infrastructure.Files;
 using Infrastructure.Videos;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using YoutubeExplode;
@@ -26,10 +27,10 @@ public static class ApplicationConfiguration
         builder.Services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
     }
 
-    public static void AddAmazonS3Client(this IServiceCollection services)
+    public static void AddAmazonS3Client(this IServiceCollection services, IConfiguration configuration)
     {
-        var serviceUrl = Environment.GetEnvironmentVariable("AWS_SERVICE_URL");
-
+        var serviceUrl = configuration.GetRequiredSection(FileStorageSettings.SectionName)["ServiceUrl"];
+        
         if (serviceUrl is null)
         {
             services.AddAWSService<IAmazonS3>();
@@ -38,8 +39,7 @@ public static class ApplicationConfiguration
         {
             services.AddSingleton<IAmazonS3>(new AmazonS3Client(new AmazonS3Config
             {
-                ServiceURL = serviceUrl,
-                ForcePathStyle = true
+                ServiceURL = serviceUrl
             }));
         }
     }
@@ -56,10 +56,5 @@ public static class ApplicationConfiguration
             .ValidateOnStart();
         
         services.AddSingleton<IFileStorage, FileStorage>();
-
-        if (environment.IsDevelopment())
-        {
-            services.AddHostedService<NgrokBackgroundService>();
-        }
     }
 }

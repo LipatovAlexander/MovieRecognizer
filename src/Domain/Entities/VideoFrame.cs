@@ -1,8 +1,8 @@
 namespace Domain.Entities;
 
-public class VideoFrame(TimeSpan timestamp) : BaseEntity
+public class VideoFrame(string externalId, TimeSpan timestamp) : BaseEntity
 {
     public TimeSpan Timestamp { get; set; } = timestamp;
 
-    public required File File { get; set; }
+    public string ExternalId { get; set; } = externalId;
 }

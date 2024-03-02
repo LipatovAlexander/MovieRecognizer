@@ -23,7 +23,6 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
         var recognitionRequest = await dbContext.MovieRecognitions
             .Include(movieRecognition => movieRecognition.Video)
             .ThenInclude(video => video!.VideoFrames)
-            .ThenInclude(frame => frame.File)
             .Include(movieRecognition => movieRecognition.Movie)
             .Include(movieRecognition => movieRecognition.Jobs)
             .ThenInclude(job => job.ParentJob)
