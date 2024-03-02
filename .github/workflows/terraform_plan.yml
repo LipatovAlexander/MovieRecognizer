@@ -3,6 +3,10 @@ name: Terraform plan
 on:
   pull_request:
     branches: [ "master" ]
+    paths:
+      - '.github/terraform_apply.yml'
+      - '.github/terraform_plan.yml'
+      - 'terraform/**'
 
 permissions:
   contents: read
