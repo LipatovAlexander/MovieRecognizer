@@ -8,7 +8,7 @@ resource "yandex_function" "yandex-reverse-image-search" {
   name               = "yandex-reverse-image-search"
   user_hash          = data.archive_file.yandex-reverse-image-search.output_sha256
   runtime            = "nodejs18"
-  entrypoint         = "function.handler"
+  entrypoint         = "src/function.handler"
   memory             = "128"
   execution_timeout  = "10"
   content {
