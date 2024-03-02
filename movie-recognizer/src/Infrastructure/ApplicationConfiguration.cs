@@ -1,3 +1,4 @@
+using Amazon.Runtime;
 using Amazon.S3;
 using Application;
 using Application.Files;
@@ -29,19 +30,18 @@ public static class ApplicationConfiguration
 
     public static void AddAmazonS3Client(this IServiceCollection services, IConfiguration configuration)
     {
-        var serviceUrl = configuration.GetRequiredSection(FileStorageSettings.SectionName)["ServiceUrl"];
-        
-        if (serviceUrl is null)
+        var settings = configuration
+            .GetRequiredSection(FileStorageSettings.SectionName)
+            .Get<FileStorageSettings>()!;
+
+        var credentials = new BasicAWSCredentials(settings.AccessKey, settings.SecretKey);
+
+        var config = new AmazonS3Config
         {
-            services.AddAWSService<IAmazonS3>();
-        }
-        else
-        {
-            services.AddSingleton<IAmazonS3>(new AmazonS3Client(new AmazonS3Config
-            {
-                ServiceURL = serviceUrl
-            }));
-        }
+            ServiceURL = settings.ServiceUrl
+        };
+
+        services.AddSingleton<IAmazonS3>(new AmazonS3Client(credentials, config));
     }
 
     public static void AddApplicationServices(this IServiceCollection services, IHostEnvironment environment)
