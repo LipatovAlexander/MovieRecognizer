@@ -9,7 +9,7 @@ const handler = async function (event, context) {
   return {
     statusCode: 200,
     headers: {
-      "Content-Type": "text/plain",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(result),
   };
