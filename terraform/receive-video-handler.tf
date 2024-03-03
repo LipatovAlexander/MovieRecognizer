@@ -52,6 +52,7 @@ resource "yandex_function_trigger" "receive-video-handler-trigger" {
   }
   function {
     id = yandex_function.receive-video-handler.id
+    service_account_id = yandex_iam_service_account.receive-video-handler-trigger-sa.id
   }
 }
 
