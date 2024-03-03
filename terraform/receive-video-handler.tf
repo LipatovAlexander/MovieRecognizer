@@ -40,7 +40,7 @@ resource "yandex_message_queue" "receive-video-handler-deadletter-queue" {
 resource "yandex_function_trigger" "receive-video-handler-trigger" {
   name        = "receive-video-handler-trigger"
   message_queue {
-    queue_id           = yandex_message_queue.receive-video-handler-queue.id
+    queue_id           = yandex_message_queue.receive-video-handler-queue.arn
     service_account_id = yandex_iam_service_account.receive-video-handler-trigger-sa.id
     batch_size         = "1"
     batch_cutoff       = "0"
