@@ -3,12 +3,8 @@ name: .NET
 on:
   push:
     branches: [ "master" ]
-    paths:
-      - 'docs/**'
   pull_request:
     branches: [ "master" ]
-    paths:
-      - 'docs/**'
 
 jobs:
   render_docs:
