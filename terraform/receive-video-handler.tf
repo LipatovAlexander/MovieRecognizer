@@ -21,6 +21,9 @@ resource "yandex_message_queue" "receive-video-handler-queue" {
   visibility_timeout_seconds  = 10
   message_retention_seconds   = 1209600
 
+  access_key = var.deployer_access_key
+  secret_key = var.deployer_secret_key
+
   redrive_policy              = jsonencode({
     deadLetterTargetArn = yandex_message_queue.receive-video-handler-deadletter-queue.arn
     maxReceiveCount     = 5
@@ -29,4 +32,7 @@ resource "yandex_message_queue" "receive-video-handler-queue" {
 
 resource "yandex_message_queue" "receive-video-handler-deadletter-queue" {
   name                        = "receive-video-handler-deadletter-queue"
+
+  access_key = var.deployer_access_key
+  secret_key = var.deployer_secret_key
 }
