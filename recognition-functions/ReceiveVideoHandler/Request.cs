@@ -1,6 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace ReceiveVideoHandler;
 
-public class Request {
-    public string httpMethod { get; set; }
-    public string body { get; set; }
+public class Request
+{
+    [JsonPropertyName("httpMethod")]
+    public required string HttpMethod { get; set; }
+
+    [JsonPropertyName("body")]
+    public required string Body { get; set; }
 }
