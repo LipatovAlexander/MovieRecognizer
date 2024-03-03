@@ -51,7 +51,7 @@ resource "yandex_function_trigger" "receive-video-handler-trigger" {
 }
 
 resource "yandex_iam_service_account" "receive-video-handler-trigger-sa" {
-  name        = "receive-video-handler-sa"
+  name        = "receive-video-handler-trigger-sa"
 }
 
 resource "yandex_resourcemanager_folder_iam_member" "receive-video-handler-trigger-editor" {
