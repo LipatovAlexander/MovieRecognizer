@@ -41,6 +41,15 @@ jobs:
         echo "YC_CLOUD_ID=$(yc config get cloud-id)" >> $GITHUB_ENV
         echo "YC_FOLDER_ID=$(yc config get folder-id)" >> $GITHUB_ENV
 
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Publish ReceiveVideoHandler
+      run: |
+        dotnet publish recognition-functions/ReceiveVideoHandler/ReceiveVideoHandler.csproj -o receive-video-handler
+
     - name: Terraform apply
       uses: dflook/terraform-apply@v1
       with:
