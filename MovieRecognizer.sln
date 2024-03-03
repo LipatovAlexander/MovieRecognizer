@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DD019AB4-8
 	ProjectSection(SolutionItems) = preProject
 		docs\MovieRecognizer.drawio = docs\MovieRecognizer.drawio
 		docs\MovieRecognizer.png = docs\MovieRecognizer.png
+		..\docs\Architecture.drawio = docs\Architecture.drawio
+		..\docs\Architecture.png = docs\Architecture.png
 	EndProjectSection
 EndProject
 Global

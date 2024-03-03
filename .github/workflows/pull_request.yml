@@ -22,15 +22,12 @@ jobs:
         dotnet workload update
         dotnet workload install aspire
     - name: Restore dependencies
-      working-directory: movie-recognizer
       run: dotnet restore
     - name: Build
-      working-directory: movie-recognizer
       run: dotnet build --no-restore
 #    - name: Set secrets
 #      run: |
 #        cd src/Services/Movies/Movies.API
 #        dotnet user-secrets set "OMDb:ApiKey" "${{ secrets.OMDB_API_KEY }}"
     - name: Test
-      working-directory: movie-recognizer
       run: dotnet test --no-build --verbosity normal
