@@ -4,6 +4,10 @@ data "archive_file" "receive-video-handler" {
   output_path = "${path.module}/receive-video-handler.zip"
 }
 
+resource "yandex_iam_service_account" "receive-video-handler-sa" {
+  name        = "receive-video-handler-sa"
+}
+
 resource "yandex_function" "receive-video-handler" {
   name               = "receive-video-handler"
   user_hash          = data.archive_file.receive-video-handler.output_sha256
@@ -14,6 +18,7 @@ resource "yandex_function" "receive-video-handler" {
   content {
     zip_filename = data.archive_file.receive-video-handler.output_path
   }
+  service_account_id = yandex_iam_service_account.receive-video-handler-sa.id
 }
 
 resource "yandex_message_queue" "receive-video-handler-queue" {
