@@ -7,3 +7,7 @@ variable deployer_secret_key {
     type = string
     sensitive = true
 }
+
+variable folder_id {
+    type = string
+}

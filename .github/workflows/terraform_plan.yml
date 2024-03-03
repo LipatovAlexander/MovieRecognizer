@@ -60,3 +60,4 @@ jobs:
         variables: |
           deployer_access_key = "${{ secrets.YC_SA_ACCESS_KEY }}"
           deployer_secret_key = "${{ secrets.YC_SA_SECRET_KEY }}"
+          folder_id = "${{ secrets.YC_FOLDER_ID }}"
