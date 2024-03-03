@@ -15,3 +15,18 @@ resource "yandex_function" "receive-video-handler" {
     zip_filename = data.archive_file.receive-video-handler.output_path
   }
 }
+
+resource "yandex_message_queue" "receive-video-handler-queue" {
+  name                        = "receive-video-handler-queue"
+  visibility_timeout_seconds  = 10
+  message_retention_seconds   = 1209600
+
+  redrive_policy              = jsonencode({
+    deadLetterTargetArn = yandex_message_queue.receive-video-handler-deadletter-queue.arn
+    maxReceiveCount     = 5
+  })
+}
+
+resource "yandex_message_queue" "receive-video-handler-deadletter-queue" {
+  name                        = "receive-video-handler-deadletter-queue"
+}
