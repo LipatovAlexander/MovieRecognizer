@@ -6,7 +6,7 @@ data "archive_file" "receive-video-handler" {
 
 resource "yandex_function" "receive-video-handler" {
   name               = "receive-video-handler"
-  user_hash          = data.archive_file.receive-video-handler.output_sha256
+  user_hash          = data.archive_file.receive-video-handler.output_size
   runtime            = "dotnet8"
   entrypoint         = "ReceiveVideoHandler.Handler"
   memory             = "128"
