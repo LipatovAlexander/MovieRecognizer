@@ -4,11 +4,11 @@ data "archive_file" "receive-video-handler" {
   output_path = "${path.module}/receive-video-handler.zip"
 }
 
-resource "yandex_function" "yandex-reverse-image-search" {
+resource "yandex_function" "receive-video-handler" {
   name               = "receive-video-handler"
   user_hash          = data.archive_file.receive-video-handler.output_sha256
-  runtime            = "nodejs18"
-  entrypoint         = "src/function.handler"
+  runtime            = "dotnet8"
+  entrypoint         = "ReceiveVideoHandler.Handler"
   memory             = "128"
   execution_timeout  = "10"
   content {
