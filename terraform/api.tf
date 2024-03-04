@@ -7,6 +7,6 @@ resource "yandex_serverless_container" "test-container" {
   memory             = 128
   service_account_id = yandex_iam_service_account.api-sa.id
   image {
-    url = "https://hub.docker.com/r/${var.docker_username}/${var.docker_api_repository}:${var.github_sha}"
+    url = "cr.yandex/${var.api_registry}/${var.api_repository}:${var.github_sha}"
   }
 }
