@@ -12,11 +12,11 @@ variable folder_id {
     type = string
 }
 
-variable docker_username {
+variable api_registry {
     type = string
 }
 
-variable docker_api_repository {
+variable api_repository {
     type = string
 }
 
