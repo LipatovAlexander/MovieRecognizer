@@ -79,3 +79,10 @@ jobs:
           github_sha = "${{ github.sha }}"
           api_registry = "crpoec718rf5704ehe0c"
           api_repository = "api"
+      
+    - name: Remove Docker image
+      env:
+        CR_REGISTRY: crpoec718rf5704ehe0c
+        CR_REPOSITORY: api
+        IMAGE_TAG: ${{ github.sha }}
+      run: docker rmi cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
