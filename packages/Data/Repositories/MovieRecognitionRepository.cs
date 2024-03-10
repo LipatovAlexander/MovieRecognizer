@@ -5,12 +5,6 @@ using Ydb.Sdk.Value;
 
 namespace Data.Repositories;
 
-public interface IMovieRecognitionRepository
-{
-    Task<MovieRecognition?> GetAsync(Guid id);
-    Task SaveAsync(MovieRecognition movieRecognition);
-}
-
 public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMovieRecognitionRepository
 {
     private readonly IYandexDbService _yandexDbService = yandexDbService;
