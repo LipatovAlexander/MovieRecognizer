@@ -29,7 +29,7 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
                                      video_url,
                                      created_at,
                                      status
-                                 FROM movie-recognition
+                                 FROM `movie-recognition`
                                  WHERE id = $id;
                                  """;
 
@@ -77,7 +77,7 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
                                  DECLARE $created_at AS Datetime;
                                  DECLARE $status AS Utf8;
 
-                                 INSERT INTO movie-recognition(id, video_url, created_at, status)
+                                 INSERT INTO `movie-recognition`(id, video_url, created_at, status)
                                  VALUES ($id, $video_url, $created_at, $status);
                                  """;
 
