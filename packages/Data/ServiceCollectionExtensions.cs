@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
         {
             builder.AddRetry(new RetryStrategyOptions
                 {
-                    MaxRetryAttempts = 5,
+                    MaxRetryAttempts = 3,
                     DelayGenerator = static args =>
                     {
                         var delay = args.AttemptNumber switch
@@ -50,7 +50,7 @@ public static class ServiceCollectionExtensions
         {
             builder.AddRetry(new RetryStrategyOptions
                 {
-                    MaxRetryAttempts = 5,
+                    MaxRetryAttempts = 3,
                     DelayGenerator = static args =>
                     {
                         var delay = args.AttemptNumber switch
@@ -86,7 +86,5 @@ public static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         services.AddSingleton<IYandexDbService, YandexDbService>();
-
-        services.AddHostedService<YandexDbServiceInitializer>();
     }
 }
