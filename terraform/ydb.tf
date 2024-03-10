@@ -24,7 +24,7 @@ resource "yandex_ydb_table" "movie-recognition" {
 
   column {
     name     = "id"
-    type     = "Int32"
+    type     = "Utf8"
     not_null = true
   }
   column {

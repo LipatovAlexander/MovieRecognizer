@@ -1,4 +1,4 @@
-﻿namespace Api.ApiResponses;
+﻿namespace Api.Infrastructure.ApiResponses;
 
 public static class Responses
 {

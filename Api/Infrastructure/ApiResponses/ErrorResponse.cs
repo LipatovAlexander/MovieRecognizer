@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Api.ApiResponses;
+namespace Api.Infrastructure.ApiResponses;
 
 public class ErrorResponse(string code, string[]? details) : Response(false)
 {

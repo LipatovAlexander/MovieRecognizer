@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Api.Middlewares;
+using Api.Infrastructure.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 

@@ -1,4 +1,4 @@
-﻿using Api.Validation;
+﻿using Api.Infrastructure.Validation;
 using Microsoft.AspNetCore.Http;
 
 // ReSharper disable once CheckNamespace

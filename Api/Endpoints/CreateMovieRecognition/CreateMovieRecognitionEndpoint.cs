@@ -1,23 +1,32 @@
-using Api.ApiResponses;
+using Api.Infrastructure;
+using Api.Infrastructure.ApiResponses;
+using Api.Infrastructure.Validation;
+using Api.Mappers;
 using Api.Models;
-using Api.Validation;
+using Data.Repositories;
+using Domain;
 
 namespace Api.Endpoints.CreateMovieRecognition;
 
 public class CreateMovieRecognitionEndpoint : IEndpoint<
     SuccessResponse<MovieRecognitionDto>,
-    CreateMovieRecognitionRequest>
+    CreateMovieRecognitionRequest,
+    IMovieRecognitionRepository>
 {
     public static async Task<SuccessResponse<MovieRecognitionDto>> HandleAsync(
         [AsParameters, Validate] CreateMovieRecognitionRequest request,
+        IMovieRecognitionRepository repository,
         CancellationToken cancellationToken)
     {
-        return Responses.Success(new MovieRecognitionDto
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTimeOffset.UtcNow,
-            VideoUrl = request.VideoUrl
-        });
+        var movieRecognition = new MovieRecognition(
+            Guid.NewGuid(),
+            request.VideoUrl,
+            MovieRecognitionStatus.Created,
+            DateTime.UtcNow);
+
+        await repository.SaveAsync(movieRecognition);
+
+        return Responses.Success(movieRecognition.ToDto());
     }
 
     public static void AddRoute(IEndpointRouteBuilder builder)
