@@ -1,3 +1,5 @@
+using Domain;
+
 namespace Api.Models;
 
 public class MovieRecognitionDto
@@ -6,5 +8,7 @@ public class MovieRecognitionDto
     
     public required Uri VideoUrl { get; set; }
 
-    public required DateTimeOffset CreatedAt { get; set; }
+    public required DateTime CreatedAt { get; set; }
+
+    public required MovieRecognitionStatus Status { get; set; }
 }

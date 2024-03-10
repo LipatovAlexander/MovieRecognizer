@@ -1,4 +1,4 @@
-﻿namespace Api.ApiResponses;
+﻿namespace Api.Infrastructure.ApiResponses;
 
 public abstract class Response(bool ok)
 {

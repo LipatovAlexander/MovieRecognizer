@@ -1,6 +1,6 @@
-﻿using Api.ApiResponses;
+﻿using Api.Infrastructure.ApiResponses;
 
-namespace Api.Middlewares;
+namespace Api.Infrastructure.Middlewares;
 
 public sealed class HttpExceptionHandler(RequestDelegate next, ILogger<HttpExceptionHandler> logger)
 {

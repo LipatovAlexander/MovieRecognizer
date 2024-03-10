@@ -1,23 +1,30 @@
-using Api.ApiResponses;
+using Api.Infrastructure;
+using Api.Infrastructure.ApiResponses;
+using Api.Mappers;
 using Api.Models;
+using Data.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Endpoints.GetMovieRecognition;
 
 public class GetMovieRecognitionEndpoint : IEndpoint<
     Results<Ok<SuccessResponse<MovieRecognitionDto>>, NotFound<ErrorResponse>>,
-    GetMovieRecognitionRequest>
+    GetMovieRecognitionRequest,
+    IMovieRecognitionRepository>
 {
     public static async Task<Results<Ok<SuccessResponse<MovieRecognitionDto>>, NotFound<ErrorResponse>>> HandleAsync(
         [AsParameters] GetMovieRecognitionRequest request,
+        IMovieRecognitionRepository repository,
         CancellationToken cancellationToken)
     {
-        return TypedResults.Ok(Responses.Success(new MovieRecognitionDto
+        var movieRecognition = await repository.GetAsync(request.Id);
+
+        if (movieRecognition is null)
         {
-            Id = request.Id,
-            CreatedAt = DateTimeOffset.UtcNow,
-            VideoUrl = new Uri("https://example.com")
-        }));
+            return TypedResults.NotFound(Responses.Error(CommonErrorCodes.NotFound));
+        }
+
+        return TypedResults.Ok(Responses.Success(movieRecognition.ToDto()));
     }
 
     public static void AddRoute(IEndpointRouteBuilder builder)

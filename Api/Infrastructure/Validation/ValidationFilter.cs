@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using Api.ApiResponses;
+using Api.Infrastructure.ApiResponses;
 using FluentValidation;
 
-namespace Api.Validation;
+namespace Api.Infrastructure.Validation;
 
 [AttributeUsage(AttributeTargets.Parameter)]
 public sealed class ValidateAttribute : Attribute;
