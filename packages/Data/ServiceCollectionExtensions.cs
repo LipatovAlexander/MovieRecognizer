@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
         {
             builder.AddRetry(new RetryStrategyOptions
                 {
-                    MaxRetryAttempts = 3,
+                    MaxRetryAttempts = 5,
                     DelayGenerator = static args =>
                     {
                         var delay = args.AttemptNumber switch
@@ -50,7 +50,7 @@ public static class ServiceCollectionExtensions
         {
             builder.AddRetry(new RetryStrategyOptions
                 {
-                    MaxRetryAttempts = 3,
+                    MaxRetryAttempts = 5,
                     DelayGenerator = static args =>
                     {
                         var delay = args.AttemptNumber switch
