@@ -9,6 +9,15 @@ resource "yandex_ydb_database_serverless" "main-db" {
   }
 }
 
+resource "yandex_ydb_database_iam_binding" "api-editor" {
+  database_id = yandex_ydb_database_serverless.main-db.id
+  role        = "ydb.editor"
+
+  members = [
+    "serviceAccount:${yandex_iam_service_account.api-sa.id}",
+  ]
+}
+
 resource "yandex_ydb_table" "movie-recognition" {
   path              = "movie-recognition"
   connection_string = yandex_ydb_database_serverless.main-db.ydb_full_endpoint
