@@ -18,7 +18,7 @@ resource "yandex_serverless_container" "test-container" {
   image {
     url = "cr.yandex/${var.api_registry}/${var.api_repository}:${var.github_sha}"
     environment = {
-      YDB_ENDPOINT      = yandex_ydb_database_serverless.main-db.ydb_full_endpoint
+      YDB_ENDPOINT      = yandex_ydb_database_serverless.main-db.ydb_api_endpoint
       YDB_DATABASE_PATH = yandex_ydb_database_serverless.main-db.database_path
     }
   }
