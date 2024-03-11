@@ -1,4 +1,3 @@
-using Amazon;
 using Amazon.SQS;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +23,7 @@ public static class ServiceCollectionExtensions
             return new AmazonSQSClient(new AmazonSQSConfig
             {
                 ServiceURL = serviceUrl,
-                RegionEndpoint = RegionEndpoint.GetBySystemName(regionEndpoint)
+                AuthenticationRegion = regionEndpoint
             });
         });
 
