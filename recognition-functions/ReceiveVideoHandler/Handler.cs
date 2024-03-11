@@ -1,10 +1,15 @@
+using CloudFunctions;
+using CloudFunctions.MessageQueue;
+
 namespace ReceiveVideoHandler;
 
-public class Handler
+public class Handler : IHandler<MessageQueueEvent>
 {
-    public async Task<Response> FunctionHandler(Request request)
+    public async Task FunctionHandler(MessageQueueEvent messageQueueEvent)
     {
-        Console.WriteLine(request.Body);
-        return new Response(200, "Hello, world!", "application/json");
+        foreach (var message in messageQueueEvent.Messages)
+        {
+            Console.WriteLine(message.Details.Message.Body);
+        }
     }
 }
