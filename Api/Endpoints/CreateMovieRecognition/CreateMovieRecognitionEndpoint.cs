@@ -5,17 +5,21 @@ using Api.Mappers;
 using Api.Models;
 using Data.Repositories;
 using Domain;
+using MessageQueue;
+using MessageQueue.Messages;
 
 namespace Api.Endpoints.CreateMovieRecognition;
 
 public class CreateMovieRecognitionEndpoint : IEndpoint<
     SuccessResponse<MovieRecognitionDto>,
     CreateMovieRecognitionRequest,
-    IMovieRecognitionRepository>
+    IMovieRecognitionRepository,
+    IMessageQueueClient>
 {
     public static async Task<SuccessResponse<MovieRecognitionDto>> HandleAsync(
         [AsParameters, Validate] CreateMovieRecognitionRequest request,
         IMovieRecognitionRepository repository,
+        IMessageQueueClient messageQueueClient,
         CancellationToken cancellationToken)
     {
         var movieRecognition = new MovieRecognition(
@@ -25,6 +29,8 @@ public class CreateMovieRecognitionEndpoint : IEndpoint<
             DateTime.UtcNow);
 
         await repository.SaveAsync(movieRecognition);
+
+        await messageQueueClient.SendAsync(new ReceiveVideoMessage(movieRecognition.Id), cancellationToken);
 
         return Responses.Success(movieRecognition.ToDto());
     }

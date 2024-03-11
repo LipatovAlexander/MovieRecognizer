@@ -1,5 +1,6 @@
 using CloudFunctions;
 using CloudFunctions.MessageQueue;
+using MessageQueue.Messages;
 
 namespace ReceiveVideoHandler;
 
@@ -7,9 +8,11 @@ public class Handler : IHandler<MessageQueueEvent>
 {
     public async Task FunctionHandler(MessageQueueEvent messageQueueEvent)
     {
-        foreach (var message in messageQueueEvent.Messages)
+        var messages = messageQueueEvent.GetMessages<ReceiveVideoMessage>();
+
+        foreach (var message in messages)
         {
-            Console.WriteLine(message.Details.Message.Body);
+            Console.WriteLine($"MovieRecognitionId: {message.MovieRecognitionId}");
         }
     }
 }

@@ -21,6 +21,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\packages\Data\Data.csproj"/>
+        <ProjectReference Include="..\packages\MessageQueue\MessageQueue.csproj"/>
     </ItemGroup>
 
 </Project>
