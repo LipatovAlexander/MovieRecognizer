@@ -1,3 +1,4 @@
+using Amazon;
 using Amazon.SQS;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,13 +12,19 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IAmazonSQS>(sp =>
         {
             var configuration = sp.GetRequiredService<IConfiguration>();
+
             var serviceUrl = configuration["AWS_SQS_SERVICE_URL"]
                              ?? throw new InvalidOperationException(
                                  "Required configuration AWS_SQS_SERVICE_URL not found");
 
+            var regionEndpoint = configuration["AWS_DEFAULT_REGION"]
+                                 ?? throw new InvalidOperationException(
+                                     "Required configuration AWS_DEFAULT_REGION not found");
+
             return new AmazonSQSClient(new AmazonSQSConfig
             {
-                ServiceURL = serviceUrl
+                ServiceURL = serviceUrl,
+                RegionEndpoint = RegionEndpoint.GetBySystemName(regionEndpoint)
             });
         });
 
