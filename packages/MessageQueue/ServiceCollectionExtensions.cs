@@ -1,4 +1,3 @@
-using Amazon;
 using Amazon.SQS;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
