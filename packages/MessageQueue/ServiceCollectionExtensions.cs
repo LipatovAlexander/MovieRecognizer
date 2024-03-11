@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
             return new AmazonSQSClient(new AmazonSQSConfig
             {
                 ServiceURL = serviceUrl,
-                RegionEndpoint = RegionEndpoint.GetBySystemName(regionEndpoint)
+                AuthenticationRegion = regionEndpoint
             });
         });
 
