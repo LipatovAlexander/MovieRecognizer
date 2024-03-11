@@ -12,7 +12,7 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
     public async Task<MovieRecognition?> GetAsync(Guid id)
     {
         using var tableClient = _yandexDbService.GetTableClient();
-
+        
         var response = await tableClient.SessionExec(async session =>
         {
             const string query = """

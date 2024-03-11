@@ -12,9 +12,6 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2"/>
         <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0"/>
-        <PackageReference Include="Polly" Version="8.3.1"/>
-        <PackageReference Include="Polly.Extensions" Version="8.3.1"/>
-        <PackageReference Include="Scrutor" Version="4.2.2"/>
         <PackageReference Include="Ydb.Sdk" Version="0.2.0"/>
         <PackageReference Include="Ydb.Sdk.Yc.Auth" Version="0.0.5"/>
     </ItemGroup>
