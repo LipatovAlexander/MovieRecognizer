@@ -8,6 +8,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\packages\CloudFunctions\CloudFunctions.csproj"/>
+        <ProjectReference Include="..\..\packages\Data\Data.csproj"/>
+        <ProjectReference Include="..\..\packages\MessageQueue\MessageQueue.csproj"/>
     </ItemGroup>
 
 </Project>
