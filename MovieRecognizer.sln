@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudFunctions", "packages\CloudFunctions\CloudFunctions.csproj", "{0A39CD2D-4B9E-467B-A80F-B47DCD4C582C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageQueue", "packages\MessageQueue\MessageQueue.csproj", "{B9068584-3A64-4660-BFC3-0267B053F6B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,7 @@ Global
 		{55ECAF08-CE2B-483E-B92A-6CC6BD9674E1} = {ACA6A923-BD1B-4C75-932B-52CC84FDB528}
 		{3B32B140-D044-4825-8755-BCADCAD950AE} = {9CA4F8B0-4DBA-4B06-80E9-C1477C3C88FD}
 		{0A39CD2D-4B9E-467B-A80F-B47DCD4C582C} = {9CA4F8B0-4DBA-4B06-80E9-C1477C3C88FD}
+		{B9068584-3A64-4660-BFC3-0267B053F6B0} = {9CA4F8B0-4DBA-4B06-80E9-C1477C3C88FD}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D85B80D9-5E07-4F54-BF81-BAE7C4DEDB7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -98,5 +101,9 @@ Global
 		{0A39CD2D-4B9E-467B-A80F-B47DCD4C582C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A39CD2D-4B9E-467B-A80F-B47DCD4C582C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A39CD2D-4B9E-467B-A80F-B47DCD4C582C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9068584-3A64-4660-BFC3-0267B053F6B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9068584-3A64-4660-BFC3-0267B053F6B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9068584-3A64-4660-BFC3-0267B053F6B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9068584-3A64-4660-BFC3-0267B053F6B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

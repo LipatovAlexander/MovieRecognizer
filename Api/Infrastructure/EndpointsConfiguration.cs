@@ -1,5 +1,4 @@
-﻿using Api.Endpoints;
-using Api.Infrastructure;
+﻿using Api.Infrastructure;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.AspNetCore.Routing;
