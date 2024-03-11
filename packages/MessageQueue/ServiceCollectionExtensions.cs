@@ -1,4 +1,3 @@
-using Amazon.Runtime.Endpoints;
 using Amazon.SQS;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,12 +11,13 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IAmazonSQS>(sp =>
         {
             var configuration = sp.GetRequiredService<IConfiguration>();
-            var endpoint = configuration["AWS_SQS_ENDPOINT"]
-                           ?? throw new InvalidOperationException("Required configuration AWS_SQS_ENDPOINT not found");
+            var serviceUrl = configuration["AWS_SQS_SERVICE_URL"]
+                             ?? throw new InvalidOperationException(
+                                 "Required configuration AWS_SQS_SERVICE_URL not found");
 
             return new AmazonSQSClient(new AmazonSQSConfig
             {
-                EndpointProvider = new StaticEndpointProvider(endpoint)
+                ServiceURL = serviceUrl
             });
         });
 
