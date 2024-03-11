@@ -33,7 +33,7 @@ resource "yandex_serverless_container" "test-container" {
       AWS_ACCESS_KEY_ID     = yandex_iam_service_account_static_access_key.api-sa-key.access_key
       AWS_SECRET_ACCESS_KEY = yandex_iam_service_account_static_access_key.api-sa-key.secret_key
       AWS_DEFAULT_REGION    = "ru-central1"
-      AWS_SQS_ENDPOINT      = "https://message-queue.api.cloud.yandex.net"
+      AWS_SQS_SERVICE_URL   = "https://message-queue.api.cloud.yandex.net"
       RECEIVE_VIDEO_QUEUE   = yandex_message_queue.receive-video-handler-queue.id
     }
   }
