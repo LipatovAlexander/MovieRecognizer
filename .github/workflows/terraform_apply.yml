@@ -15,68 +15,79 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Install YC CLI
-      run: |
-        curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | \
-        bash -s -- -i /opt/yc -n
-        echo "/opt/yc/bin" >> $GITHUB_PATH
+      - name: Install YC CLI
+        run: |
+          curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | \
+          bash -s -- -i /opt/yc -n
+          echo "/opt/yc/bin" >> $GITHUB_PATH
 
-    - name: Configure YC CLI
-      run: |
-        yc config profile create default
-        echo "$YC_SA_JSON_CREDENTIALS" > key.json
-        yc config set service-account-key key.json
-        yc config set cloud-id "$YC_CLOUD_ID"
-        yc config set folder-id "$YC_FOLDER_ID"
-      env:
-        YC_SA_JSON_CREDENTIALS: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-        YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
-        YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
+      - name: Configure YC CLI
+        run: |
+          yc config profile create default
+          echo "$YC_SA_JSON_CREDENTIALS" > key.json
+          yc config set service-account-key key.json
+          yc config set cloud-id "$YC_CLOUD_ID"
+          yc config set folder-id "$YC_FOLDER_ID"
+        env:
+          YC_SA_JSON_CREDENTIALS: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
+          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
 
-    - name: Set YC environment variables
-      run: |
-        echo "YC_TOKEN=$(yc iam create-token)" >> $GITHUB_ENV
-        echo "YC_CLOUD_ID=$(yc config get cloud-id)" >> $GITHUB_ENV
-        echo "YC_FOLDER_ID=$(yc config get folder-id)" >> $GITHUB_ENV
+      - name: Set YC environment variables
+        run: |
+          echo "YC_TOKEN=$(yc iam create-token)" >> $GITHUB_ENV
+          echo "YC_CLOUD_ID=$(yc config get cloud-id)" >> $GITHUB_ENV
+          echo "YC_FOLDER_ID=$(yc config get folder-id)" >> $GITHUB_ENV
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Publish ReceiveVideoHandler
-      run: |
-        dotnet publish recognition-functions/ReceiveVideoHandler/ReceiveVideoHandler.csproj -o receive-video-handler
+      - name: Publish ReceiveVideoHandler
+        run: |
+          dotnet publish recognition-functions/ReceiveVideoHandler/ReceiveVideoHandler.csproj -o receive-video-handler
+          mkdir receive-video-handler
+          zip -r receive-video-handler/${{ github.sha }}.zip receive-video-handler
 
-    - name: Login to Yandex Cloud Container Registry
-      id: login-cr
-      uses: yc-actions/yc-cr-login@v1
-      with:
-        yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+      - name: Upload ReceiveVideoHandler
+        uses: yc-actions/yc-obj-storage-upload@v2
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          bucket: ${{ secrets.FUNCTION_PACKAGES_BUCKET }}
+          root: .
+          include: receive-video-handler/${{ github.sha }}.zip
 
-    - name: Build, tag, and push API
-      env:
-        CR_REGISTRY: ${{ secrets.YCR_REGISTRY }}
-        CR_REPOSITORY: api
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        docker build -f Api/Dockerfile -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
-        docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
-    - name: Terraform apply
-      uses: dflook/terraform-apply@v1
-      with:
-        auto_approve: true
-        path: terraform
-        backend_config: |
-          access_key=${{ secrets.YC_SA_ACCESS_KEY }}
-          secret_key=${{ secrets.YC_SA_SECRET_KEY }}
-        variables: |
-          deployer_access_key = "${{ secrets.YC_SA_ACCESS_KEY }}"
-          deployer_secret_key = "${{ secrets.YC_SA_SECRET_KEY }}"
-          folder_id = "${{ secrets.YC_FOLDER_ID }}"
-          github_sha = "${{ github.sha }}"
-          api_registry = "${{ secrets.YCR_REGISTRY }}"
-          api_repository = "api"
+      - name: Build, tag, and push API
+        env:
+          CR_REGISTRY: ${{ secrets.YCR_REGISTRY }}
+          CR_REPOSITORY: api
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f Api/Dockerfile -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+
+      - name: Terraform apply
+        uses: dflook/terraform-apply@v1
+        with:
+          auto_approve: true
+          path: terraform
+          backend_config: |
+            access_key=${{ secrets.YC_SA_ACCESS_KEY }}
+            secret_key=${{ secrets.YC_SA_SECRET_KEY }}
+          variables: |
+            deployer_access_key = "${{ secrets.YC_SA_ACCESS_KEY }}"
+            deployer_secret_key = "${{ secrets.YC_SA_SECRET_KEY }}"
+            folder_id = "${{ secrets.YC_FOLDER_ID }}"
+            github_sha = "${{ github.sha }}"
+            api_registry = "${{ secrets.YCR_REGISTRY }}"
+            api_repository = "api"
+            function_packages_bucket = "${{ secrets.FUNCTION_PACKAGES_BUCKET }}"

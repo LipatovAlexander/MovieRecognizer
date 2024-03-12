@@ -1,25 +1,29 @@
 variable deployer_access_key {
-    type = string
-    sensitive = true
+  type      = string
+  sensitive = true
 }
 
 variable deployer_secret_key {
-    type = string
-    sensitive = true
+  type      = string
+  sensitive = true
 }
 
 variable folder_id {
-    type = string
+  type = string
 }
 
 variable api_registry {
-    type = string
+  type = string
 }
 
 variable api_repository {
-    type = string
+  type = string
 }
 
 variable github_sha {
-    type = string
+  type = string
+}
+
+variable function_packages_bucket {
+  type = string
 }
