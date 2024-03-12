@@ -66,6 +66,10 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
+      - name: Publish Api
+        run: |
+          dotnet publish Api/Api.csproj -o Api/publish
+
       - name: Build, tag, and push API
         env:
           CR_REGISTRY: ${{ secrets.YCR_REGISTRY }}
