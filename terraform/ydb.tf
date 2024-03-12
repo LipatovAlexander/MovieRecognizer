@@ -15,6 +15,7 @@ resource "yandex_ydb_database_iam_binding" "api-editor" {
 
   members = [
     "serviceAccount:${yandex_iam_service_account.api-sa.id}",
+    "serviceAccount:${yandex_iam_service_account.receive-video-handler-sa.id}",
   ]
 }
 
