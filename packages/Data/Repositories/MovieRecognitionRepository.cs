@@ -79,7 +79,7 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
                                  DECLARE $video_url AS Utf8;
                                  DECLARE $created_at AS Datetime;
                                  DECLARE $status AS Utf8;
-                                 DECLARE $video_id AS Utf8;
+                                 DECLARE $video_id AS Utf8?;
 
                                  INSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id)
                                  VALUES ($id, $video_url, $created_at, $status, $video_id);
