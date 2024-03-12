@@ -43,6 +43,44 @@ resource "yandex_ydb_table" "movie-recognition" {
     type     = "Utf8"
     not_null = true
   }
+  column {
+    name     = "video_id"
+    type     = "Utf8"
+    not_null = false
+  }
+
+  primary_key = ["id"]
+}
+
+resource "yandex_ydb_table" "video" {
+  path              = "video"
+  connection_string = yandex_ydb_database_serverless.main-db.ydb_full_endpoint
+
+  column {
+    name     = "id"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "external_id"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "title"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "author"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "duration"
+    type     = "Interval"
+    not_null = true
+  }
 
   primary_key = ["id"]
 }

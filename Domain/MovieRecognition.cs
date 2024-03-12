@@ -1,11 +1,12 @@
 ﻿namespace Domain;
 
-public class MovieRecognition(Guid id, Uri videoUrl, MovieRecognitionStatus status, DateTime createdAt)
+public class MovieRecognition(Uri videoUrl)
 {
-    public Guid Id { get; set; } = id;
+    public Guid Id { get; set; } = Guid.NewGuid();
     public Uri VideoUrl { get; set; } = videoUrl;
-    public MovieRecognitionStatus Status { get; set; } = status;
-    public DateTime CreatedAt { get; set; } = createdAt;
+    public MovieRecognitionStatus Status { get; set; } = MovieRecognitionStatus.Created;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public Guid? VideoId { get; set; }
 }
 
 public enum MovieRecognitionStatus

@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
     private static void AddRepositories(this IServiceCollection services)
     {
         services.AddSingleton<IMovieRecognitionRepository, MovieRecognitionRepository>();
+        services.AddSingleton<IVideoRepository, VideoRepository>();
     }
 
     private static void AddYandexDbService(this IServiceCollection services)

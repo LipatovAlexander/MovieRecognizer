@@ -22,11 +22,7 @@ public class CreateMovieRecognitionEndpoint : IEndpoint<
         IMessageQueueClient messageQueueClient,
         CancellationToken cancellationToken)
     {
-        var movieRecognition = new MovieRecognition(
-            Guid.NewGuid(),
-            request.VideoUrl,
-            MovieRecognitionStatus.Created,
-            DateTime.UtcNow);
+        var movieRecognition = new MovieRecognition(request.VideoUrl);
 
         await repository.SaveAsync(movieRecognition);
 
