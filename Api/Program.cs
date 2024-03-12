@@ -10,6 +10,8 @@ var services = builder.Services;
 
 builder.AddServiceDefaults();
 
+services.AddSwaggerGen();
+
 services.AddData();
 services.AddMessageQueue();
 
@@ -21,6 +23,9 @@ var yandexDbService = app.Services.GetRequiredService<IYandexDbService>();
 await yandexDbService.InitializeAsync();
 
 app.MapDefaultEndpoints();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapEndpoint<CreateMovieRecognitionEndpoint>();
 app.MapEndpoint<GetMovieRecognitionEndpoint>();

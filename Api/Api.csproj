@@ -8,13 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentValidation" Version="11.9.0" />
+        <PackageReference Include="FluentValidation" Version="11.9.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
         <PackageReference Include="Ydb.Sdk" Version="0.2.0"/>
         <PackageReference Include="Ydb.Sdk.Yc.Auth" Version="0.0.5"/>
     </ItemGroup>
