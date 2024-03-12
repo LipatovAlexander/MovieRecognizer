@@ -49,7 +49,6 @@ jobs:
       - name: Publish ReceiveVideoHandler
         run: |
           dotnet publish recognition-functions/ReceiveVideoHandler/ReceiveVideoHandler.csproj -o receive-video-handler
-          mkdir receive-video-handler
           zip -r receive-video-handler/${{ github.sha }}.zip receive-video-handler
 
       - name: Upload ReceiveVideoHandler
