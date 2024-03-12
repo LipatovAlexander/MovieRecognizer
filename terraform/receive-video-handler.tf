@@ -6,7 +6,7 @@ resource "yandex_function" "receive-video-handler" {
   name              = "receive-video-handler"
   user_hash         = var.github_sha
   runtime           = "dotnet8"
-  entrypoint        = "receive-video-handler/ReceiveVideoHandler.Handler"
+  entrypoint        = "ReceiveVideoHandler.Handler"
   memory            = "128"
   execution_timeout = "10"
   package {

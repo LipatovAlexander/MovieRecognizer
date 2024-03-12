@@ -49,7 +49,8 @@ jobs:
       - name: Publish ReceiveVideoHandler
         run: |
           dotnet publish recognition-functions/ReceiveVideoHandler/ReceiveVideoHandler.csproj -o receive-video-handler
-          zip -r receive-video-handler/${{ github.sha }}.zip receive-video-handler
+          cd receive-video-handler
+          zip -r ${{ github.sha }}.zip .
 
       - name: Upload ReceiveVideoHandler
         uses: yc-actions/yc-obj-storage-upload@v2
