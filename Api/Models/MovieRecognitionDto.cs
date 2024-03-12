@@ -11,4 +11,6 @@ public class MovieRecognitionDto
     public required DateTime CreatedAt { get; set; }
 
     public required MovieRecognitionStatus Status { get; set; }
+    
+    public required Guid? VideoId { get; set; }
 }
