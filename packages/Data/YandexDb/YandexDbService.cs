@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ydb.Sdk;
-using Ydb.Sdk.Services.Table;
+using Ydb.Sdk.Services.Query;
 using Ydb.Sdk.Yc;
 
 namespace Data.YandexDb;
@@ -10,7 +10,7 @@ public interface IYandexDbService
 {
     Task InitializeAsync();
 
-    TableClient GetTableClient();
+    QueryClient GetQueryClient();
 }
 
 public class YandexDbService(IOptions<YandexDbSettings> settings, ILoggerFactory loggerFactory)
@@ -41,9 +41,9 @@ public class YandexDbService(IOptions<YandexDbSettings> settings, ILoggerFactory
         await _driver.Initialize();
     }
 
-    public TableClient GetTableClient()
+    public QueryClient GetQueryClient()
     {
-        return new TableClient(_driver, new TableClientConfig());
+        return new QueryClient(_driver);
     }
 
     public void Dispose()
