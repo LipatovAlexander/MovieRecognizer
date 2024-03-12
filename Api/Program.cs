@@ -10,6 +10,7 @@ var services = builder.Services;
 
 builder.AddServiceDefaults();
 
+services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
 services.AddData();
