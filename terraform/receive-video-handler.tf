@@ -2,6 +2,16 @@ resource "yandex_iam_service_account" "receive-video-handler-sa" {
   name = "receive-video-handler-sa"
 }
 
+resource "yandex_resourcemanager_folder_iam_member" "receive-video-handler-sa-ymq-writer" {
+  folder_id = var.folder_id
+  role      = "ymq.writer"
+  member    = "serviceAccount:${yandex_iam_service_account.receive-video-handler-sa.id}"
+}
+
+resource "yandex_iam_service_account_static_access_key" "receive-video-handler-sa-key" {
+  service_account_id = yandex_iam_service_account.receive-video-handler-sa.id
+}
+
 resource "yandex_function" "receive-video-handler" {
   name              = "receive-video-handler"
   user_hash         = var.github_sha
@@ -12,6 +22,15 @@ resource "yandex_function" "receive-video-handler" {
   package {
     bucket_name = var.function_packages_bucket
     object_name = "receive-video-handler/${var.github_sha}.zip"
+  }
+  environment = {
+    YDB_ENDPOINT          = "grpcs://${yandex_ydb_database_serverless.main-db.ydb_api_endpoint}"
+    YDB_DATABASE_PATH     = yandex_ydb_database_serverless.main-db.database_path
+    AWS_ACCESS_KEY_ID     = yandex_iam_service_account_static_access_key.receive-video-handler-sa-key.access_key
+    AWS_SECRET_ACCESS_KEY = yandex_iam_service_account_static_access_key.receive-video-handler-sa-key.secret_key
+    AWS_DEFAULT_REGION    = "ru-central1"
+    AWS_SQS_SERVICE_URL   = "https://message-queue.api.cloud.yandex.net"
+    RECEIVE_VIDEO_QUEUE   = yandex_message_queue.receive-video-handler-queue.id
   }
   service_account_id = yandex_iam_service_account.receive-video-handler-sa.id
 }
