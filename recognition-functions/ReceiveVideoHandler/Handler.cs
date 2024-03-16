@@ -52,11 +52,9 @@ public class Handler : IHandler<MessageQueueEvent>
 
                 var video = new Video(videoId.Value, title, author, duration);
 
-                /*
                 transaction = await session.Videos.SaveAsync(video, TxControl.Tx(transaction));
 
                 transaction.EnsureNotNull();
-                */
 
                 await session.MovieRecognitions.SetVideoId(
                     movieRecognition.Id,
