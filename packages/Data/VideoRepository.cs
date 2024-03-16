@@ -8,7 +8,7 @@ public class VideoRepository(Session session) : IRepository<Video, Guid>
 {
     private readonly Session _session = session;
 
-    public async Task<(Video?, Transaction)> TryGetAsync(
+    public async Task<(Video?, Transaction?)> TryGetAsync(
         Guid id,
         TxControl txControl)
     {
@@ -28,7 +28,6 @@ public class VideoRepository(Session session) : IRepository<Video, Guid>
         var response = await _session.ExecuteDataQuery(query, txControl, parameters);
 
         response.Status.EnsureSuccess();
-        response.Tx.EnsureNotNull();
 
         var resultSet = response.Result.ResultSets[0];
         var row = resultSet.Rows.FirstOrDefault();
@@ -52,7 +51,7 @@ public class VideoRepository(Session session) : IRepository<Video, Guid>
         return (video, response.Tx);
     }
 
-    public async Task<Transaction> SaveAsync(Video video, TxControl txControl)
+    public async Task<Transaction?> SaveAsync(Video video, TxControl txControl)
     {
         const string query = """
                              DECLARE $id AS Utf8;
@@ -80,7 +79,6 @@ public class VideoRepository(Session session) : IRepository<Video, Guid>
             parameters);
 
         response.Status.EnsureSuccess();
-        response.Tx.EnsureNotNull();
 
         return response.Tx;
     }

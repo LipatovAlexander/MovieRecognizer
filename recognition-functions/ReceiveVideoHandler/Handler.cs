@@ -38,6 +38,8 @@ public class Handler : IHandler<MessageQueueEvent>
                     message.MovieRecognitionId,
                     TxControl.BeginSerializableRW());
 
+                transaction.EnsureNotNull();
+
                 var videoId = VideoId.TryParse(movieRecognition.VideoUrl.ToString())
                               ?? throw new InvalidOperationException("Invalid video url");
 
@@ -54,6 +56,8 @@ public class Handler : IHandler<MessageQueueEvent>
                 transaction = await session.MovieRecognitions.SaveAsync(
                     movieRecognition,
                     TxControl.Tx(transaction));
+
+                transaction.EnsureNotNull();
 
                 await session.Videos.SaveAsync(video, TxControl.Tx(transaction).Commit());
             });

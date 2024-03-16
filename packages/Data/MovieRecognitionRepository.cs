@@ -8,7 +8,7 @@ public class MovieRecognitionRepository(Session session) : IRepository<MovieReco
 {
     private readonly Session _session = session;
 
-    public async Task<(MovieRecognition?, Transaction)> TryGetAsync(
+    public async Task<(MovieRecognition?, Transaction?)> TryGetAsync(
         Guid id,
         TxControl txControl)
     {
@@ -28,7 +28,6 @@ public class MovieRecognitionRepository(Session session) : IRepository<MovieReco
         var response = await _session.ExecuteDataQuery(query, txControl, parameters);
 
         response.Status.EnsureSuccess();
-        response.Tx.EnsureNotNull();
 
         var resultSet = response.Result.ResultSets[0];
         var row = resultSet.Rows.FirstOrDefault();
@@ -56,7 +55,7 @@ public class MovieRecognitionRepository(Session session) : IRepository<MovieReco
         return (movieRecognition, response.Tx);
     }
 
-    public async Task<Transaction> SaveAsync(
+    public async Task<Transaction?> SaveAsync(
         MovieRecognition entity,
         TxControl txControl)
     {
@@ -83,7 +82,6 @@ public class MovieRecognitionRepository(Session session) : IRepository<MovieReco
         var response = await _session.ExecuteDataQuery(query, txControl, parameters);
 
         response.Status.EnsureSuccess();
-        response.Tx.EnsureNotNull();
 
         return response.Tx;
     }
