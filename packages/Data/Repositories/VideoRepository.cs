@@ -14,6 +14,8 @@ public class VideoRepository(IYandexDbService yandexDbService) : IVideoRepositor
         using var tableClient = _yandexDbService.GetTableClient();
 
         const string query = """
+                             DECLARE $id AS Utf8;
+
                              SELECT *
                              FROM video
                              WHERE id = $id;
@@ -58,6 +60,12 @@ public class VideoRepository(IYandexDbService yandexDbService) : IVideoRepositor
         using var tableClient = _yandexDbService.GetTableClient();
 
         const string query = """
+                             DECLARE $id AS Utf8;
+                             DECLARE $external_id AS Utf8;
+                             DECLARE $title AS Utf8;
+                             DECLARE $author AS Utf8;
+                             DECLARE $duration AS Interval;
+
                              UPSERT INTO video(id, external_id, title, author, duration)
                              VALUES ($id, $external_id, $title, $author, $duration);
                              """;

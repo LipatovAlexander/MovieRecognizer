@@ -14,6 +14,8 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
         using var tableClient = _yandexDbService.GetTableClient();
 
         const string query = """
+                             DECLARE $id AS Utf8;
+
                              SELECT *
                              FROM `movie-recognition`
                              WHERE id = $id;
@@ -62,6 +64,12 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
         using var tableClient = _yandexDbService.GetTableClient();
 
         const string query = """
+                             DECLARE $id AS Utf8;
+                             DECLARE $video_url AS Utf8;
+                             DECLARE $created_at AS Datetime;
+                             DECLARE $status AS Utf8;
+                             DECLARE $video_id AS Utf8?;
+
                              UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id)
                              VALUES ($id, $video_url, $created_at, $status, $video_id);
                              """;
