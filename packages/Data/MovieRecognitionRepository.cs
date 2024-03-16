@@ -102,7 +102,7 @@ public class MovieRecognitionRepository(Session session) : IMovieRecognitionRepo
                                 video_id = $video_id,
                                 created_at = created_at,
                                 status = status,
-                                video_id = video_id
+                                video_url = video_url
                              WHERE id = $id;
                              """;
 
