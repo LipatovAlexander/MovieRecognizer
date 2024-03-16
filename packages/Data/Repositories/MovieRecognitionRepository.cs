@@ -1,5 +1,6 @@
 using Data.YandexDb;
 using Domain;
+using Ydb.Sdk.Services.Table;
 using Ydb.Sdk.Value;
 
 namespace Data.Repositories;
@@ -10,7 +11,7 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
 
     public async Task<MovieRecognition?> GetAsync(Guid id)
     {
-        using var queryClient = _yandexDbService.GetQueryClient();
+        using var tableClient = _yandexDbService.GetTableClient();
 
         const string query = """
                              SELECT *
@@ -23,11 +24,17 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
             ["$id"] = YdbValue.MakeUtf8(id.ToString())
         };
 
-        var response = await queryClient.ReadSingleRow(query, parameters);
+        var response = await tableClient.SessionExec(async session => await session.ExecuteDataQuery(
+            query,
+            TxControl.BeginSerializableRW().Commit(),
+            parameters));
 
         response.Status.EnsureSuccess();
 
-        var row = response.Result;
+        var queryResponse = (ExecuteDataQueryResponse)response;
+        var resultSet = queryResponse.Result.ResultSets[0];
+
+        var row = resultSet.Rows.FirstOrDefault();
 
         if (row is null)
         {
@@ -52,7 +59,7 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
 
     public async Task SaveAsync(MovieRecognition movieRecognition)
     {
-        using var queryClient = _yandexDbService.GetQueryClient();
+        using var tableClient = _yandexDbService.GetTableClient();
 
         const string query = """
                              UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id)
@@ -68,7 +75,10 @@ public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IMov
             ["$video_id"] = YdbValue.MakeOptionalUtf8(movieRecognition.VideoId?.ToString())
         };
 
-        var response = await queryClient.Exec(query, parameters);
+        var response = await tableClient.SessionExec(async session => await session.ExecuteDataQuery(
+            query,
+            TxControl.BeginSerializableRW().Commit(),
+            parameters));
 
         response.Status.EnsureSuccess();
     }
