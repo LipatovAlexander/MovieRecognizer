@@ -1,7 +1,6 @@
 using Api.Endpoints.CreateMovieRecognition;
 using Api.Endpoints.GetMovieRecognition;
 using Data;
-using Data.YandexDb;
 using MessageQueue;
 
 var builder = WebApplication.CreateBuilder(args);

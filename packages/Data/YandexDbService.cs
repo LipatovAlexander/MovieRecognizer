@@ -4,7 +4,7 @@ using Ydb.Sdk;
 using Ydb.Sdk.Services.Table;
 using Ydb.Sdk.Yc;
 
-namespace Data.YandexDb;
+namespace Data;
 
 public interface IYandexDbService
 {

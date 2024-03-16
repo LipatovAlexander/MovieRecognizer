@@ -1,5 +1,3 @@
-using Data.Repositories;
-using Data.YandexDb;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,18 +6,6 @@ namespace Data;
 public static class ServiceCollectionExtensions
 {
     public static void AddData(this IServiceCollection services)
-    {
-        services.AddYandexDbService();
-        services.AddRepositories();
-    }
-
-    private static void AddRepositories(this IServiceCollection services)
-    {
-        services.AddSingleton<IMovieRecognitionRepository, MovieRecognitionRepository>();
-        services.AddSingleton<IVideoRepository, VideoRepository>();
-    }
-
-    private static void AddYandexDbService(this IServiceCollection services)
     {
         services.AddOptions<YandexDbSettings>()
             .Configure<IConfiguration>((settings, configuration) =>
@@ -36,5 +22,6 @@ public static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         services.AddSingleton<IYandexDbService, YandexDbService>();
+        services.AddSingleton<IDatabaseContext, DatabaseContext>();
     }
 }

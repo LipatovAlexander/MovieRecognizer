@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Data.YandexDb;
+namespace Data;
 
 public class YandexDbSettings
 {

@@ -1,18 +1,17 @@
-using Data.YandexDb;
 using Domain;
 using Ydb.Sdk.Services.Table;
 using Ydb.Sdk.Value;
 
-namespace Data.Repositories;
+namespace Data;
 
-public class VideoRepository(IYandexDbService yandexDbService) : IVideoRepository
+public class VideoRepository(Session session) : IRepository<Video, Guid>
 {
-    private readonly IYandexDbService _yandexDbService = yandexDbService;
+    private readonly Session _session = session;
 
-    public async Task<Video?> GetAsync(Guid id)
+    public async Task<(Video?, Transaction)> TryGetAsync(
+        Guid id,
+        TxControl txControl)
     {
-        using var tableClient = _yandexDbService.GetTableClient();
-
         const string query = """
                              DECLARE $id AS Utf8;
 
@@ -26,21 +25,17 @@ public class VideoRepository(IYandexDbService yandexDbService) : IVideoRepositor
             ["$id"] = YdbValue.MakeUtf8(id.ToString())
         };
 
-        var response = await tableClient.SessionExec(async session => await session.ExecuteDataQuery(
-            query,
-            TxControl.BeginSerializableRW().Commit(),
-            parameters));
+        var response = await _session.ExecuteDataQuery(query, txControl, parameters);
 
         response.Status.EnsureSuccess();
+        response.Tx.EnsureNotNull();
 
-        var queryResponse = (ExecuteDataQueryResponse)response;
-        var resultSet = queryResponse.Result.ResultSets[0];
-
+        var resultSet = response.Result.ResultSets[0];
         var row = resultSet.Rows.FirstOrDefault();
 
         if (row is null)
         {
-            return null;
+            throw new InvalidOperationException("Video not found by id");
         }
 
         var returnedId = Guid.Parse(row["id"].GetUtf8());
@@ -49,16 +44,16 @@ public class VideoRepository(IYandexDbService yandexDbService) : IVideoRepositor
         var author = row["author"].GetUtf8();
         var duration = row["duration"].GetInterval();
 
-        return new Video(externalId, title, author, duration)
+        var video = new Video(externalId, title, author, duration)
         {
             Id = returnedId
         };
+
+        return (video, response.Tx);
     }
 
-    public async Task SaveAsync(Video video)
+    public async Task<Transaction> SaveAsync(Video video, TxControl txControl)
     {
-        using var tableClient = _yandexDbService.GetTableClient();
-
         const string query = """
                              DECLARE $id AS Utf8;
                              DECLARE $external_id AS Utf8;
@@ -79,11 +74,14 @@ public class VideoRepository(IYandexDbService yandexDbService) : IVideoRepositor
             ["$duration"] = YdbValue.MakeInterval(video.Duration)
         };
 
-        var response = await tableClient.SessionExec(async session => await session.ExecuteDataQuery(
+        var response = await _session.ExecuteDataQuery(
             query,
             TxControl.BeginSerializableRW().Commit(),
-            parameters));
+            parameters);
 
         response.Status.EnsureSuccess();
+        response.Tx.EnsureNotNull();
+
+        return response.Tx;
     }
 }
