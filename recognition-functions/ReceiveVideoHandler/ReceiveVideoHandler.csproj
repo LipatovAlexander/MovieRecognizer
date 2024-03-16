@@ -12,4 +12,8 @@
         <ProjectReference Include="..\..\packages\MessageQueue\MessageQueue.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="YoutubeExplode" Version="6.3.13"/>
+    </ItemGroup>
+
 </Project>

@@ -1,11 +1,12 @@
-using System.Text.Json;
 using CloudFunctions;
 using CloudFunctions.MessageQueue;
 using Data.Repositories;
 using Data.YandexDb;
 using MessageQueue.Messages;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using YoutubeExplode;
+using YoutubeExplode.Videos;
+using Video = Domain.Video;
 
 namespace ReceiveVideoHandler;
 
@@ -13,7 +14,8 @@ public class Handler : IHandler<MessageQueueEvent>
 {
     private readonly IYandexDbService _yandexDbService;
     private readonly IMovieRecognitionRepository _movieRecognitionRepository;
-    private readonly ILogger<Handler> _logger;
+    private readonly IVideoRepository _videoRepository;
+    private readonly YoutubeClient _youtubeClient;
 
     public Handler()
     {
@@ -21,7 +23,8 @@ public class Handler : IHandler<MessageQueueEvent>
 
         _yandexDbService = services.GetRequiredService<IYandexDbService>();
         _movieRecognitionRepository = services.GetRequiredService<IMovieRecognitionRepository>();
-        _logger = services.GetRequiredService<ILogger<Handler>>();
+        _videoRepository = services.GetRequiredService<IVideoRepository>();
+        _youtubeClient = services.GetRequiredService<YoutubeClient>();
     }
 
     public async Task FunctionHandler(MessageQueueEvent messageQueueEvent)
@@ -33,7 +36,27 @@ public class Handler : IHandler<MessageQueueEvent>
         foreach (var message in messages)
         {
             var movieRecognition = await _movieRecognitionRepository.GetAsync(message.MovieRecognitionId);
-            _logger.LogInformation("Movie recognition: {MovieRecognition}", JsonSerializer.Serialize(movieRecognition));
+
+            if (movieRecognition is null)
+            {
+                return;
+            }
+
+            var videoId = VideoId.TryParse(movieRecognition.VideoUrl.ToString())
+                          ?? throw new InvalidOperationException("Invalid video url");
+
+            var youtubeVideo = await _youtubeClient.Videos.GetAsync(videoId);
+
+            var title = youtubeVideo.Title;
+            var author = youtubeVideo.Author.ChannelTitle;
+            var duration = youtubeVideo.Duration
+                           ?? throw new InvalidOperationException("Could not determine video duration");
+
+            var video = new Video(videoId.Value, title, author, duration);
+            movieRecognition.VideoId = video.Id;
+
+            await _movieRecognitionRepository.SaveAsync(movieRecognition);
+            await _videoRepository.SaveAsync(video);
         }
     }
 }

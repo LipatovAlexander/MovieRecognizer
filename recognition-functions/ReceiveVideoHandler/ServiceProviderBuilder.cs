@@ -3,6 +3,7 @@ using Data;
 using MessageQueue;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YoutubeExplode;
 
 namespace ReceiveVideoHandler;
 
@@ -12,5 +13,6 @@ public class ServiceProviderBuilder : ServiceProviderBuilderBase
     {
         services.AddData();
         services.AddMessageQueue();
+        services.AddSingleton<YoutubeClient>();
     }
 }
