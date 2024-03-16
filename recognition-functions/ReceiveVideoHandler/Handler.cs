@@ -51,15 +51,15 @@ public class Handler : IHandler<MessageQueueEvent>
                                ?? throw new InvalidOperationException("Could not determine video duration");
 
                 var video = new Video(videoId.Value, title, author, duration);
-                movieRecognition.VideoId = video.Id;
 
-                transaction = await session.MovieRecognitions.SaveAsync(
-                    movieRecognition,
-                    TxControl.Tx(transaction));
+                transaction = await session.Videos.SaveAsync(video, TxControl.Tx(transaction));
 
                 transaction.EnsureNotNull();
 
-                await session.Videos.SaveAsync(video, TxControl.Tx(transaction).Commit());
+                await session.MovieRecognitions.SetVideoId(
+                    movieRecognition.Id,
+                    video.Id,
+                    TxControl.Tx(transaction).Commit());
             });
         }
     }
