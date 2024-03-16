@@ -96,9 +96,13 @@ public class MovieRecognitionRepository(Session session) : IMovieRecognitionRepo
         const string query = """
                              DECLARE $id as Utf8;
                              DECLARE $video_id as Utf8;
-                             
+
                              UPDATE `movie-recognition`
-                             SET video_id = $video_id
+                             SET
+                                video_id = $video_id,
+                                created_at = created_at,
+                                status = status,
+                                video_id = video_id
                              WHERE id = $id;
                              """;
 
@@ -109,7 +113,7 @@ public class MovieRecognitionRepository(Session session) : IMovieRecognitionRepo
         };
 
         var response = await _session.ExecuteDataQuery(query, txControl, parameters);
-        
+
         response.EnsureSuccess();
 
         return response.Tx;
