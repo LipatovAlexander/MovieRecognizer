@@ -56,10 +56,7 @@ public class Handler : IHandler<MessageQueueEvent>
 
                 transaction.EnsureNotNull();
 
-                await session.MovieRecognitions.SetVideoId(
-                    movieRecognition.Id,
-                    video.Id,
-                    TxControl.Tx(transaction).Commit());
+                await session.MovieRecognitions.SaveAsync(movieRecognition, TxControl.Tx(transaction).Commit());
             });
         }
     }

@@ -4,12 +4,7 @@ using Ydb.Sdk.Value;
 
 namespace Data;
 
-public interface IMovieRecognitionRepository : IRepository<MovieRecognition, Guid>
-{
-    Task<Transaction?> SetVideoId(Guid movieRecognitionId, Guid videoId, TxControl txControl);
-}
-
-public class MovieRecognitionRepository(Session session) : IMovieRecognitionRepository
+public class MovieRecognitionRepository(Session session) : IRepository<MovieRecognition, Guid>
 {
     private readonly Session _session = session;
 
@@ -87,34 +82,6 @@ public class MovieRecognitionRepository(Session session) : IMovieRecognitionRepo
         var response = await _session.ExecuteDataQuery(query, txControl, parameters);
 
         response.Status.EnsureSuccess();
-
-        return response.Tx;
-    }
-
-    public async Task<Transaction?> SetVideoId(Guid movieRecognitionId, Guid videoId, TxControl txControl)
-    {
-        const string query = """
-                             DECLARE $id as Utf8;
-                             DECLARE $video_id as Utf8;
-
-                             UPDATE `movie-recognition`
-                             SET
-                                video_id = $video_id,
-                                created_at = created_at,
-                                status = status,
-                                video_url = video_url
-                             WHERE id = $id;
-                             """;
-
-        var parameters = new Dictionary<string, YdbValue>
-        {
-            ["$id"] = YdbValue.MakeUtf8(movieRecognitionId.ToString()),
-            ["$video_id"] = YdbValue.MakeUtf8(videoId.ToString())
-        };
-
-        var response = await _session.ExecuteDataQuery(query, txControl, parameters);
-
-        response.EnsureSuccess();
 
         return response.Tx;
     }
