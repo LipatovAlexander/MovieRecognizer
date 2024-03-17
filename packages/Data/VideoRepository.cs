@@ -75,7 +75,7 @@ public class VideoRepository(Session session) : IRepository<Video, Guid>
 
         var response = await _session.ExecuteDataQuery(
             query,
-            TxControl.BeginSerializableRW().Commit(),
+            txControl,
             parameters);
 
         response.Status.EnsureSuccess();
