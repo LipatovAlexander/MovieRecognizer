@@ -49,6 +49,11 @@ resource "yandex_ydb_table" "movie-recognition" {
     type     = "Utf8"
     not_null = false
   }
+  column {
+    name     = "failure_message"
+    type     = "Utf8"
+    not_null = false
+  }
 
   primary_key = ["id"]
 }

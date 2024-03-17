@@ -7,6 +7,8 @@ public class MovieRecognition(Uri videoUrl)
     public MovieRecognitionStatus Status { get; set; } = MovieRecognitionStatus.Created;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public Guid? VideoId { get; set; }
+
+    public string? FailureMessage { get; set; }
 }
 
 public enum MovieRecognitionStatus

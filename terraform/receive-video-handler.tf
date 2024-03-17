@@ -35,6 +35,29 @@ resource "yandex_function" "receive-video-handler" {
   service_account_id = yandex_iam_service_account.receive-video-handler-sa.id
 }
 
+resource "yandex_function" "receive-video-failure-handler" {
+  name              = "receive-video-failure-handler"
+  user_hash         = var.github_sha
+  runtime           = "dotnet8"
+  entrypoint        = "ReceiveVideoHandler.FailureHandler"
+  memory            = "128"
+  execution_timeout = "10"
+  package {
+    bucket_name = var.function_packages_bucket
+    object_name = "receive-video-handler/${var.github_sha}.zip"
+  }
+  environment = merge(
+    {
+      AWS_ACCESS_KEY_ID     = yandex_iam_service_account_static_access_key.receive-video-handler-sa-key.access_key
+      AWS_SECRET_ACCESS_KEY = yandex_iam_service_account_static_access_key.receive-video-handler-sa-key.secret_key
+      AWS_DEFAULT_REGION    = "ru-central1"
+    },
+    local.data_env,
+    local.message_queue_env,
+  )
+  service_account_id = yandex_iam_service_account.receive-video-handler-sa.id
+}
+
 resource "yandex_message_queue" "receive-video-handler-queue" {
   name                       = "receive-video-handler-queue"
   visibility_timeout_seconds = 10
@@ -66,6 +89,20 @@ resource "yandex_function_trigger" "receive-video-handler-trigger" {
   }
   function {
     id                 = yandex_function.receive-video-handler.id
+    service_account_id = yandex_iam_service_account.receive-video-handler-trigger-sa.id
+  }
+}
+
+resource "yandex_function_trigger" "receive-video-handler-deadletter-trigger" {
+  name = "receive-video-handler-deadletter-trigger"
+  message_queue {
+    queue_id           = yandex_message_queue.receive-video-handler-deadletter-queue.arn
+    service_account_id = yandex_iam_service_account.receive-video-handler-trigger-sa.id
+    batch_size         = "1"
+    batch_cutoff       = "0"
+  }
+  function {
+    id                 = yandex_function.receive-video-failure-handler.id
     service_account_id = yandex_iam_service_account.receive-video-handler-trigger-sa.id
   }
 }

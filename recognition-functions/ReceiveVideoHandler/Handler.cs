@@ -44,6 +44,8 @@ public class Handler : IHandler<MessageQueueEvent>
 
                 transaction.EnsureNotNull();
 
+                throw new Exception();
+
                 var videoId = VideoId.TryParse(movieRecognition.VideoUrl.ToString())
                               ?? throw new InvalidOperationException("Invalid video url");
 
