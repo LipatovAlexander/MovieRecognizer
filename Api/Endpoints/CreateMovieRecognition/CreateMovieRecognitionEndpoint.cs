@@ -7,7 +7,6 @@ using Data;
 using Domain;
 using MessageQueue;
 using MessageQueue.Messages;
-using Ydb.Sdk.Services.Table;
 
 namespace Api.Endpoints.CreateMovieRecognition;
 
@@ -25,10 +24,7 @@ public class CreateMovieRecognitionEndpoint : IEndpoint<
     {
         var movieRecognition = new MovieRecognition(request.VideoUrl);
 
-        await databaseContext.ExecuteAsync(async session =>
-        {
-            await session.MovieRecognitions.SaveAsync(movieRecognition, TxControl.BeginSerializableRW().Commit());
-        });
+        await databaseContext.MovieRecognitions.SaveAsync(movieRecognition);
 
         await messageQueueClient.SendAsync(new ReceiveVideoMessage(movieRecognition.Id), cancellationToken);
 

@@ -1,3 +1,4 @@
+using Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +23,10 @@ public static class ServiceCollectionExtensions
             .ValidateOnStart();
 
         services.AddSingleton<IYandexDbService, YandexDbService>();
+
+        services.AddSingleton<IRepository<MovieRecognition, Guid>, MovieRecognitionRepository>();
+        services.AddSingleton<IRepository<Video, Guid>, VideoRepository>();
+
         services.AddSingleton<IDatabaseContext, DatabaseContext>();
     }
 }

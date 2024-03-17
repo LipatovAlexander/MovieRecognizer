@@ -4,37 +4,42 @@ using Ydb.Sdk.Value;
 
 namespace Data;
 
-public class VideoRepository(Session session) : IRepository<Video, Guid>
+public class VideoRepository(IYandexDbService yandexDbService) : IRepository<Video, Guid>
 {
-    private readonly Session _session = session;
+    private readonly IYandexDbService _yandexDbService = yandexDbService;
 
-    public async Task<(Video?, Transaction?)> TryGetAsync(
-        Guid id,
-        TxControl txControl)
+    public async Task<Video?> GetAsync(Guid id)
     {
-        const string query = """
-                             DECLARE $id AS Utf8;
+        using var tableClient = _yandexDbService.GetTableClient();
 
-                             SELECT *
-                             FROM video
-                             WHERE id = $id;
-                             """;
-
-        var parameters = new Dictionary<string, YdbValue>
+        var response = await tableClient.SessionExec(async session =>
         {
-            ["$id"] = YdbValue.MakeUtf8(id.ToString())
-        };
+            const string query = """
+                                 DECLARE $id AS Utf8;
 
-        var response = await _session.ExecuteDataQuery(query, txControl, parameters);
+                                 SELECT *
+                                 FROM video
+                                 WHERE id = $id;
+                                 """;
+
+            var parameters = new Dictionary<string, YdbValue>
+            {
+                ["$id"] = YdbValue.MakeUtf8(id.ToString())
+            };
+
+            return await session.ExecuteDataQuery(query, TxControl.BeginSerializableRW().Commit(), parameters);
+        });
 
         response.Status.EnsureSuccess();
 
-        var resultSet = response.Result.ResultSets[0];
+        var queryResponse = (ExecuteDataQueryResponse)response;
+
+        var resultSet = queryResponse.Result.ResultSets[0];
         var row = resultSet.Rows.FirstOrDefault();
 
         if (row is null)
         {
-            throw new InvalidOperationException("Video not found by id");
+            return null;
         }
 
         var returnedId = Guid.Parse(row["id"].GetUtf8());
@@ -43,43 +48,41 @@ public class VideoRepository(Session session) : IRepository<Video, Guid>
         var author = row["author"].GetUtf8();
         var duration = row["duration"].GetInterval();
 
-        var video = new Video(externalId, title, author, duration)
+        return new Video(externalId, title, author, duration)
         {
             Id = returnedId
         };
-
-        return (video, response.Tx);
     }
 
-    public async Task<Transaction?> SaveAsync(Video video, TxControl txControl)
+    public async Task SaveAsync(Video video)
     {
-        const string query = """
-                             DECLARE $id AS Utf8;
-                             DECLARE $external_id AS Utf8;
-                             DECLARE $title AS Utf8;
-                             DECLARE $author AS Utf8;
-                             DECLARE $duration AS Interval;
+        using var tableClient = _yandexDbService.GetTableClient();
 
-                             UPSERT INTO video(id, external_id, title, author, duration)
-                             VALUES ($id, $external_id, $title, $author, $duration);
-                             """;
-
-        var parameters = new Dictionary<string, YdbValue>
+        var response = await tableClient.SessionExec(async session =>
         {
-            ["$id"] = YdbValue.MakeUtf8(video.Id.ToString()),
-            ["$external_id"] = YdbValue.MakeUtf8(video.ExternalId),
-            ["$title"] = YdbValue.MakeUtf8(video.Title),
-            ["$author"] = YdbValue.MakeUtf8(video.Author),
-            ["$duration"] = YdbValue.MakeInterval(video.Duration)
-        };
+            const string query = """
+                                 DECLARE $id AS Utf8;
+                                 DECLARE $external_id AS Utf8;
+                                 DECLARE $title AS Utf8;
+                                 DECLARE $author AS Utf8;
+                                 DECLARE $duration AS Interval;
 
-        var response = await _session.ExecuteDataQuery(
-            query,
-            txControl,
-            parameters);
+                                 UPSERT INTO video(id, external_id, title, author, duration)
+                                 VALUES ($id, $external_id, $title, $author, $duration);
+                                 """;
+
+            var parameters = new Dictionary<string, YdbValue>
+            {
+                ["$id"] = YdbValue.MakeUtf8(video.Id.ToString()),
+                ["$external_id"] = YdbValue.MakeUtf8(video.ExternalId),
+                ["$title"] = YdbValue.MakeUtf8(video.Title),
+                ["$author"] = YdbValue.MakeUtf8(video.Author),
+                ["$duration"] = YdbValue.MakeInterval(video.Duration)
+            };
+
+            return await session.ExecuteDataQuery(query, TxControl.BeginSerializableRW().Commit(), parameters);
+        });
 
         response.Status.EnsureSuccess();
-
-        return response.Tx;
     }
 }

@@ -4,37 +4,42 @@ using Ydb.Sdk.Value;
 
 namespace Data;
 
-public class MovieRecognitionRepository(Session session) : IRepository<MovieRecognition, Guid>
+public class MovieRecognitionRepository(IYandexDbService yandexDbService) : IRepository<MovieRecognition, Guid>
 {
-    private readonly Session _session = session;
+    private readonly IYandexDbService _yandexDbService = yandexDbService;
 
-    public async Task<(MovieRecognition?, Transaction?)> TryGetAsync(
-        Guid id,
-        TxControl txControl)
+    public async Task<MovieRecognition?> GetAsync(Guid id)
     {
-        const string query = """
-                             DECLARE $id AS Utf8;
+        using var tableClient = _yandexDbService.GetTableClient();
 
-                             SELECT *
-                             FROM `movie-recognition`
-                             WHERE id = $id;
-                             """;
-
-        var parameters = new Dictionary<string, YdbValue>
+        var response = await tableClient.SessionExec(async session =>
         {
-            ["$id"] = YdbValue.MakeUtf8(id.ToString())
-        };
+            const string query = """
+                                 DECLARE $id AS Utf8;
 
-        var response = await _session.ExecuteDataQuery(query, txControl, parameters);
+                                 SELECT *
+                                 FROM `movie-recognition`
+                                 WHERE id = $id;
+                                 """;
+
+            var parameters = new Dictionary<string, YdbValue>
+            {
+                ["$id"] = YdbValue.MakeUtf8(id.ToString())
+            };
+
+            return await session.ExecuteDataQuery(query, TxControl.BeginSerializableRW().Commit(), parameters);
+        });
 
         response.Status.EnsureSuccess();
 
-        var resultSet = response.Result.ResultSets[0];
+        var queryResponse = (ExecuteDataQueryResponse)response;
+
+        var resultSet = queryResponse.Result.ResultSets[0];
         var row = resultSet.Rows.FirstOrDefault();
 
         if (row is null)
         {
-            return (null, response.Tx);
+            return null;
         }
 
         var returnedId = Guid.Parse(row["id"].GetUtf8());
@@ -44,45 +49,44 @@ public class MovieRecognitionRepository(Session session) : IRepository<MovieReco
         var rawVideoId = row["video_id"].GetOptionalUtf8();
         var videoId = rawVideoId is null ? null as Guid? : Guid.Parse(rawVideoId);
 
-        var movieRecognition = new MovieRecognition(videoUrl)
+        return new MovieRecognition(videoUrl)
         {
             Id = returnedId,
             Status = status,
             CreatedAt = createdAt,
             VideoId = videoId
         };
-
-        return (movieRecognition, response.Tx);
     }
 
-    public async Task<Transaction?> SaveAsync(
-        MovieRecognition entity,
-        TxControl txControl)
+    public async Task SaveAsync(MovieRecognition entity)
     {
-        const string query = """
-                             DECLARE $id AS Utf8;
-                             DECLARE $video_url AS Utf8;
-                             DECLARE $created_at AS Datetime;
-                             DECLARE $status AS Utf8;
-                             DECLARE $video_id AS Utf8?;
+        using var tableClient = _yandexDbService.GetTableClient();
 
-                             UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id)
-                             VALUES ($id, $video_url, $created_at, $status, $video_id);
-                             """;
-
-        var parameters = new Dictionary<string, YdbValue>
+        var response = await tableClient.SessionExec(async session =>
         {
-            ["$id"] = YdbValue.MakeUtf8(entity.Id.ToString()),
-            ["$video_url"] = YdbValue.MakeUtf8(entity.VideoUrl.ToString()),
-            ["$created_at"] = YdbValue.MakeDatetime(entity.CreatedAt),
-            ["$status"] = YdbValue.MakeUtf8(entity.Status.ToString()),
-            ["$video_id"] = YdbValue.MakeOptionalUtf8(entity.VideoId?.ToString())
-        };
+            const string query = """
+                                 DECLARE $id AS Utf8;
+                                 DECLARE $video_url AS Utf8;
+                                 DECLARE $created_at AS Datetime;
+                                 DECLARE $status AS Utf8;
+                                 DECLARE $video_id AS Utf8?;
 
-        var response = await _session.ExecuteDataQuery(query, txControl, parameters);
+                                 UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id)
+                                 VALUES ($id, $video_url, $created_at, $status, $video_id);
+                                 """;
+
+            var parameters = new Dictionary<string, YdbValue>
+            {
+                ["$id"] = YdbValue.MakeUtf8(entity.Id.ToString()),
+                ["$video_url"] = YdbValue.MakeUtf8(entity.VideoUrl.ToString()),
+                ["$created_at"] = YdbValue.MakeDatetime(entity.CreatedAt),
+                ["$status"] = YdbValue.MakeUtf8(entity.Status.ToString()),
+                ["$video_id"] = YdbValue.MakeOptionalUtf8(entity.VideoId?.ToString())
+            };
+
+            return await session.ExecuteDataQuery(query, TxControl.BeginSerializableRW().Commit(), parameters);
+        });
 
         response.Status.EnsureSuccess();
-
-        return response.Tx;
     }
 }
