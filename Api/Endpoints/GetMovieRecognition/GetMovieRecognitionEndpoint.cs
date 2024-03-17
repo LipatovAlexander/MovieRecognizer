@@ -4,6 +4,7 @@ using Api.Mappers;
 using Api.Models;
 using Data;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Ydb.Sdk.Services.Table;
 
 namespace Api.Endpoints.GetMovieRecognition;
 
@@ -17,7 +18,14 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
         IDatabaseContext databaseContext,
         CancellationToken cancellationToken)
     {
-        var movieRecognition = await databaseContext.MovieRecognitions.GetAsync(request.Id);
+        var movieRecognition = await databaseContext.ExecuteAsync(async session =>
+        {
+            var (movieRecognition, _) = await session.MovieRecognitions.TryGetAsync(
+                request.Id,
+                TxControl.BeginSerializableRW().Commit());
+
+            return movieRecognition;
+        });
 
         if (movieRecognition is null)
         {
