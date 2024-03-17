@@ -12,7 +12,7 @@ public interface IRepository<TEntity, in TId>
 
         if (entity is null)
         {
-            throw new InvalidOperationException("Entity not found");
+            throw new InvalidOperationException($"{typeof(TEntity).Name} not found by id {id}");
         }
 
         return (entity, transaction);
