@@ -27,14 +27,14 @@ resource "yandex_serverless_container" "test-container" {
   service_account_id = yandex_iam_service_account.api-sa.id
   image {
     url         = "cr.yandex/${var.api_registry}/${var.api_repository}:${var.github_sha}"
-    environment = {
-      YDB_ENDPOINT          = "grpcs://${yandex_ydb_database_serverless.main-db.ydb_api_endpoint}"
-      YDB_DATABASE_PATH     = yandex_ydb_database_serverless.main-db.database_path
-      AWS_ACCESS_KEY_ID     = yandex_iam_service_account_static_access_key.api-sa-key.access_key
-      AWS_SECRET_ACCESS_KEY = yandex_iam_service_account_static_access_key.api-sa-key.secret_key
-      AWS_DEFAULT_REGION    = "ru-central1"
-      AWS_SQS_SERVICE_URL   = "https://message-queue.api.cloud.yandex.net"
-      RECEIVE_VIDEO_QUEUE   = yandex_message_queue.receive-video-handler-queue.id
-    }
+    environment = merge(
+      {
+        AWS_ACCESS_KEY_ID     = yandex_iam_service_account_static_access_key.api-sa-key.access_key
+        AWS_SECRET_ACCESS_KEY = yandex_iam_service_account_static_access_key.api-sa-key.secret_key
+        AWS_DEFAULT_REGION    = "ru-central1"
+      },
+      local.data_env,
+      local.message_queue_env,
+    )
   }
 }

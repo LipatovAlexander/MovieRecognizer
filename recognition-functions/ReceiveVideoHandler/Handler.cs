@@ -1,6 +1,7 @@
 using CloudFunctions;
 using CloudFunctions.MessageQueue;
 using Data;
+using MessageQueue;
 using MessageQueue.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Ydb.Sdk.Services.Table;
@@ -15,6 +16,7 @@ public class Handler : IHandler<MessageQueueEvent>
     private readonly IYandexDbService _yandexDbService;
     private readonly IDatabaseContext _databaseContext;
     private readonly YoutubeClient _youtubeClient;
+    private readonly IMessageQueueClient _messageQueueClient;
 
     public Handler()
     {
@@ -23,11 +25,13 @@ public class Handler : IHandler<MessageQueueEvent>
         _yandexDbService = services.GetRequiredService<IYandexDbService>();
         _databaseContext = services.GetRequiredService<IDatabaseContext>();
         _youtubeClient = services.GetRequiredService<YoutubeClient>();
+        _messageQueueClient = services.GetRequiredService<IMessageQueueClient>();
     }
 
     public async Task FunctionHandler(MessageQueueEvent messageQueueEvent)
     {
         await _yandexDbService.InitializeAsync();
+
         var messages = messageQueueEvent.GetMessages<ReceiveVideoMessage>();
 
         foreach (var message in messages)
@@ -58,6 +62,8 @@ public class Handler : IHandler<MessageQueueEvent>
 
                 movieRecognition.VideoId = video.Id;
                 await session.MovieRecognitions.SaveAsync(movieRecognition, TxControl.Tx(transaction).Commit());
+
+                await _messageQueueClient.SendAsync(new ProcessVideoMessage(video.Id));
             });
         }
     }

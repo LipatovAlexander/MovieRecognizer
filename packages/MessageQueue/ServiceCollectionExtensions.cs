@@ -34,7 +34,12 @@ public static class ServiceCollectionExtensions
                                            ?? throw new InvalidOperationException(
                                                "Required configuration RECEIVE_VIDEO_QUEUE not found");
 
+                var processVideoQueueUrl = configuration["PROCESS_VIDEO_QUEUE"]
+                                           ?? throw new InvalidOperationException(
+                                               "Required configuration PROCESS_VIDEO_QUEUE not found");
+
                 options.ReceiveVideoQueueUrl = new Uri(receiveVideoQueueUrl);
+                options.ProcessVideoQueueUrl = new Uri(processVideoQueueUrl);
             })
             .ValidateDataAnnotations()
             .ValidateOnStart();

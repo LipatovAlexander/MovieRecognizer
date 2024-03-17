@@ -17,26 +17,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install YC CLI
+      - name: Configure YC CLI
+        env:
+          YC_SA_JSON_CREDENTIALS: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
+          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
         run: |
           curl https://storage.yandexcloud.net/yandexcloud-yc/install.sh | \
           bash -s -- -i /opt/yc -n
           echo "/opt/yc/bin" >> $GITHUB_PATH
-
-      - name: Configure YC CLI
-        run: |
+          
           yc config profile create default
           echo "$YC_SA_JSON_CREDENTIALS" > key.json
           yc config set service-account-key key.json
           yc config set cloud-id "$YC_CLOUD_ID"
           yc config set folder-id "$YC_FOLDER_ID"
-        env:
-          YC_SA_JSON_CREDENTIALS: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
-          YC_CLOUD_ID: ${{ secrets.YC_CLOUD_ID }}
-          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
-
-      - name: Set YC environment variables
-        run: |
+          
           echo "YC_TOKEN=$(yc iam create-token)" >> $GITHUB_ENV
           echo "YC_CLOUD_ID=$(yc config get cloud-id)" >> $GITHUB_ENV
           echo "YC_FOLDER_ID=$(yc config get folder-id)" >> $GITHUB_ENV
@@ -46,19 +42,25 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Publish ReceiveVideoHandler
+      - name: Publish recognition-functions
         run: |
           dotnet publish recognition-functions/ReceiveVideoHandler/ReceiveVideoHandler.csproj -o receive-video-handler
           cd receive-video-handler
           zip -r ${{ github.sha }}.zip .
+          
+          dotnet publish recognition-functions/ProcessVideoHandler/ProcessVideoHandler.csproj -o process-video-handler
+          cd process-video-handler
+          zip -r ${{ github.sha }}.zip .
 
-      - name: Upload ReceiveVideoHandler
+      - name: Upload recognition-functions
         uses: yc-actions/yc-obj-storage-upload@v2
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           bucket: ${{ secrets.FUNCTION_PACKAGES_BUCKET }}
           root: .
-          include: receive-video-handler/${{ github.sha }}.zip
+          include: |
+            receive-video-handler/${{ github.sha }}.zip
+            process-video-handler/${{ github.sha }}.zip
 
       - name: Login to Yandex Cloud Container Registry
         id: login-cr
@@ -67,15 +69,12 @@ jobs:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
 
       - name: Publish Api
-        run: |
-          dotnet publish Api/Api.csproj -o Api/publish
-
-      - name: Build, tag, and push API
         env:
           CR_REGISTRY: ${{ secrets.YCR_REGISTRY }}
           CR_REPOSITORY: api
           IMAGE_TAG: ${{ github.sha }}
         run: |
+          dotnet publish Api/Api.csproj -o Api/publish
           docker build -f Api/Dockerfile -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
 
@@ -94,10 +93,3 @@ jobs:
             api_registry = "${{ secrets.YCR_REGISTRY }}"
             api_repository = "api"
             function_packages_bucket = "${{ secrets.FUNCTION_PACKAGES_BUCKET }}"
-
-      - name: Remove Docker image
-        env:
-          CR_REGISTRY: ${{ secrets.YCR_REGISTRY }}
-          CR_REPOSITORY: api
-          IMAGE_TAG: ${{ github.sha }}
-        run: docker rmi cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG

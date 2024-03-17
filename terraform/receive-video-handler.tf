@@ -23,15 +23,15 @@ resource "yandex_function" "receive-video-handler" {
     bucket_name = var.function_packages_bucket
     object_name = "receive-video-handler/${var.github_sha}.zip"
   }
-  environment = {
-    YDB_ENDPOINT          = "grpcs://${yandex_ydb_database_serverless.main-db.ydb_api_endpoint}"
-    YDB_DATABASE_PATH     = yandex_ydb_database_serverless.main-db.database_path
-    AWS_ACCESS_KEY_ID     = yandex_iam_service_account_static_access_key.receive-video-handler-sa-key.access_key
-    AWS_SECRET_ACCESS_KEY = yandex_iam_service_account_static_access_key.receive-video-handler-sa-key.secret_key
-    AWS_DEFAULT_REGION    = "ru-central1"
-    AWS_SQS_SERVICE_URL   = "https://message-queue.api.cloud.yandex.net"
-    RECEIVE_VIDEO_QUEUE   = yandex_message_queue.receive-video-handler-queue.id
-  }
+  environment = merge(
+    {
+      AWS_ACCESS_KEY_ID     = yandex_iam_service_account_static_access_key.receive-video-handler-sa-key.access_key
+      AWS_SECRET_ACCESS_KEY = yandex_iam_service_account_static_access_key.receive-video-handler-sa-key.secret_key
+      AWS_DEFAULT_REGION    = "ru-central1"
+    },
+    local.data_env,
+    local.message_queue_env,
+  )
   service_account_id = yandex_iam_service_account.receive-video-handler-sa.id
 }
 
