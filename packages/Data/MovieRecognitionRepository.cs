@@ -66,7 +66,7 @@ public class MovieRecognitionRepository(Session session) : IRepository<MovieReco
                              DECLARE $status AS Utf8;
                              DECLARE $video_id AS Utf8?;
 
-                             UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id)
+                             UPSERT INTO `movie-recognition`(idd, video_url, created_at, status, video_id)
                              VALUES ($id, $video_url, $created_at, $status, $video_id);
                              """;
 
