@@ -1,16 +1,23 @@
+using System.Text.Json.Serialization;
 using Domain;
 
 namespace Api.Models;
 
 public class MovieRecognitionDto
 {
-    public required Guid Id { get; set; }
-    
-    public required Uri VideoUrl { get; set; }
+    [JsonPropertyName("id")] public required Guid Id { get; set; }
 
-    public required DateTime CreatedAt { get; set; }
+    [JsonPropertyName("video_url")] public required Uri VideoUrl { get; set; }
 
-    public required MovieRecognitionStatus Status { get; set; }
-    
-    public required Guid? VideoId { get; set; }
+    [JsonPropertyName("created_at")] public required DateTime CreatedAt { get; set; }
+
+    [JsonPropertyName("status")] public required MovieRecognitionStatus Status { get; set; }
+
+    [JsonPropertyName("video")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public VideoDto? Video { get; set; }
+
+    [JsonPropertyName("failure_message")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public required string? FailureMessage { get; set; }
 }

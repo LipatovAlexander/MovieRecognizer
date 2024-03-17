@@ -32,7 +32,23 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
             return TypedResults.NotFound(Responses.Error(CommonErrorCodes.NotFound));
         }
 
-        return TypedResults.Ok(Responses.Success(movieRecognition.ToDto()));
+        var dto = movieRecognition.ToDto();
+
+        if (movieRecognition.VideoId is not null)
+        {
+            var video = await databaseContext.ExecuteAsync(async session =>
+            {
+                var (video, _) = await session.Videos.GetAsync(
+                    movieRecognition.VideoId.Value,
+                    TxControl.BeginSerializableRW().Commit());
+
+                return video;
+            });
+
+            dto.Video = video.ToDto();
+        }
+
+        return TypedResults.Ok(Responses.Success(dto));
     }
 
     public static void AddRoute(IEndpointRouteBuilder builder)

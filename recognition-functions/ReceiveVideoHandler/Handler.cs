@@ -1,6 +1,7 @@
 using CloudFunctions;
 using CloudFunctions.MessageQueue;
 using Data;
+using Domain;
 using MessageQueue;
 using MessageQueue.Messages;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,7 +37,7 @@ public class Handler : IHandler<MessageQueueEvent>
 
         foreach (var message in messages)
         {
-            await _databaseContext.ExecuteAsync(async session =>
+            var movieRecognition = await _databaseContext.ExecuteAsync(async session =>
             {
                 var (movieRecognition, transaction) = await session.MovieRecognitions.GetAsync(
                     message.MovieRecognitionId,
@@ -44,29 +45,34 @@ public class Handler : IHandler<MessageQueueEvent>
 
                 transaction.EnsureNotNull();
 
-                throw new Exception();
+                movieRecognition.Status = MovieRecognitionStatus.InProgress;
+                await session.MovieRecognitions.SaveAsync(movieRecognition, TxControl.Tx(transaction).Commit());
 
-                var videoId = VideoId.TryParse(movieRecognition.VideoUrl.ToString())
-                              ?? throw new InvalidOperationException("Invalid video url");
+                return movieRecognition;
+            });
 
-                var youtubeVideo = await _youtubeClient.Videos.GetAsync(videoId);
+            var videoId = VideoId.TryParse(movieRecognition.VideoUrl.ToString())
+                          ?? throw new InvalidOperationException("Invalid video url");
 
-                var title = youtubeVideo.Title;
-                var author = youtubeVideo.Author.ChannelTitle;
-                var duration = youtubeVideo.Duration
-                               ?? throw new InvalidOperationException("Could not determine video duration");
+            var youtubeVideo = await _youtubeClient.Videos.GetAsync(videoId);
 
-                var video = new Video(videoId.Value, title, author, duration);
+            var title = youtubeVideo.Title;
+            var author = youtubeVideo.Author.ChannelTitle;
+            var duration = youtubeVideo.Duration
+                           ?? throw new InvalidOperationException("Could not determine video duration");
 
-                transaction = await session.Videos.SaveAsync(video, TxControl.Tx(transaction));
+            var video = new Video(videoId.Value, title, author, duration);
 
+            await _databaseContext.ExecuteAsync(async session =>
+            {
+                var transaction = await session.Videos.SaveAsync(video, TxControl.BeginSerializableRW().Commit());
                 transaction.EnsureNotNull();
 
                 movieRecognition.VideoId = video.Id;
                 await session.MovieRecognitions.SaveAsync(movieRecognition, TxControl.Tx(transaction).Commit());
-
-                await _messageQueueClient.SendAsync(new ProcessVideoMessage(video.Id));
             });
+
+            await _messageQueueClient.SendAsync(new ProcessVideoMessage(video.Id));
         }
     }
 }
