@@ -43,13 +43,15 @@ public class MovieRecognitionRepository(Session session) : IRepository<MovieReco
         var createdAt = row["created_at"].GetDatetime();
         var rawVideoId = row["video_id"].GetOptionalUtf8();
         var videoId = rawVideoId is null ? null as Guid? : Guid.Parse(rawVideoId);
+        var failureMessage = row["failure_message"].GetOptionalUtf8();
 
         var movieRecognition = new MovieRecognition(videoUrl)
         {
             Id = returnedId,
             Status = status,
             CreatedAt = createdAt,
-            VideoId = videoId
+            VideoId = videoId,
+            FailureMessage = failureMessage
         };
 
         return (movieRecognition, response.Tx);
@@ -65,9 +67,10 @@ public class MovieRecognitionRepository(Session session) : IRepository<MovieReco
                              DECLARE $created_at AS Datetime;
                              DECLARE $status AS Utf8;
                              DECLARE $video_id AS Utf8?;
+                             DECLARE $failure_message AS Utf8?;
 
-                             UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id)
-                             VALUES ($id, $video_url, $created_at, $status, $video_id);
+                             UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id, failure_message)
+                             VALUES ($id, $video_url, $created_at, $status, $video_id, $failure_message);
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
@@ -76,7 +79,8 @@ public class MovieRecognitionRepository(Session session) : IRepository<MovieReco
             ["$video_url"] = YdbValue.MakeUtf8(entity.VideoUrl.ToString()),
             ["$created_at"] = YdbValue.MakeDatetime(entity.CreatedAt),
             ["$status"] = YdbValue.MakeUtf8(entity.Status.ToString()),
-            ["$video_id"] = YdbValue.MakeOptionalUtf8(entity.VideoId?.ToString())
+            ["$video_id"] = YdbValue.MakeOptionalUtf8(entity.VideoId?.ToString()),
+            ["$failure_message"] = YdbValue.MakeOptionalUtf8(entity.FailureMessage)
         };
 
         var response = await _session.ExecuteDataQuery(query, txControl, parameters);

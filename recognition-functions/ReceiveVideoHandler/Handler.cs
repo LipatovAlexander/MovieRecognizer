@@ -65,7 +65,7 @@ public class Handler : IHandler<MessageQueueEvent>
 
             await _databaseContext.ExecuteAsync(async session =>
             {
-                var transaction = await session.Videos.SaveAsync(video, TxControl.BeginSerializableRW().Commit());
+                var transaction = await session.Videos.SaveAsync(video, TxControl.BeginSerializableRW());
                 transaction.EnsureNotNull();
 
                 movieRecognition.VideoId = video.Id;
