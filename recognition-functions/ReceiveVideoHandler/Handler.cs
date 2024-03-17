@@ -56,6 +56,7 @@ public class Handler : IHandler<MessageQueueEvent>
 
                 transaction.EnsureNotNull();
 
+                movieRecognition.VideoId = video.Id;
                 await session.MovieRecognitions.SaveAsync(movieRecognition, TxControl.Tx(transaction).Commit());
             });
         }
