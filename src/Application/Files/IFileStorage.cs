@@ -1,8 +1,0 @@
-namespace Application.Files;
-
-public interface IFileStorage
-{
-    Task UploadAsync(TempFile tempFile, string key, CancellationToken cancellationToken);
-
-    Uri GetUrl(string key);
-}

@@ -1,8 +1,0 @@
-GET http://localhost:5296/recognition/c0b97b16-f38d-4fed-b69f-fae3e0686b45
-Accept: application/json
-
-###
-
-POST http://localhost:5296/recognition?videoUrl=https://youtube.com/shorts/Rz0teFp0qRw?si=hfgLqPjapZWUZbY9
-
-###
