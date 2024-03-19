@@ -8,7 +8,7 @@ resource "yandex_storage_bucket" "bucket" {
   secret_key = var.deployer_secret_key
 
   grant {
-    id          = yandex_iam_service_account.process-video-handler-sa.id
+    id          = module.process-video-handler.service_account_id
     type        = "CanonicalUser"
     permissions = ["READ", "WRITE"]
   }

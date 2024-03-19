@@ -6,8 +6,8 @@ locals {
 
   message_queue_env = {
     AWS_SQS_SERVICE_URL = "https://message-queue.api.cloud.yandex.net"
-    RECEIVE_VIDEO_QUEUE = yandex_message_queue.receive-video-handler-queue.id
-    PROCESS_VIDEO_QUEUE = yandex_message_queue.process-video-handler-queue.id
+    RECEIVE_VIDEO_QUEUE = module.receive-video-handler.queue_id
+    PROCESS_VIDEO_QUEUE = module.process-video-handler.queue_id
   }
 
   file_storage_env = {
