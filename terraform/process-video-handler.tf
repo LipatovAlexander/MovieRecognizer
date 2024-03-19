@@ -18,7 +18,7 @@ resource "yandex_function" "process-video-handler" {
   runtime           = "dotnet8"
   entrypoint        = "ProcessVideoHandler.Handler"
   memory            = "128"
-  execution_timeout = "10"
+  execution_timeout = "60"
   package {
     bucket_name = var.function_packages_bucket
     object_name = "process-video-handler/${var.github_sha}.zip"
@@ -38,7 +38,7 @@ resource "yandex_function" "process-video-handler" {
 
 resource "yandex_message_queue" "process-video-handler-queue" {
   name                       = "process-video-handler-queue"
-  visibility_timeout_seconds = 10
+  visibility_timeout_seconds = 60
   message_retention_seconds  = 1209600
 
   access_key = var.deployer_access_key
