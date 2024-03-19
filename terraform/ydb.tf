@@ -90,3 +90,31 @@ resource "yandex_ydb_table" "video" {
 
   primary_key = ["id"]
 }
+
+resource "yandex_ydb_table" "video_frame" {
+  path              = "video_frame"
+  connection_string = yandex_ydb_database_serverless.main-db.ydb_full_endpoint
+
+  column {
+    name     = "id"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "video_id"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "timestamp"
+    type     = "Interval"
+    not_null = true
+  }
+  column {
+    name     = "external_id"
+    type     = "Utf8"
+    not_null = true
+  }
+
+  primary_key = ["id"]
+}

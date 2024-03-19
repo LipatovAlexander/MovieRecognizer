@@ -4,19 +4,17 @@ using Ydb.Sdk.Value;
 
 namespace Data;
 
-public class VideoRepository(Session session) : IRepository<Video, Guid>
+public class VideoFrameRepository(Session session) : IRepository<VideoFrame, Guid>
 {
     private readonly Session _session = session;
 
-    public async Task<(Video?, Transaction?)> TryGetAsync(
-        Guid id,
-        TxControl txControl)
+    public async Task<(VideoFrame?, Transaction?)> TryGetAsync(Guid id, TxControl txControl)
     {
         const string query = """
                              DECLARE $id AS Utf8;
 
                              SELECT *
-                             FROM video
+                             FROM video_frame
                              WHERE id = $id;
                              """;
 
@@ -38,12 +36,11 @@ public class VideoRepository(Session session) : IRepository<Video, Guid>
         }
 
         var returnedId = Guid.Parse(row["id"].GetUtf8());
+        var videoId = Guid.Parse(row["video_id"].GetUtf8());
+        var timestamp = row["timestamp"].GetInterval();
         var externalId = row["external_id"].GetUtf8();
-        var title = row["title"].GetUtf8();
-        var author = row["author"].GetUtf8();
-        var duration = row["duration"].GetInterval();
 
-        var video = new Video(externalId, title, author, duration)
+        var video = new VideoFrame(videoId, timestamp, externalId)
         {
             Id = returnedId
         };
@@ -51,26 +48,24 @@ public class VideoRepository(Session session) : IRepository<Video, Guid>
         return (video, response.Tx);
     }
 
-    public async Task<Transaction?> SaveAsync(Video video, TxControl txControl)
+    public async Task<Transaction?> SaveAsync(VideoFrame entity, TxControl txControl)
     {
         const string query = """
                              DECLARE $id AS Utf8;
+                             DECLARE $video_id AS Utf8;
+                             DECLARE $timestamp AS Interval;
                              DECLARE $external_id AS Utf8;
-                             DECLARE $title AS Utf8;
-                             DECLARE $author AS Utf8;
-                             DECLARE $duration AS Interval;
 
-                             UPSERT INTO video(id, external_id, title, author, duration)
-                             VALUES ($id, $external_id, $title, $author, $duration);
+                             UPSERT INTO video_frame(id, video_id, timestamp, external_id)
+                             VALUES ($id, $video_id, $timestamp, $external_id);
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
         {
-            ["$id"] = YdbValue.MakeUtf8(video.Id.ToString()),
-            ["$external_id"] = YdbValue.MakeUtf8(video.ExternalId),
-            ["$title"] = YdbValue.MakeUtf8(video.Title),
-            ["$author"] = YdbValue.MakeUtf8(video.Author),
-            ["$duration"] = YdbValue.MakeInterval(video.Duration)
+            ["$id"] = YdbValue.MakeUtf8(entity.Id.ToString()),
+            ["$video_id"] = YdbValue.MakeUtf8(entity.VideoId.ToString()),
+            ["$timestamp"] = YdbValue.MakeInterval(entity.Timestamp),
+            ["$external_id"] = YdbValue.MakeUtf8(entity.ExternalId),
         };
 
         var response = await _session.ExecuteDataQuery(
