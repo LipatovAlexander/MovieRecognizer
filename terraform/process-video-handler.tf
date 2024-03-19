@@ -36,6 +36,30 @@ resource "yandex_function" "process-video-handler" {
   service_account_id = yandex_iam_service_account.process-video-handler-sa.id
 }
 
+resource "yandex_function" "process-video-failure-handler" {
+  name              = "process-video-failure-handler"
+  user_hash         = var.github_sha
+  runtime           = "dotnet8"
+  entrypoint        = "ProcessVideoHandler.FailureHandler"
+  memory            = "128"
+  execution_timeout = "60"
+  package {
+    bucket_name = var.function_packages_bucket
+    object_name = "process-video-handler/${var.github_sha}.zip"
+  }
+  environment = merge(
+    {
+      AWS_ACCESS_KEY_ID     = yandex_iam_service_account_static_access_key.process-video-handler-sa-key.access_key
+      AWS_SECRET_ACCESS_KEY = yandex_iam_service_account_static_access_key.process-video-handler-sa-key.secret_key
+      AWS_DEFAULT_REGION    = "ru-central1"
+    },
+    local.data_env,
+    local.message_queue_env,
+    local.file_storage_env
+  )
+  service_account_id = yandex_iam_service_account.process-video-handler-sa.id
+}
+
 resource "yandex_message_queue" "process-video-handler-queue" {
   name                       = "process-video-handler-queue"
   visibility_timeout_seconds = 60
@@ -67,6 +91,20 @@ resource "yandex_function_trigger" "process-video-handler-trigger" {
   }
   function {
     id                 = yandex_function.process-video-handler.id
+    service_account_id = yandex_iam_service_account.process-video-handler-trigger-sa.id
+  }
+}
+
+resource "yandex_function_trigger" "process-video-failure-handler-trigger" {
+  name = "process-video-failure-handler-trigger"
+  message_queue {
+    queue_id           = yandex_message_queue.process-video-handler-deadletter-queue.arn
+    service_account_id = yandex_iam_service_account.process-video-handler-trigger-sa.id
+    batch_size         = "1"
+    batch_cutoff       = "0"
+  }
+  function {
+    id                 = yandex_function.process-video-failure-handler.id
     service_account_id = yandex_iam_service_account.process-video-handler-trigger-sa.id
   }
 }

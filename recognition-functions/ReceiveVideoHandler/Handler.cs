@@ -61,7 +61,7 @@ public class Handler : IHandler<MessageQueueEvent>
             var duration = youtubeVideo.Duration
                            ?? throw new InvalidOperationException("Could not determine video duration");
 
-            var video = new Video(videoId.Value, title, author, duration);
+            var video = new Video(movieRecognition.Id, videoId.Value, title, author, duration);
 
             await _databaseContext.ExecuteAsync(async session =>
             {

@@ -87,6 +87,11 @@ resource "yandex_ydb_table" "video" {
     type     = "Interval"
     not_null = true
   }
+  column {
+    name     = "movie_recognition_id"
+    type     = "Utf8"
+    not_null = true
+  }
 
   primary_key = ["id"]
 }
