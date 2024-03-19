@@ -52,7 +52,10 @@ jobs:
           cd ../
           
           dotnet publish recognition-functions/ProcessVideoHandler/ProcessVideoHandler.csproj -o process-video-handler
+          curl -L -o ffmpeg.tar.xz https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz
+          tar -xvf ffmpeg.tar.xz --strip-components=1 -C ./process-video-handler/
           cd process-video-handler
+          chmod +x ffmpeg
           zip -r ${{ github.sha }}.zip .
           cd ../
 

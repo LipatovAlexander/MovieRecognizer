@@ -31,6 +31,7 @@ resource "yandex_function" "process-video-handler" {
     },
     local.data_env,
     local.message_queue_env,
+    local.file_storage_env
   )
   service_account_id = yandex_iam_service_account.process-video-handler-sa.id
 }

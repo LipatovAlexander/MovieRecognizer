@@ -10,7 +10,13 @@
         <ProjectReference Include="..\..\Domain\Domain.csproj"/>
         <ProjectReference Include="..\..\packages\CloudFunctions\CloudFunctions.csproj"/>
         <ProjectReference Include="..\..\packages\Data\Data.csproj"/>
+        <ProjectReference Include="..\..\packages\Files\Files.csproj"/>
         <ProjectReference Include="..\..\packages\MessageQueue\MessageQueue.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CliWrap" Version="3.6.6"/>
+        <PackageReference Include="YoutubeExplode" Version="6.3.13"/>
     </ItemGroup>
 
 </Project>

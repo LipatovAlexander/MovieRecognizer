@@ -9,4 +9,9 @@ locals {
     RECEIVE_VIDEO_QUEUE = yandex_message_queue.receive-video-handler-queue.id
     PROCESS_VIDEO_QUEUE = yandex_message_queue.process-video-handler-queue.id
   }
+
+  file_storage_env = {
+    AWS_S3_SERVICE_URL = "https://s3.yandexcloud.net"
+    S3_BUCKET          = yandex_storage_bucket.bucket.bucket
+  }
 }
