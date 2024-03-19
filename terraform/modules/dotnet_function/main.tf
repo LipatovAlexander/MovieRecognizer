@@ -2,7 +2,7 @@ resource "yandex_iam_service_account" "sa" {
   name = "${var.name}-handler-sa"
 }
 
-resource "yandex_resourcemanager_folder_iam_member" "process-video-handler-sa-ymq-writer" {
+resource "yandex_resourcemanager_folder_iam_member" "roles" {
   for_each = toset(var.roles)
 
   folder_id = var.folder_id
@@ -23,7 +23,7 @@ resource "yandex_function" "handler" {
   execution_timeout = var.execution_timeout
   package {
     bucket_name = var.bucket
-    object_name = "${var.name}/${var.github_sha}.zip"
+    object_name = "${var.name}-handler/${var.github_sha}.zip"
   }
   environment = merge(
     {
