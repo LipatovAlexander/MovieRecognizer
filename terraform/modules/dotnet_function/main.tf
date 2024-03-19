@@ -1,5 +1,5 @@
 resource "yandex_iam_service_account" "sa" {
-  name = '${var.name}-handler-sa'
+  name = "${var.name}-handler-sa"
 }
 
 resource "yandex_resourcemanager_folder_iam_member" "process-video-handler-sa-ymq-writer" {
