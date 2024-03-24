@@ -44,10 +44,12 @@ public class VideoFrameSessionRepository(Session session) : IVideoFrameSessionRe
         var videoId = Guid.Parse(row["video_id"].GetUtf8());
         var timestamp = row["timestamp"].GetInterval();
         var externalId = row["external_id"].GetUtf8();
+        var processed = row["processed"].GetBool();
 
         var videoFrame = new VideoFrame(videoId, timestamp, externalId)
         {
-            Id = returnedId
+            Id = returnedId,
+            Processed = processed
         };
 
         return (videoFrame, response.Tx);
@@ -60,9 +62,10 @@ public class VideoFrameSessionRepository(Session session) : IVideoFrameSessionRe
                              DECLARE $video_id AS Utf8;
                              DECLARE $timestamp AS Interval;
                              DECLARE $external_id AS Utf8;
+                             DECLARE $processed AS Bool;
 
-                             UPSERT INTO video_frame(id, video_id, timestamp, external_id)
-                             VALUES ($id, $video_id, $timestamp, $external_id);
+                             UPSERT INTO video_frame(id, video_id, timestamp, external_id, processed)
+                             VALUES ($id, $video_id, $timestamp, $external_id, $processed);
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
@@ -71,6 +74,7 @@ public class VideoFrameSessionRepository(Session session) : IVideoFrameSessionRe
             ["$video_id"] = YdbValue.MakeUtf8(entity.VideoId.ToString()),
             ["$timestamp"] = YdbValue.MakeInterval(entity.Timestamp),
             ["$external_id"] = YdbValue.MakeUtf8(entity.ExternalId),
+            ["$processed"] = YdbValue.MakeBool(entity.Processed)
         };
 
         var response = await _session.ExecuteDataQuery(
@@ -112,10 +116,12 @@ public class VideoFrameSessionRepository(Session session) : IVideoFrameSessionRe
                 var returnedVideoId = Guid.Parse(row["video_id"].GetUtf8());
                 var timestamp = row["timestamp"].GetInterval();
                 var externalId = row["external_id"].GetUtf8();
+                var processed = row["processed"].GetBool();
 
                 return new VideoFrame(returnedVideoId, timestamp, externalId)
                 {
-                    Id = id
+                    Id = id,
+                    Processed = processed
                 };
             })
             .ToArray();

@@ -5,6 +5,7 @@ using Domain;
 using Files;
 using MessageQueue.Messages;
 using Microsoft.Extensions.DependencyInjection;
+using Ydb.Sdk.Services.Table;
 
 namespace RecognizeFrameHandler;
 
@@ -56,11 +57,26 @@ public class Handler : IHandler<MessageQueueEvent>
                 })
                 .ToArray();
 
-            foreach (var recognizedTitle in recognizedTitles)
+            await _databaseContext.ExecuteAsync(async session =>
             {
-                var videoFrameRecognition = new VideoFrameRecognition(videoFrame.Id, recognizedTitle);
-                await _databaseContext.VideoFrameRecognitions.SaveAsync(videoFrameRecognition);
-            }
+                Transaction? transaction = null;
+
+                foreach (var recognizedTitle in recognizedTitles)
+                {
+                    var videoFrameRecognition = new VideoFrameRecognition(videoFrame.Id, recognizedTitle);
+
+                    var txControl = transaction is not null
+                        ? TxControl.Tx(transaction)
+                        : TxControl.BeginSerializableRW();
+
+                    transaction = await session.VideoFrameRecognitions.SaveAsync(videoFrameRecognition, txControl);
+                }
+
+                transaction.EnsureNotNull();
+
+                videoFrame.Processed = true;
+                await session.VideoFrames.SaveAsync(videoFrame, TxControl.Tx(transaction).Commit());
+            });
         }
     }
 }

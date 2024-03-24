@@ -10,7 +10,8 @@ public static class VideoFrameMapper
         return new VideoFrameDto
         {
             Timestamp = videoFrame.Timestamp,
-            FileUrl = fileUrl
+            FileUrl = fileUrl,
+            Processed = videoFrame.Processed
         };
     }
 }

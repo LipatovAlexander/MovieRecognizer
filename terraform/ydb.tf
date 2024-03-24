@@ -121,6 +121,11 @@ resource "yandex_ydb_table" "video_frame" {
     type     = "Utf8"
     not_null = true
   }
+  column {
+    name     = "processed"
+    type     = "Bool"
+    not_null = true
+  }
 
   primary_key = ["id"]
 }

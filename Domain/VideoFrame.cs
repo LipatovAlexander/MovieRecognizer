@@ -6,4 +6,5 @@ public class VideoFrame(Guid videoId, TimeSpan timestamp, string externalId)
     public Guid VideoId { get; set; } = videoId;
     public TimeSpan Timestamp { get; set; } = timestamp;
     public string ExternalId { get; set; } = externalId;
+    public bool Processed { get; set; }
 }
