@@ -4,7 +4,7 @@ using Ydb.Sdk.Value;
 
 namespace Data;
 
-public class MovieRecognitionRepository(Session session) : IRepository<MovieRecognition, Guid>
+public class MovieRecognitionSessionRepository(Session session) : ISessionRepository<MovieRecognition, Guid>
 {
     private readonly Session _session = session;
 

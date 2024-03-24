@@ -17,6 +17,7 @@ resource "yandex_ydb_database_iam_binding" "api-editor" {
     "serviceAccount:${yandex_iam_service_account.api-sa.id}",
     "serviceAccount:${module.receive-video-handler.service_account_id}",
     "serviceAccount:${module.process-video-handler.service_account_id}",
+    "serviceAccount:${module.recognize-frame-handler.service_account_id}"
   ]
 }
 
@@ -118,6 +119,29 @@ resource "yandex_ydb_table" "video_frame" {
   column {
     name     = "external_id"
     type     = "Utf8"
+    not_null = true
+  }
+
+  primary_key = ["id"]
+}
+
+resource "yandex_ydb_table" "video_frame_recognition" {
+  path              = "video_frame_recognition"
+  connection_string = yandex_ydb_database_serverless.main-db.ydb_full_endpoint
+
+  column {
+    name     = "id"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "video_frame_id"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "recognized_titles"
+    type     = "Json"
     not_null = true
   }
 

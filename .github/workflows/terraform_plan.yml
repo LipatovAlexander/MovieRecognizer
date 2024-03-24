@@ -58,6 +58,11 @@ jobs:
           chmod +x ffmpeg
           zip -r ${{ github.sha }}.zip .
           cd ../
+          
+          dotnet publish recognition-functions/RecognizeFrameHandler/RecognizeFrameHandler.csproj -o recognize-frame-handler
+          cd recognize-frame-handler
+          zip -r ${{ github.sha }}.zip .
+          cd ../
 
       - name: Upload recognition-functions
         uses: yc-actions/yc-obj-storage-upload@v2
@@ -68,6 +73,7 @@ jobs:
           include: |
             receive-video-handler/${{ github.sha }}.zip
             process-video-handler/${{ github.sha }}.zip
+            recognize-frame-handler/${{ github.sha }}.zip
 
       - name: Login to Yandex Cloud Container Registry
         id: login-cr

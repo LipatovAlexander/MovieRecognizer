@@ -5,14 +5,20 @@ namespace Data;
 
 public interface IDatabaseSession
 {
-    IRepository<MovieRecognition, Guid> MovieRecognitions { get; }
-    IRepository<Video, Guid> Videos { get; }
-    IRepository<VideoFrame, Guid> VideoFrames { get; }
+    ISessionRepository<MovieRecognition, Guid> MovieRecognitions { get; }
+    ISessionRepository<Video, Guid> Videos { get; }
+    ISessionRepository<VideoFrame, Guid> VideoFrames { get; }
+    ISessionRepository<VideoFrameRecognition, Guid> VideoFrameRecognitions { get; }
 }
 
 public class DatabaseSession(Session session) : IDatabaseSession
 {
-    public IRepository<MovieRecognition, Guid> MovieRecognitions { get; } = new MovieRecognitionRepository(session);
-    public IRepository<Video, Guid> Videos { get; } = new VideoRepository(session);
-    public IRepository<VideoFrame, Guid> VideoFrames { get; } = new VideoFrameRepository(session);
+    public ISessionRepository<MovieRecognition, Guid> MovieRecognitions { get; } =
+        new MovieRecognitionSessionRepository(session);
+
+    public ISessionRepository<Video, Guid> Videos { get; } = new VideoSessionRepository(session);
+    public ISessionRepository<VideoFrame, Guid> VideoFrames { get; } = new VideoFrameSessionRepository(session);
+
+    public ISessionRepository<VideoFrameRecognition, Guid> VideoFrameRecognitions { get; } =
+        new VideoFrameRecognitionSessionRepository(session);
 }

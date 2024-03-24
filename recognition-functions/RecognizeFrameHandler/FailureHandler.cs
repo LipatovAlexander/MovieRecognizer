@@ -5,7 +5,7 @@ using Domain;
 using MessageQueue.Messages;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ProcessVideoHandler;
+namespace RecognizeFrameHandler;
 
 public class FailureHandler : IHandler<MessageQueueEvent>
 {
@@ -20,19 +20,20 @@ public class FailureHandler : IHandler<MessageQueueEvent>
         _databaseContext = services.GetRequiredService<IDatabaseContext>();
     }
 
-    public async Task FunctionHandler(MessageQueueEvent request)
+    public async Task FunctionHandler(MessageQueueEvent messageQueueEvent)
     {
         await _yandexDbService.InitializeAsync();
 
-        var messages = request.GetMessages<ProcessVideoMessage>();
+        var messages = messageQueueEvent.GetMessages<RecognizeFrameMessage>();
 
         foreach (var message in messages)
         {
-            var video = await _databaseContext.Videos.GetAsync(message.VideoId);
+            var videoFrame = await _databaseContext.VideoFrames.GetAsync(message.VideoFrameId);
+            var video = await _databaseContext.Videos.GetAsync(videoFrame.VideoId);
             var movieRecognition = await _databaseContext.MovieRecognitions.GetAsync(video.MovieRecognitionId);
 
             movieRecognition.Status = MovieRecognitionStatus.Failed;
-            movieRecognition.FailureMessage = "Could not process video";
+            movieRecognition.FailureMessage = "Could not recognize frame";
 
             await _databaseContext.MovieRecognitions.SaveAsync(movieRecognition);
         }
