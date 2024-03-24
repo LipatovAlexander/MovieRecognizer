@@ -41,7 +41,7 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
             {
                 var videoFramesDto = new List<VideoFrameDto>();
 
-                foreach (var videoFrame in videoFrames)
+                foreach (var videoFrame in videoFrames.OrderBy(x => x.Timestamp))
                 {
                     var fileUrl = fileStorage.GetUrl(videoFrame.ExternalId);
                     var videoFrameDto = videoFrame.ToDto(fileUrl);
