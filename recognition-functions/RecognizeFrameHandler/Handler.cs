@@ -65,17 +65,20 @@ public class Handler : IHandler<MessageQueueEvent>
                 {
                     var videoFrameRecognition = new VideoFrameRecognition(videoFrame.Id, recognizedTitle);
 
-                    var txControl = transaction is not null
-                        ? TxControl.Tx(transaction)
-                        : TxControl.BeginSerializableRW();
-
-                    transaction = await session.VideoFrameRecognitions.SaveAsync(videoFrameRecognition, txControl);
+                    transaction = await session.VideoFrameRecognitions.SaveAsync(videoFrameRecognition, GetTxControl());
                 }
 
-                transaction.EnsureNotNull();
-
                 videoFrame.Processed = true;
-                await session.VideoFrames.SaveAsync(videoFrame, TxControl.Tx(transaction).Commit());
+                await session.VideoFrames.SaveAsync(videoFrame, GetTxControl().Commit());
+
+                return;
+
+                TxControl GetTxControl()
+                {
+                    return transaction is not null
+                        ? TxControl.Tx(transaction)
+                        : TxControl.BeginSerializableRW();
+                }
             });
         }
     }
