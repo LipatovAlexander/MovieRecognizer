@@ -51,7 +51,7 @@ public class YandexReverseImageSearchSettings
 
 public class YandexReverseImageSearchRequest
 {
-    public required Uri ImageUrl { get; set; }
+    [JsonPropertyName("imageUrl")] public required Uri ImageUrl { get; set; }
 }
 
 public class YandexReverseImageSearchResponse
