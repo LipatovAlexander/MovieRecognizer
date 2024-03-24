@@ -8,7 +8,7 @@ public interface IDatabaseContext
 {
     IRepository<MovieRecognition, Guid> MovieRecognitions { get; }
     IRepository<Video, Guid> Videos { get; }
-    IRepository<VideoFrame, Guid> VideoFrames { get; }
+    IVideoFrameRepository VideoFrames { get; }
     IRepository<VideoFrameRecognition, Guid> VideoFrameRecognitions { get; }
 
     Task<TResponse> ExecuteAsync<TResponse>(Func<IDatabaseSession, Task<TResponse>> execFunc);
@@ -21,7 +21,7 @@ public class DatabaseContext : IDatabaseContext
 
     public IRepository<MovieRecognition, Guid> MovieRecognitions { get; }
     public IRepository<Video, Guid> Videos { get; }
-    public IRepository<VideoFrame, Guid> VideoFrames { get; }
+    public IVideoFrameRepository VideoFrames { get; }
     public IRepository<VideoFrameRecognition, Guid> VideoFrameRecognitions { get; }
 
     public DatabaseContext(IYandexDbService yandexDbService)
@@ -30,7 +30,7 @@ public class DatabaseContext : IDatabaseContext
 
         MovieRecognitions = new Repository<MovieRecognition, Guid>(this, session => session.MovieRecognitions);
         Videos = new Repository<Video, Guid>(this, session => session.Videos);
-        VideoFrames = new Repository<VideoFrame, Guid>(this, session => session.VideoFrames);
+        VideoFrames = new VideoFrameRepository(this, session => session.VideoFrames);
         VideoFrameRecognitions =
             new Repository<VideoFrameRecognition, Guid>(this, session => session.VideoFrameRecognitions);
     }

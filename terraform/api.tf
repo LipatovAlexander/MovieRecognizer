@@ -35,6 +35,7 @@ resource "yandex_serverless_container" "test-container" {
       },
       local.data_env,
       local.message_queue_env,
+      local.file_storage_env
     )
   }
 }

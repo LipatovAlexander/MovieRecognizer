@@ -1,6 +1,7 @@
 using Api.Endpoints.CreateMovieRecognition;
 using Api.Endpoints.GetMovieRecognition;
 using Data;
+using Files;
 using MessageQueue;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ services.AddSwaggerGen();
 
 services.AddData();
 services.AddMessageQueue();
+services.AddFileStorage();
 
 services.AddValidator<CreateMovieRecognitionRequest, CreateMovieRecognitionRequestValidator>();
 

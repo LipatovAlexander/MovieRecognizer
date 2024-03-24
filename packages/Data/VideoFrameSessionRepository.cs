@@ -4,7 +4,12 @@ using Ydb.Sdk.Value;
 
 namespace Data;
 
-public class VideoFrameSessionRepository(Session session) : ISessionRepository<VideoFrame, Guid>
+public interface IVideoFrameSessionRepository : ISessionRepository<VideoFrame, Guid>
+{
+    Task<(IReadOnlyCollection<VideoFrame>, Transaction?)> ListAsync(Guid videoId, TxControl txControl);
+}
+
+public class VideoFrameSessionRepository(Session session) : IVideoFrameSessionRepository
 {
     private readonly Session _session = session;
 
@@ -40,12 +45,12 @@ public class VideoFrameSessionRepository(Session session) : ISessionRepository<V
         var timestamp = row["timestamp"].GetInterval();
         var externalId = row["external_id"].GetUtf8();
 
-        var video = new VideoFrame(videoId, timestamp, externalId)
+        var videoFrame = new VideoFrame(videoId, timestamp, externalId)
         {
             Id = returnedId
         };
 
-        return (video, response.Tx);
+        return (videoFrame, response.Tx);
     }
 
     public async Task<Transaction?> SaveAsync(VideoFrame entity, TxControl txControl)
@@ -76,5 +81,45 @@ public class VideoFrameSessionRepository(Session session) : ISessionRepository<V
         response.Status.EnsureSuccess();
 
         return response.Tx;
+    }
+
+    public async Task<(IReadOnlyCollection<VideoFrame>, Transaction?)> ListAsync(Guid videoId, TxControl txControl)
+    {
+        const string query = """
+                             DECLARE $video_id AS Utf8;
+
+                             SELECT *
+                             FROM video_frame
+                             WHERE video_id = $video_id;
+                             """;
+
+        var parameters = new Dictionary<string, YdbValue>
+        {
+            ["$video_id"] = YdbValue.MakeUtf8(videoId.ToString())
+        };
+
+        var response = await _session.ExecuteDataQuery(query, txControl, parameters);
+
+        response.Status.EnsureSuccess();
+
+        var resultSet = response.Result.ResultSets[0];
+        var rows = resultSet.Rows;
+
+        var videoFrames = rows
+            .Select(row =>
+            {
+                var id = Guid.Parse(row["id"].GetUtf8());
+                var returnedVideoId = Guid.Parse(row["video_id"].GetUtf8());
+                var timestamp = row["timestamp"].GetInterval();
+                var externalId = row["external_id"].GetUtf8();
+
+                return new VideoFrame(returnedVideoId, timestamp, externalId)
+                {
+                    Id = id
+                };
+            })
+            .ToArray();
+
+        return (videoFrames, response.Tx);
     }
 }

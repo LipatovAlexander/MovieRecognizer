@@ -11,8 +11,7 @@ public static class VideoMapper
         {
             Author = video.Author,
             Duration = video.Duration,
-            Title = video.Title,
-            ExternalId = video.ExternalId
+            Title = video.Title
         };
     }
 }

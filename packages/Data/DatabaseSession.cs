@@ -7,7 +7,7 @@ public interface IDatabaseSession
 {
     ISessionRepository<MovieRecognition, Guid> MovieRecognitions { get; }
     ISessionRepository<Video, Guid> Videos { get; }
-    ISessionRepository<VideoFrame, Guid> VideoFrames { get; }
+    IVideoFrameSessionRepository VideoFrames { get; }
     ISessionRepository<VideoFrameRecognition, Guid> VideoFrameRecognitions { get; }
 }
 
@@ -17,7 +17,7 @@ public class DatabaseSession(Session session) : IDatabaseSession
         new MovieRecognitionSessionRepository(session);
 
     public ISessionRepository<Video, Guid> Videos { get; } = new VideoSessionRepository(session);
-    public ISessionRepository<VideoFrame, Guid> VideoFrames { get; } = new VideoFrameSessionRepository(session);
+    public IVideoFrameSessionRepository VideoFrames { get; } = new VideoFrameSessionRepository(session);
 
     public ISessionRepository<VideoFrameRecognition, Guid> VideoFrameRecognitions { get; } =
         new VideoFrameRecognitionSessionRepository(session);
