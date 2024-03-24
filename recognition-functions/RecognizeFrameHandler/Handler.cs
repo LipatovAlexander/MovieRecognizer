@@ -45,7 +45,15 @@ public class Handler : IHandler<MessageQueueEvent>
 
             var recognizedTitles = reverseImageSearchResponse.KnowledgeGraph
                 .Where(x => x.Source == "Кинопоиск")
-                .Select(x => new RecognizedTitle(x.Title, x.Subtitle, x.Description, x.Link, x.Thumbnail))
+                .Select(x => new RecognizedTitle
+                {
+                    Title = x.Title,
+                    Subtitle = x.Subtitle,
+                    Description = x.Description,
+                    Source = x.Source,
+                    Link = x.Link,
+                    Thumbnail = x.Thumbnail
+                })
                 .ToArray();
 
             var videoFrameRecognition = new VideoFrameRecognition(videoFrame.Id, recognizedTitles);

@@ -7,11 +7,12 @@ public class VideoFrameRecognition(Guid videoFrameId, IReadOnlyCollection<Recogn
     public IReadOnlyCollection<RecognizedTitle> RecognizedTitles { get; set; } = recognizedTitles;
 }
 
-public class RecognizedTitle(string title, string subtitle, string description, Uri link, Uri thumbnail)
+public class RecognizedTitle
 {
-    public string Title { get; set; } = title;
-    public string Subtitle { get; set; } = subtitle;
-    public string Description { get; set; } = description;
-    public Uri Link { get; set; } = link;
-    public Uri Thumbnail { get; set; } = thumbnail;
+    public required string Title { get; set; }
+    public required string Subtitle { get; set; }
+    public required string Description { get; set; }
+    public required string Source { get; set; }
+    public required Uri Link { get; set; }
+    public required Uri Thumbnail { get; set; }
 }
