@@ -96,6 +96,7 @@ jobs:
         with:
           auto_approve: true
           path: terraform
+          replace: yandex_ydb_table.video_frame
           backend_config: |
             access_key=${{ secrets.YC_SA_ACCESS_KEY }}
             secret_key=${{ secrets.YC_SA_SECRET_KEY }}
