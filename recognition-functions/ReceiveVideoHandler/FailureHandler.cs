@@ -29,19 +29,12 @@ public class FailureHandler : IHandler<MessageQueueEvent>
 
         foreach (var message in messages)
         {
-            await _databaseContext.ExecuteAsync(async session =>
-            {
-                var (movieRecognition, transaction) = await session.MovieRecognitions.GetAsync(
-                    message.MovieRecognitionId,
-                    TxControl.BeginSerializableRW());
+            var movieRecognition = await _databaseContext.MovieRecognitions.GetAsync(message.MovieRecognitionId);
 
-                transaction.EnsureNotNull();
+            movieRecognition.Status = MovieRecognitionStatus.Failed;
+            movieRecognition.FailureMessage = "Could not receive video from video url";
 
-                movieRecognition.Status = MovieRecognitionStatus.Failed;
-                movieRecognition.FailureMessage = "Could not receive video from video url";
-
-                await session.MovieRecognitions.SaveAsync(movieRecognition, TxControl.Tx(transaction).Commit());
-            });
+            await _databaseContext.MovieRecognitions.SaveAsync(movieRecognition);
         }
     }
 }
