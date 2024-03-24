@@ -7,9 +7,9 @@ using CloudFunctions.MessageQueue;
 using Data;
 using Domain;
 using Files;
+using MessageQueue;
 using MessageQueue.Messages;
 using Microsoft.Extensions.DependencyInjection;
-using Ydb.Sdk.Services.Table;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 
@@ -21,6 +21,7 @@ public class Handler : IHandler<MessageQueueEvent>
     private readonly IDatabaseContext _databaseContext;
     private readonly YoutubeClient _youtubeClient;
     private readonly IFileStorage _fileStorage;
+    private readonly IMessageQueueClient _messageQueueClient;
 
     public Handler()
     {
@@ -30,6 +31,7 @@ public class Handler : IHandler<MessageQueueEvent>
         _databaseContext = services.GetRequiredService<IDatabaseContext>();
         _youtubeClient = services.GetRequiredService<YoutubeClient>();
         _fileStorage = services.GetRequiredService<IFileStorage>();
+        _messageQueueClient = services.GetRequiredService<IMessageQueueClient>();
     }
 
     public async Task FunctionHandler(MessageQueueEvent messageQueueEvent)
@@ -40,14 +42,7 @@ public class Handler : IHandler<MessageQueueEvent>
 
         foreach (var message in messages)
         {
-            var video = await _databaseContext.ExecuteAsync(async session =>
-            {
-                var (video, _) = await session.Videos.GetAsync(
-                    message.VideoId,
-                    TxControl.BeginSerializableRW().Commit());
-
-                return video;
-            });
+            var video = await _databaseContext.Videos.GetAsync(message.VideoId);
 
             using var videoFile = await DownloadVideoAsync(video);
 
@@ -60,10 +55,8 @@ public class Handler : IHandler<MessageQueueEvent>
 
                 var videoFrame = new VideoFrame(video.Id, timestamp, snapshot.FileName);
 
-                await _databaseContext.ExecuteAsync(async session =>
-                {
-                    await session.VideoFrames.SaveAsync(videoFrame, TxControl.BeginSerializableRW().Commit());
-                });
+                await _databaseContext.VideoFrames.SaveAsync(videoFrame);
+                await _messageQueueClient.SendAsync(new RecognizeFrameMessage(videoFrame.Id));
 
                 timestamp += TimeSpan.FromSeconds(3);
             }

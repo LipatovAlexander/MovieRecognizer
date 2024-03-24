@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessVideoHandler", "reco
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Files", "packages\Files\Files.csproj", "{B5824AE6-E8B7-4FA9-8A15-283A2AD375AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecognizeFrameHandler", "recognition-functions\RecognizeFrameHandler\RecognizeFrameHandler.csproj", "{D7A12355-9FF9-4AE6-9BA6-005972394F64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,7 @@ Global
 		{B9068584-3A64-4660-BFC3-0267B053F6B0} = {9CA4F8B0-4DBA-4B06-80E9-C1477C3C88FD}
 		{D78788AC-AA10-45FC-8889-72BB004E38E7} = {ACA6A923-BD1B-4C75-932B-52CC84FDB528}
 		{B5824AE6-E8B7-4FA9-8A15-283A2AD375AB} = {9CA4F8B0-4DBA-4B06-80E9-C1477C3C88FD}
+		{D7A12355-9FF9-4AE6-9BA6-005972394F64} = {ACA6A923-BD1B-4C75-932B-52CC84FDB528}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{55ECAF08-CE2B-483E-B92A-6CC6BD9674E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -75,5 +78,9 @@ Global
 		{B5824AE6-E8B7-4FA9-8A15-283A2AD375AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5824AE6-E8B7-4FA9-8A15-283A2AD375AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5824AE6-E8B7-4FA9-8A15-283A2AD375AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A12355-9FF9-4AE6-9BA6-005972394F64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7A12355-9FF9-4AE6-9BA6-005972394F64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7A12355-9FF9-4AE6-9BA6-005972394F64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7A12355-9FF9-4AE6-9BA6-005972394F64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

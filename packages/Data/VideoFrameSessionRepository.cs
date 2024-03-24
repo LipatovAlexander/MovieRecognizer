@@ -4,7 +4,7 @@ using Ydb.Sdk.Value;
 
 namespace Data;
 
-public class VideoFrameRepository(Session session) : IRepository<VideoFrame, Guid>
+public class VideoFrameSessionRepository(Session session) : ISessionRepository<VideoFrame, Guid>
 {
     private readonly Session _session = session;
 

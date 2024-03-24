@@ -38,8 +38,13 @@ public static class ServiceCollectionExtensions
                                            ?? throw new InvalidOperationException(
                                                "Required configuration PROCESS_VIDEO_QUEUE not found");
 
+                var recognizeFrameQueueUrl = configuration["RECOGNIZE_FRAME_QUEUE"]
+                                             ?? throw new InvalidOperationException(
+                                                 "Required configuration RECOGNIZE_FRAME_QUEUE not found");
+
                 options.ReceiveVideoQueueUrl = new Uri(receiveVideoQueueUrl);
                 options.ProcessVideoQueueUrl = new Uri(processVideoQueueUrl);
+                options.RecognizeFrameQueueUrl = new Uri(recognizeFrameQueueUrl);
             })
             .ValidateDataAnnotations()
             .ValidateOnStart();
