@@ -17,5 +17,6 @@ public enum MovieRecognitionStatus
     Created,
     InProgress,
     Failed,
-    Succeeded
+    Succeeded,
+    Invalid
 }

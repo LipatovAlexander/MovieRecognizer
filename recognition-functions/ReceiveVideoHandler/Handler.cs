@@ -37,19 +37,10 @@ public class Handler : IHandler<MessageQueueEvent>
 
         foreach (var message in messages)
         {
-            var movieRecognition = await _databaseContext.ExecuteAsync(async session =>
-            {
-                var (movieRecognition, transaction) = await session.MovieRecognitions.GetAsync(
-                    message.MovieRecognitionId,
-                    TxControl.BeginSerializableRW());
+            var movieRecognition = await _databaseContext.MovieRecognitions.GetAsync(message.MovieRecognitionId);
 
-                transaction.EnsureNotNull();
-
-                movieRecognition.Status = MovieRecognitionStatus.InProgress;
-                await session.MovieRecognitions.SaveAsync(movieRecognition, TxControl.Tx(transaction).Commit());
-
-                return movieRecognition;
-            });
+            movieRecognition.Status = MovieRecognitionStatus.InProgress;
+            await _databaseContext.MovieRecognitions.SaveAsync(movieRecognition);
 
             var videoId = VideoId.TryParse(movieRecognition.VideoUrl.ToString())
                           ?? throw new InvalidOperationException("Invalid video url");
@@ -60,6 +51,13 @@ public class Handler : IHandler<MessageQueueEvent>
             var author = youtubeVideo.Author.ChannelTitle;
             var duration = youtubeVideo.Duration
                            ?? throw new InvalidOperationException("Could not determine video duration");
+
+            if (duration > TimeSpan.FromMinutes(5))
+            {
+                movieRecognition.Status = MovieRecognitionStatus.Invalid;
+                movieRecognition.FailureMessage = "Maximum video duration is 5 minutes";
+                await _databaseContext.MovieRecognitions.SaveAsync(movieRecognition);
+            }
 
             var video = new Video(movieRecognition.Id, videoId.Value, title, author, duration);
 
