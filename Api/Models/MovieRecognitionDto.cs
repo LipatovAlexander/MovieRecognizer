@@ -17,6 +17,10 @@ public class MovieRecognitionDto
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public VideoDto? Video { get; set; }
 
+    [JsonPropertyName("recognized_movie")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public required RecognizedTitleDto? RecognizedMovie { get; set; }
+
     [JsonPropertyName("failure_message")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public required string? FailureMessage { get; set; }

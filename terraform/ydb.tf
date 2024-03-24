@@ -52,6 +52,11 @@ resource "yandex_ydb_table" "movie-recognition" {
     not_null = false
   }
   column {
+    name     = "recognized_movie"
+    type     = "Json"
+    not_null = false
+  }
+  column {
     name     = "failure_message"
     type     = "Utf8"
     not_null = false

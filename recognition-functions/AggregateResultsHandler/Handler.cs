@@ -29,8 +29,23 @@ public class Handler : IHandler<MessageQueueEvent>
         foreach (var message in messages)
         {
             var movieRecognition = await _databaseContext.MovieRecognitions.GetAsync(message.MovieRecognitionId);
+            var videoFrames = await _databaseContext.VideoFrames.ListAsync(movieRecognition.VideoId!.Value);
+
+            var recognizedTitles = new List<RecognizedTitle>();
+
+            foreach (var videoFrame in videoFrames)
+            {
+                var videoFrameRecognitions = await _databaseContext.VideoFrameRecognitions.ListAsync(videoFrame.Id);
+                recognizedTitles.AddRange(videoFrameRecognitions.Select(x => x.RecognizedTitle));
+            }
+
+            var recognizedMovie = recognizedTitles
+                .GroupBy(x => x)
+                .MaxBy(g => g.Count())
+                ?.Key;
 
             movieRecognition.Status = MovieRecognitionStatus.Succeeded;
+            movieRecognition.RecognizedMovie = recognizedMovie;
 
             await _databaseContext.MovieRecognitions.SaveAsync(movieRecognition);
         }

@@ -49,15 +49,7 @@ public class Handler : IHandler<MessageQueueEvent>
 
             var recognizedTitles = reverseImageSearchResponse.KnowledgeGraph
                 .Where(x => x.Source == "Кинопоиск")
-                .Select(x => new RecognizedTitle
-                {
-                    Title = x.Title,
-                    Subtitle = x.Subtitle,
-                    Description = x.Description,
-                    Source = x.Source,
-                    Link = x.Link,
-                    Thumbnail = x.Thumbnail
-                })
+                .Select(x => new RecognizedTitle(x.Title, x.Subtitle, x.Description, x.Source, x.Link, x.Thumbnail))
                 .ToArray();
 
             await _databaseContext.ExecuteAsync(async session =>

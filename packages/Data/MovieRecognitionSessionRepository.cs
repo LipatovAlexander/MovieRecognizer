@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Domain;
 using Ydb.Sdk.Services.Table;
 using Ydb.Sdk.Value;
@@ -43,6 +44,10 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
         var createdAt = row["created_at"].GetDatetime();
         var rawVideoId = row["video_id"].GetOptionalUtf8();
         var videoId = rawVideoId is null ? null as Guid? : Guid.Parse(rawVideoId);
+        var recognizedMovieJson = row["recognized_movie"].GetOptionalJson();
+        var recognizedMovie = recognizedMovieJson is not null
+            ? JsonSerializer.Deserialize<RecognizedTitle>(recognizedMovieJson)
+            : null;
         var failureMessage = row["failure_message"].GetOptionalUtf8();
 
         var movieRecognition = new MovieRecognition(videoUrl)
@@ -51,6 +56,7 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
             Status = status,
             CreatedAt = createdAt,
             VideoId = videoId,
+            RecognizedMovie = recognizedMovie,
             FailureMessage = failureMessage
         };
 
@@ -68,9 +74,10 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
                              DECLARE $status AS Utf8;
                              DECLARE $video_id AS Utf8?;
                              DECLARE $failure_message AS Utf8?;
+                             DECLARE $recognized_movie AS Json?;
 
-                             UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id, failure_message)
-                             VALUES ($id, $video_url, $created_at, $status, $video_id, $failure_message);
+                             UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id, failure_message, recognized_movie)
+                             VALUES ($id, $video_url, $created_at, $status, $video_id, $failure_message, $recognized_movie);
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
@@ -80,6 +87,10 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
             ["$created_at"] = YdbValue.MakeDatetime(entity.CreatedAt),
             ["$status"] = YdbValue.MakeUtf8(entity.Status.ToString()),
             ["$video_id"] = YdbValue.MakeOptionalUtf8(entity.VideoId?.ToString()),
+            ["$recognized_movie"] = YdbValue.MakeOptionalJson(
+                entity.RecognizedMovie is not null
+                    ? JsonSerializer.Serialize(entity.RecognizedMovie)
+                    : null),
             ["$failure_message"] = YdbValue.MakeOptionalUtf8(entity.FailureMessage)
         };
 

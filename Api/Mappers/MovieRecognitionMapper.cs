@@ -13,6 +13,7 @@ public static class MovieRecognitionMapper
             VideoUrl = movieRecognition.VideoUrl,
             Status = movieRecognition.Status,
             CreatedAt = movieRecognition.CreatedAt,
+            RecognizedMovie = movieRecognition.RecognizedMovie?.ToDto(),
             FailureMessage = movieRecognition.FailureMessage
         };
     }
