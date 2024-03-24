@@ -42,9 +42,14 @@ public static class ServiceCollectionExtensions
                                              ?? throw new InvalidOperationException(
                                                  "Required configuration RECOGNIZE_FRAME_QUEUE not found");
 
+                var aggregateResultsQueueUrl = configuration["AGGREGATE_RESULTS_QUEUE"]
+                                               ?? throw new InvalidOperationException(
+                                                   "Required configuration AGGREGATE_RESULTS_QUEUE not found");
+
                 options.ReceiveVideoQueueUrl = new Uri(receiveVideoQueueUrl);
                 options.ProcessVideoQueueUrl = new Uri(processVideoQueueUrl);
                 options.RecognizeFrameQueueUrl = new Uri(recognizeFrameQueueUrl);
+                options.AggregateResultsQueueUrl = new Uri(aggregateResultsQueueUrl);
             })
             .ValidateDataAnnotations()
             .ValidateOnStart();

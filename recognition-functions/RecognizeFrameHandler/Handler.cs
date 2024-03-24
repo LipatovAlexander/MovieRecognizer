@@ -3,6 +3,7 @@ using CloudFunctions.MessageQueue;
 using Data;
 using Domain;
 using Files;
+using MessageQueue;
 using MessageQueue.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Ydb.Sdk.Services.Table;
@@ -15,6 +16,7 @@ public class Handler : IHandler<MessageQueueEvent>
     private readonly IDatabaseContext _databaseContext;
     private readonly IFileStorage _fileStorage;
     private readonly IYandexReverseImageSearchClient _yandexReverseImageSearchClient;
+    private readonly IMessageQueueClient _messageQueueClient;
 
     public Handler()
     {
@@ -24,6 +26,7 @@ public class Handler : IHandler<MessageQueueEvent>
         _databaseContext = services.GetRequiredService<IDatabaseContext>();
         _fileStorage = services.GetRequiredService<IFileStorage>();
         _yandexReverseImageSearchClient = services.GetRequiredService<IYandexReverseImageSearchClient>();
+        _messageQueueClient = services.GetRequiredService<IMessageQueueClient>();
     }
 
     public async Task FunctionHandler(MessageQueueEvent messageQueueEvent)
@@ -80,6 +83,14 @@ public class Handler : IHandler<MessageQueueEvent>
                         : TxControl.BeginSerializableRW();
                 }
             });
+
+            var video = await _databaseContext.Videos.GetAsync(videoFrame.VideoId);
+            var videoFrames = await _databaseContext.VideoFrames.ListAsync(video.Id);
+
+            if (videoFrames.All(x => x.Processed))
+            {
+                await _messageQueueClient.SendAsync(new AggregateResultsMessage(video.MovieRecognitionId));
+            }
         }
     }
 }

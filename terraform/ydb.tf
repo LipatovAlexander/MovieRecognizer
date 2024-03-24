@@ -17,7 +17,8 @@ resource "yandex_ydb_database_iam_binding" "api-editor" {
     "serviceAccount:${yandex_iam_service_account.api-sa.id}",
     "serviceAccount:${module.receive-video-handler.service_account_id}",
     "serviceAccount:${module.process-video-handler.service_account_id}",
-    "serviceAccount:${module.recognize-frame-handler.service_account_id}"
+    "serviceAccount:${module.recognize-frame-handler.service_account_id}",
+    "serviceAccount:${module.aggregate-results-handler.service_account_id}"
   ]
 }
 

@@ -63,6 +63,11 @@ jobs:
           cd recognize-frame-handler
           zip -r ${{ github.sha }}.zip .
           cd ../
+          
+          dotnet publish recognition-functions/AggregateResultsHandler/AggregateResultsHandler.csproj -o aggregate-results-handler
+          cd aggregate-results-handler
+          zip -r ${{ github.sha }}.zip .
+          cd ../
 
       - name: Upload recognition-functions
         uses: yc-actions/yc-obj-storage-upload@v2
@@ -74,6 +79,7 @@ jobs:
             receive-video-handler/${{ github.sha }}.zip
             process-video-handler/${{ github.sha }}.zip
             recognize-frame-handler/${{ github.sha }}.zip
+            aggregate-results-handler/${{ github.sha }}.zip
 
       - name: Login to Yandex Cloud Container Registry
         id: login-cr
