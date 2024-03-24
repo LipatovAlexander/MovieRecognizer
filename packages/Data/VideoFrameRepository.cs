@@ -15,9 +15,6 @@ public class VideoFrameRepository(
 {
     private readonly IDatabaseContext _databaseContext = databaseContext;
 
-    private readonly Func<IDatabaseSession, ISessionRepository<VideoFrame, Guid>> _sessionRepositoryProvider =
-        sessionRepositoryProvider;
-
     public async Task<IReadOnlyCollection<VideoFrame>> ListAsync(Guid videoId)
     {
         return await _databaseContext.ExecuteAsync(async session =>

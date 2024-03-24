@@ -140,7 +140,7 @@ resource "yandex_ydb_table" "video_frame_recognition" {
     not_null = true
   }
   column {
-    name     = "recognized_titles"
+    name     = "recognized_title"
     type     = "Json"
     not_null = true
   }

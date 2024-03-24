@@ -44,7 +44,18 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
                 foreach (var videoFrame in videoFrames)
                 {
                     var fileUrl = fileStorage.GetUrl(videoFrame.ExternalId);
-                    videoFramesDto.Add(videoFrame.ToDto(fileUrl));
+                    var videoFrameDto = videoFrame.ToDto(fileUrl);
+
+                    var videoFrameRecognitions = await databaseContext.VideoFrameRecognitions.ListAsync(videoFrame.Id);
+
+                    if (videoFrameRecognitions.Count != 0)
+                    {
+                        videoFrameDto.RecognizedTitles = videoFrameRecognitions
+                            .Select(x => x.RecognizedTitle.ToDto())
+                            .ToArray();
+                    }
+
+                    videoFramesDto.Add(videoFrameDto);
                 }
 
                 videoDto.VideoFrames = videoFramesDto;

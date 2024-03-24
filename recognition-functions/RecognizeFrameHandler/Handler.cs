@@ -56,9 +56,11 @@ public class Handler : IHandler<MessageQueueEvent>
                 })
                 .ToArray();
 
-            var videoFrameRecognition = new VideoFrameRecognition(videoFrame.Id, recognizedTitles);
-
-            await _databaseContext.VideoFrameRecognitions.SaveAsync(videoFrameRecognition);
+            foreach (var recognizedTitle in recognizedTitles)
+            {
+                var videoFrameRecognition = new VideoFrameRecognition(videoFrame.Id, recognizedTitle);
+                await _databaseContext.VideoFrameRecognitions.SaveAsync(videoFrameRecognition);
+            }
         }
     }
 }

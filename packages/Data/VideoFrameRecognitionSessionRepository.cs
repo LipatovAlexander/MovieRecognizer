@@ -5,7 +5,12 @@ using Ydb.Sdk.Value;
 
 namespace Data;
 
-public class VideoFrameRecognitionSessionRepository(Session session) : ISessionRepository<VideoFrameRecognition, Guid>
+public interface IVideoFrameRecognitionSessionRepository : ISessionRepository<VideoFrameRecognition, Guid>
+{
+    Task<(IReadOnlyCollection<VideoFrameRecognition>, Transaction?)> ListAsync(Guid videoFrameId, TxControl txControl);
+}
+
+public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFrameRecognitionSessionRepository
 {
     private readonly Session _session = session;
 
@@ -38,8 +43,8 @@ public class VideoFrameRecognitionSessionRepository(Session session) : ISessionR
 
         var returnedId = Guid.Parse(row["id"].GetUtf8());
         var videoFrameId = Guid.Parse(row["video_frame_id"].GetUtf8());
-        var recognizedTitlesJson = row["recognized_titles"].GetJson();
-        var recognizedTitles = JsonSerializer.Deserialize<IReadOnlyCollection<RecognizedTitle>>(recognizedTitlesJson)!;
+        var recognizedTitleJson = row["recognized_title"].GetJson();
+        var recognizedTitles = JsonSerializer.Deserialize<RecognizedTitle>(recognizedTitleJson)!;
 
         var videoFrameRecognition = new VideoFrameRecognition(videoFrameId, recognizedTitles)
         {
@@ -54,17 +59,17 @@ public class VideoFrameRecognitionSessionRepository(Session session) : ISessionR
         const string query = """
                              DECLARE $id AS Utf8;
                              DECLARE $video_frame_id AS Utf8;
-                             DECLARE $recognized_titles AS Json;
+                             DECLARE $recognized_title AS Json;
 
-                             UPSERT INTO video_frame_recognition(id, video_frame_id, recognized_titles)
-                             VALUES ($id, $video_frame_id, $recognized_titles);
+                             UPSERT INTO video_frame_recognition(id, video_frame_id, recognized_title)
+                             VALUES ($id, $video_frame_id, $recognized_title);
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
         {
             ["$id"] = YdbValue.MakeUtf8(entity.Id.ToString()),
             ["$video_frame_id"] = YdbValue.MakeUtf8(entity.VideoFrameId.ToString()),
-            ["$recognized_titles"] = YdbValue.MakeJson(JsonSerializer.Serialize(entity.RecognizedTitles))
+            ["$recognized_title"] = YdbValue.MakeJson(JsonSerializer.Serialize(entity.RecognizedTitle))
         };
 
         var response = await _session.ExecuteDataQuery(
@@ -75,5 +80,46 @@ public class VideoFrameRecognitionSessionRepository(Session session) : ISessionR
         response.Status.EnsureSuccess();
 
         return response.Tx;
+    }
+
+    public async Task<(IReadOnlyCollection<VideoFrameRecognition>, Transaction?)> ListAsync(Guid videoFrameId,
+        TxControl txControl)
+    {
+        const string query = """
+                             DECLARE $video_frame_id AS Utf8;
+
+                             SELECT *
+                             FROM video_frame_recognition
+                             WHERE video_frame_id = $video_frame_id;
+                             """;
+
+        var parameters = new Dictionary<string, YdbValue>
+        {
+            ["$video_frame_id"] = YdbValue.MakeUtf8(videoFrameId.ToString())
+        };
+
+        var response = await _session.ExecuteDataQuery(query, txControl, parameters);
+
+        response.Status.EnsureSuccess();
+
+        var resultSet = response.Result.ResultSets[0];
+        var rows = resultSet.Rows;
+
+        var videoFrameRecognitions = rows
+            .Select(row =>
+            {
+                var returnedId = Guid.Parse(row["id"].GetUtf8());
+                var returnedVideoFrameId = Guid.Parse(row["video_frame_id"].GetUtf8());
+                var recognizedTitleJson = row["recognized_title"].GetJson();
+                var recognizedTitles = JsonSerializer.Deserialize<RecognizedTitle>(recognizedTitleJson)!;
+
+                return new VideoFrameRecognition(returnedVideoFrameId, recognizedTitles)
+                {
+                    Id = returnedId
+                };
+            })
+            .ToArray();
+
+        return (videoFrameRecognitions, response.Tx);
     }
 }
