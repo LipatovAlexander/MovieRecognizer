@@ -20,6 +20,14 @@ variable api_repository {
   type = string
 }
 
+variable frontend_registry {
+  type = string
+}
+
+variable frontend_repository {
+  type = string
+}
+
 variable github_sha {
   type = string
 }

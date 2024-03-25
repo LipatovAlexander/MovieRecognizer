@@ -97,6 +97,16 @@ jobs:
           docker build -f Api/Dockerfile -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
 
+      - name: Publish Frontend
+        env:
+          CR_REGISTRY: ${{ secrets.YCR_REGISTRY }}
+          CR_REPOSITORY: frontend
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd frontend
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+
       - name: Terraform apply
         uses: dflook/terraform-apply@v1
         with:
@@ -112,4 +122,6 @@ jobs:
             github_sha = "${{ github.sha }}"
             api_registry = "${{ secrets.YCR_REGISTRY }}"
             api_repository = "api"
+            frontend_registry = "${{ secrets.YCR_REGISTRY }}"
+            frontend_repository = "api"
             function_packages_bucket = "${{ secrets.FUNCTION_PACKAGES_BUCKET }}"
