@@ -123,5 +123,5 @@ jobs:
             api_registry = "${{ secrets.YCR_REGISTRY }}"
             api_repository = "api"
             frontend_registry = "${{ secrets.YCR_REGISTRY }}"
-            frontend_repository = "api"
+            frontend_repository = "frontend"
             function_packages_bucket = "${{ secrets.FUNCTION_PACKAGES_BUCKET }}"
