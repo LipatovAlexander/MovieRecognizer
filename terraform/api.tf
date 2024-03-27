@@ -41,5 +41,5 @@ resource "yandex_serverless_container" "test-container" {
 }
 
 output "api-url" {
-  value = '${yandex_serverless_container.test-container.url}/swagger'
+  value = "${yandex_serverless_container.test-container.url}/swagger"
 }
