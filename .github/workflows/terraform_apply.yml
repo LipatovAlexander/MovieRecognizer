@@ -125,3 +125,14 @@ jobs:
             frontend_registry = "${{ secrets.YCR_REGISTRY }}"
             frontend_repository = "frontend"
             function_packages_bucket = "${{ secrets.FUNCTION_PACKAGES_BUCKET }}"
+
+      - name: Get outputs
+        uses: dflook/terraform-output@v1
+        id: tf-outputs
+        with:
+          path: terraform
+
+      - name: Print outputs
+        run: |
+          echo "The api url is ${{ steps.tf-outputs.outputs.api-url }}"
+          echo "The frontend url ${{ steps.tf-outputs.outputs.frontend-url }}" 

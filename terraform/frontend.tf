@@ -19,3 +19,7 @@ resource "yandex_serverless_container" "frontend-container" {
     url = "cr.yandex/${var.frontend_registry}/${var.frontend_repository}:${var.github_sha}"
   }
 }
+
+output "frontend-url" {
+  value = yandex_serverless_container.frontend-container.url
+}
