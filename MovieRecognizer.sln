@@ -4,6 +4,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DD019AB4-8
 	ProjectSection(SolutionItems) = preProject
 		..\docs\Architecture.drawio = docs\Architecture.drawio
 		..\docs\Презентация.key = docs\Презентация.key
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "recognition-functions", "recognition-functions", "{ACA6A923-BD1B-4C75-932B-52CC84FDB528}"
