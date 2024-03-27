@@ -5,6 +5,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DD019AB4-8
 		..\docs\Architecture.drawio = docs\Architecture.drawio
 		..\docs\Презентация.key = docs\Презентация.key
 		README.md = README.md
+		..\docs\Диплом.pages = docs\Диплом.pages
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "recognition-functions", "recognition-functions", "{ACA6A923-BD1B-4C75-932B-52CC84FDB528}"
