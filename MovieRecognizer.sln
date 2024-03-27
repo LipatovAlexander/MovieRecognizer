@@ -2,11 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DD019AB4-865D-49B1-94B1-F3C43DE8E1BD}"
 	ProjectSection(SolutionItems) = preProject
-		docs\MovieRecognizer.drawio = docs\MovieRecognizer.drawio
-		docs\MovieRecognizer.png = docs\MovieRecognizer.png
 		..\docs\Architecture.drawio = docs\Architecture.drawio
-		..\docs\Architecture.png = docs\Architecture.png
-		docs\structure.md = docs\structure.md
+		..\docs\Презентация.key = docs\Презентация.key
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "recognition-functions", "recognition-functions", "{ACA6A923-BD1B-4C75-932B-52CC84FDB528}"
