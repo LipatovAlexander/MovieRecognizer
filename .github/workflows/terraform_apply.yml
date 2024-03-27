@@ -130,6 +130,9 @@ jobs:
         uses: dflook/terraform-output@v1
         id: tf-outputs
         with:
+          backend_config: |
+            access_key=${{ secrets.YC_SA_ACCESS_KEY }}
+            secret_key=${{ secrets.YC_SA_SECRET_KEY }}
           path: terraform
 
       - name: Print outputs
