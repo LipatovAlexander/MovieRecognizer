@@ -7,7 +7,7 @@ import GetRecognition from './get-recognition';
 import { Alert, Button, Group, Loader, Stack, Image, Text } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import Link from 'next/link';
-import { Carousel } from '@mantine/carousel';
+import FramesGallery from '@/components/FramesGallery/FramesGallery';
 
 export default function RecognitionPage({ params }: { params: { id: string } }) {
   const [data, setData] = useState<ApiResponse<MovieRecognition>>();
@@ -76,33 +76,10 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   );
 
   const frames = data.value.video?.video_frames;
-  const framesBlock = !!frames && (
-    <Carousel
-      maw={1000}
-      height={200}
-      slideSize="20%"
-      slideGap="md"
-      align="center"
-      withIndicators
-      loop
-      slidesToScroll={5}
-      nextControlProps={{
-        style: { backgroundColor: 'black', opacity: 0.5, border: 'none', color: 'white' },
-      }}
-      previousControlProps={{
-        style: { backgroundColor: 'black', opacity: 0.5, border: 'none', color: 'white' },
-      }}
-    >
-      {frames.map((frame) => (
-        <Carousel.Slide key={frame.fileUrl}>
-          <Image fit="contain" src={frame.fileUrl} />
-        </Carousel.Slide>
-      ))}
-    </Carousel>
-  );
+  const framesBlock = !!frames && <FramesGallery frames={frames} />;
 
   return (
-    <Stack>
+    <Stack gap="lg">
       {movieBlock}
       {framesBlock}
       {videoBlock}
