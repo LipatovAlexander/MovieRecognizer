@@ -69,12 +69,17 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
       </Stack>
     </Group>
   ) : (
-    <Text fz="40px">Unfortunately we were unable to recognize the film :(</Text>
+    <>
+      <Text fz="40px">Unfortunately we were unable to recognize the film :(</Text>
+      <Button mx="auto" w={100} component={Link} href="/recognition">
+        Try again
+      </Button>
+    </>
   );
 
   const video = data.value.video;
   const videoBlock = !!video && (
-    <Text>
+    <Text size="xl">
       <Link target="_blank" href={data.value.video_url}>
         {video.title}
       </Link>
@@ -85,10 +90,10 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   const framesBlock = !!movie && !!frames && <FramesGallery frames={frames} />;
 
   return (
-    <Stack gap="lg">
+    <Stack gap="xl">
+      {videoBlock}
       {movieBlock}
       {framesBlock}
-      {videoBlock}
     </Stack>
   );
 }

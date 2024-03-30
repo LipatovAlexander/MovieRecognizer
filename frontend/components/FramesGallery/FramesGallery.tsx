@@ -31,12 +31,7 @@ export default function FramesGallery({ frames }: { frames: VideoFrame[] }) {
 
             return (
               <Carousel.Slide key={frame.fileUrl}>
-                <Image
-                  style={{ opacity: !!movie ? 1 : 0.3 }}
-                  h={300}
-                  fit="contain"
-                  src={frame.fileUrl}
-                />
+                <Image style={{ opacity: !!movie ? 1 : 0.3 }} fit="contain" src={frame.fileUrl} />
                 {!!movie && (
                   <Text mt="sm">
                     <Link target="_blank" href={movie.link}>
