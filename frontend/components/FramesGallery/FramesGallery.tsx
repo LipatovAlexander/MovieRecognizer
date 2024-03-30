@@ -39,7 +39,9 @@ export default function FramesGallery({ frames }: { frames: VideoFrame[] }) {
                 />
                 {!!movie && (
                   <Text mt="sm">
-                    <Link href={movie.link}>{movie.title}</Link>
+                    <Link target="_blank" href={movie.link}>
+                      {movie.title}
+                    </Link>
                   </Text>
                 )}
               </Carousel.Slide>

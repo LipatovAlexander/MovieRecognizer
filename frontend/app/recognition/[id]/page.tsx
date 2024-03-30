@@ -52,7 +52,7 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   }
 
   const movie = data.value.recognized_movie;
-  const movieBlock = !!movie && (
+  const movieBlock = !!movie ? (
     <Group gap="lg">
       <Image src={movie.thumbnail} radius="xs" h="400" w="auto" fit="contain" />
       <Stack maw="580">
@@ -62,21 +62,27 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
         <Text c="dimmed">{movie.subtitle}</Text>
         <Text>{movie.description}</Text>
         <Text c="dimmed">
-          <Link href={movie.link}>{movie.source}</Link>
+          <Link target="_blank" href={movie.link}>
+            {movie.source}
+          </Link>
         </Text>
       </Stack>
     </Group>
+  ) : (
+    <Text fz="40px">Unfortunately we were unable to recognize the film :(</Text>
   );
 
   const video = data.value.video;
   const videoBlock = !!video && (
     <Text>
-      <Link href={data.value.video_url}>{video.title}</Link>
+      <Link target="_blank" href={data.value.video_url}>
+        {video.title}
+      </Link>
     </Text>
   );
 
   const frames = data.value.video?.video_frames;
-  const framesBlock = !!frames && <FramesGallery frames={frames} />;
+  const framesBlock = !!movie && !!frames && <FramesGallery frames={frames} />;
 
   return (
     <Stack gap="lg">
