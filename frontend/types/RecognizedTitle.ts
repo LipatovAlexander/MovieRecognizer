@@ -6,3 +6,5 @@ interface RecognizedTitle {
   link: string;
   thumbnail: string;
 }
+
+export default RecognizedTitle;

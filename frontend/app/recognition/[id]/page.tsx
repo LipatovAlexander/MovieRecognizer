@@ -7,6 +7,7 @@ import GetRecognition from './get-recognition';
 import { Alert, Button, Group, Loader, Stack, Image, Text } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import Link from 'next/link';
+import { Carousel } from '@mantine/carousel';
 
 export default function RecognitionPage({ params }: { params: { id: string } }) {
   const [data, setData] = useState<ApiResponse<MovieRecognition>>();
@@ -54,27 +55,56 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   const movieBlock = !!movie && (
     <Group gap="lg">
       <Image src={movie.thumbnail} radius="xs" h="400" w="auto" fit="contain" />
-      <Stack maw="600">
+      <Stack maw="580">
         <Text fw={900} size="xl">
           {movie.title}
         </Text>
         <Text c="dimmed">{movie.subtitle}</Text>
         <Text>{movie.description}</Text>
-        <Link href={movie.link}>{movie.source}</Link>
+        <Text c="dimmed">
+          <Link href={movie.link}>{movie.source}</Link>
+        </Text>
       </Stack>
     </Group>
   );
 
   const video = data.value.video;
   const videoBlock = !!video && (
-    <div>
+    <Text>
       <Link href={data.value.video_url}>{video.title}</Link>
-    </div>
+    </Text>
+  );
+
+  const frames = data.value.video?.video_frames;
+  const framesBlock = !!frames && (
+    <Carousel
+      maw={1000}
+      height={200}
+      slideSize="20%"
+      slideGap="md"
+      align="center"
+      withIndicators
+      loop
+      slidesToScroll={5}
+      nextControlProps={{
+        style: { backgroundColor: 'black', opacity: 0.5, border: 'none', color: 'white' },
+      }}
+      previousControlProps={{
+        style: { backgroundColor: 'black', opacity: 0.5, border: 'none', color: 'white' },
+      }}
+    >
+      {frames.map((frame) => (
+        <Carousel.Slide key={frame.fileUrl}>
+          <Image fit="contain" src={frame.fileUrl} />
+        </Carousel.Slide>
+      ))}
+    </Carousel>
   );
 
   return (
     <Stack>
       {movieBlock}
+      {framesBlock}
       {videoBlock}
     </Stack>
   );

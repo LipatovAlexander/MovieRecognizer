@@ -2,6 +2,8 @@ import '@mantine/core/styles.css';
 import React from 'react';
 import { MantineProvider, ColorSchemeScript } from '@mantine/core';
 import { theme } from '../theme';
+import './global.css';
+import '@mantine/carousel/styles.css';
 
 export const metadata = {
   title: 'Movie Recognizer',

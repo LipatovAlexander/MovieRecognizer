@@ -1,3 +1,6 @@
+import RecognizedTitle from './RecognizedTitle';
+import Video from './Video';
+
 interface MovieRecognition {
   id: string;
   video_url: string;
