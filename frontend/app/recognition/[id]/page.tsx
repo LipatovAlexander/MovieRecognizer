@@ -9,6 +9,7 @@ import { IconInfoCircle } from '@tabler/icons-react';
 import Link from 'next/link';
 import FramesGallery from '@/components/FramesGallery/FramesGallery';
 import TryAgainButton from '@/components/TryAgainButton/TryAgainButton';
+import RecognitionProcess from '@/components/RecognitionProcess/RecognitionProcess';
 
 export default function RecognitionPage({ params }: { params: { id: string } }) {
   const [data, setData] = useState<ApiResponse<MovieRecognition>>();
@@ -16,6 +17,11 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   useEffect(() => {
     const fetchData = async () => {
       const recognition = await GetRecognition(params.id);
+
+      if (!recognition) {
+        return;
+      }
+
       setData(recognition);
 
       if (
@@ -47,7 +53,7 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   }
 
   if (data.value.status !== 'Succeeded') {
-    return <Loader />;
+    return <RecognitionProcess movieRecognition={data.value} />;
   }
 
   const movie = data.value.recognized_movie;
