@@ -93,8 +93,8 @@ public class VideoFrameSessionRepository(Session session) : IVideoFrameSessionRe
                              DECLARE $video_id AS Utf8;
 
                              SELECT *
-                             FROM video_frame
-                             WHERE video_id = $video_id;
+                             FROM video_frame VIEW idx_video AS vf
+                             WHERE vf.video_id = $video_id;
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
