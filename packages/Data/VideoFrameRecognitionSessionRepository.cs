@@ -7,7 +7,7 @@ namespace Data;
 
 public interface IVideoFrameRecognitionSessionRepository : ISessionRepository<VideoFrameRecognition, Guid>
 {
-    Task<(IReadOnlyCollection<VideoFrameRecognition>, Transaction?)> ListAsync(Guid videoFrameId, TxControl txControl);
+    Task<(IReadOnlyCollection<VideoFrameRecognition>, Transaction?)> ListByVideoIdAsync(Guid videoId, TxControl txControl);
 }
 
 public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFrameRecognitionSessionRepository
@@ -84,20 +84,21 @@ public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFra
         return response.Tx;
     }
 
-    public async Task<(IReadOnlyCollection<VideoFrameRecognition>, Transaction?)> ListAsync(Guid videoFrameId,
+    public async Task<(IReadOnlyCollection<VideoFrameRecognition>, Transaction?)> ListByVideoIdAsync(
+        Guid videoId,
         TxControl txControl)
     {
         const string query = """
-                             DECLARE $video_frame_id AS Utf8;
+                             DECLARE $video_id AS Utf8;
 
                              SELECT *
-                             FROM video_frame_recognition VIEW idx_video_frame AS vfr
-                             WHERE vfr.video_frame_id = $video_frame_id;
+                             FROM video_frame_recognition VIEW idx_video AS vfr
+                             WHERE vfr.video_id = $video_id;
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
         {
-            ["$video_frame_id"] = YdbValue.MakeUtf8(videoFrameId.ToString())
+            ["$video_id"] = YdbValue.MakeUtf8(videoId.ToString())
         };
 
         var response = await _session.ExecuteDataQuery(query, txControl, parameters);
@@ -111,12 +112,12 @@ public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFra
             .Select(row =>
             {
                 var returnedId = Guid.Parse(row["id"].GetUtf8());
-                var videoId = Guid.Parse(row["video_id"].GetUtf8());
+                var returnedVideoId = Guid.Parse(row["video_id"].GetUtf8());
                 var returnedVideoFrameId = Guid.Parse(row["video_frame_id"].GetUtf8());
                 var recognizedTitleJson = row["recognized_title"].GetJson();
                 var recognizedTitles = JsonSerializer.Deserialize<RecognizedTitle>(recognizedTitleJson)!;
 
-                return new VideoFrameRecognition(videoId, returnedVideoFrameId, recognizedTitles)
+                return new VideoFrameRecognition(returnedVideoId, returnedVideoFrameId, recognizedTitles)
                 {
                     Id = returnedId
                 };

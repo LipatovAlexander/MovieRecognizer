@@ -5,7 +5,7 @@ namespace Data;
 
 public interface IVideoFrameRecognitionRepository : IRepository<VideoFrameRecognition, Guid>
 {
-    Task<IReadOnlyCollection<VideoFrameRecognition>> ListAsync(Guid videoFrameId);
+    Task<IReadOnlyCollection<VideoFrameRecognition>> ListByVideoIdAsync(Guid videoId);
 }
 
 public class VideoFrameRecognitionRepository(
@@ -16,12 +16,12 @@ public class VideoFrameRecognitionRepository(
 {
     private readonly IDatabaseContext _databaseContext = databaseContext;
 
-    public async Task<IReadOnlyCollection<VideoFrameRecognition>> ListAsync(Guid videoFrameId)
+    public async Task<IReadOnlyCollection<VideoFrameRecognition>> ListByVideoIdAsync(Guid videoId)
     {
         return await _databaseContext.ExecuteAsync(async session =>
         {
-            var (videoFrameRecognitions, _) = await session.VideoFrameRecognitions.ListAsync(
-                videoFrameId,
+            var (videoFrameRecognitions, _) = await session.VideoFrameRecognitions.ListByVideoIdAsync(
+                videoId,
                 TxControl.BeginSerializableRW().Commit());
 
             return videoFrameRecognitions;

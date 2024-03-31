@@ -36,6 +36,7 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
             var videoDto = video.ToDto();
 
             var videoFrames = await databaseContext.VideoFrames.ListAsync(video.Id);
+            var videoFrameRecognitions = await databaseContext.VideoFrameRecognitions.ListByVideoIdAsync(video.Id);
 
             if (videoFrames.Count != 0)
             {
@@ -46,11 +47,13 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
                     var fileUrl = fileStorage.GetUrl(videoFrame.ExternalId);
                     var videoFrameDto = videoFrame.ToDto(fileUrl);
 
-                    var videoFrameRecognitions = await databaseContext.VideoFrameRecognitions.ListAsync(videoFrame.Id);
+                    var recognitions = videoFrameRecognitions
+                        .Where(x => x.VideoFrameId == videoFrame.Id)
+                        .ToArray();
 
-                    if (videoFrameRecognitions.Count != 0)
+                    if (recognitions.Length != 0)
                     {
-                        videoFrameDto.RecognizedTitles = videoFrameRecognitions
+                        videoFrameDto.RecognizedTitles = recognitions
                             .Select(x => x.RecognizedTitle.ToDto())
                             .ToArray();
                     }
