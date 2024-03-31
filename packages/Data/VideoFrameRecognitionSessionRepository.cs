@@ -42,11 +42,12 @@ public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFra
         }
 
         var returnedId = Guid.Parse(row["id"].GetUtf8());
+        var videoId = Guid.Parse(row["video_id"].GetUtf8());
         var videoFrameId = Guid.Parse(row["video_frame_id"].GetUtf8());
         var recognizedTitleJson = row["recognized_title"].GetJson();
         var recognizedTitles = JsonSerializer.Deserialize<RecognizedTitle>(recognizedTitleJson)!;
 
-        var videoFrameRecognition = new VideoFrameRecognition(videoFrameId, recognizedTitles)
+        var videoFrameRecognition = new VideoFrameRecognition(videoId, videoFrameId, recognizedTitles)
         {
             Id = returnedId
         };
@@ -68,6 +69,7 @@ public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFra
         var parameters = new Dictionary<string, YdbValue>
         {
             ["$id"] = YdbValue.MakeUtf8(entity.Id.ToString()),
+            ["$video_id"] = YdbValue.MakeUtf8(entity.VideoId.ToString()),
             ["$video_frame_id"] = YdbValue.MakeUtf8(entity.VideoFrameId.ToString()),
             ["$recognized_title"] = YdbValue.MakeJson(JsonSerializer.Serialize(entity.RecognizedTitle))
         };
@@ -109,11 +111,12 @@ public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFra
             .Select(row =>
             {
                 var returnedId = Guid.Parse(row["id"].GetUtf8());
+                var videoId = Guid.Parse(row["video_id"].GetUtf8());
                 var returnedVideoFrameId = Guid.Parse(row["video_frame_id"].GetUtf8());
                 var recognizedTitleJson = row["recognized_title"].GetJson();
                 var recognizedTitles = JsonSerializer.Deserialize<RecognizedTitle>(recognizedTitleJson)!;
 
-                return new VideoFrameRecognition(returnedVideoFrameId, recognizedTitles)
+                return new VideoFrameRecognition(videoId, returnedVideoFrameId, recognizedTitles)
                 {
                     Id = returnedId
                 };

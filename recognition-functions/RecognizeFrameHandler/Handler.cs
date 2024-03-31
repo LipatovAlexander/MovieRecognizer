@@ -58,7 +58,8 @@ public class Handler : IHandler<MessageQueueEvent>
 
                 foreach (var recognizedTitle in recognizedTitles)
                 {
-                    var videoFrameRecognition = new VideoFrameRecognition(videoFrame.Id, recognizedTitle);
+                    var videoFrameRecognition =
+                        new VideoFrameRecognition(videoFrame.VideoId, videoFrame.Id, recognizedTitle);
 
                     transaction = await session.VideoFrameRecognitions.SaveAsync(videoFrameRecognition, GetTxControl());
                 }

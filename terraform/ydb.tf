@@ -146,6 +146,11 @@ resource "yandex_ydb_table" "video_frame_recognition" {
     not_null = true
   }
   column {
+    name     = "video_id"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
     name     = "video_frame_id"
     type     = "Utf8"
     not_null = true
