@@ -4,7 +4,7 @@ import ApiResponse from '@/types/ApiResponse';
 import MovieRecognition from '@/types/MovieRecognition';
 import { useEffect, useState } from 'react';
 import GetRecognition from './get-recognition';
-import { Alert, Button, Group, Loader, Stack, Image, Text } from '@mantine/core';
+import { Alert, Group, Loader, Stack, Image, Text, Box } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import Link from 'next/link';
 import FramesGallery from '@/components/FramesGallery/FramesGallery';
@@ -58,13 +58,15 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
 
   const movie = data.value.recognized_movie;
   const movieBlock = !!movie ? (
-    <Group gap="lg">
+    <Group gap="xl">
       <Image src={movie.thumbnail} radius="xs" h="400" w="auto" fit="contain" />
       <Stack maw="580">
-        <Text fw={900} size="xl">
-          {movie.title}
-        </Text>
-        <Text c="dimmed">{movie.subtitle}</Text>
+        <Box>
+          <Text fw={900} size="xl">
+            {movie.title}
+          </Text>
+          <Text c="dimmed">{movie.subtitle}</Text>
+        </Box>
         <Text>{movie.description}</Text>
         <Text c="dimmed">
           <Link target="_blank" href={movie.link}>
@@ -90,7 +92,7 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   );
 
   const frames = data.value.video?.video_frames;
-  const framesBlock = !!frames && <FramesGallery frames={frames} />;
+  const framesBlock = !!movie && !!frames && <FramesGallery frames={frames} />;
 
   return (
     <Stack gap="xl">
