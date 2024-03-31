@@ -7,7 +7,8 @@ namespace Data;
 
 public interface IVideoFrameRecognitionSessionRepository : ISessionRepository<VideoFrameRecognition, Guid>
 {
-    Task<(IReadOnlyCollection<VideoFrameRecognition>, Transaction?)> ListByVideoIdAsync(Guid videoId, TxControl txControl);
+    Task<(IReadOnlyCollection<VideoFrameRecognition>, Transaction?)> ListByVideoIdAsync(Guid videoId,
+        TxControl txControl);
 }
 
 public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFrameRecognitionSessionRepository
@@ -62,8 +63,8 @@ public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFra
                              DECLARE $video_frame_id AS Utf8;
                              DECLARE $recognized_title AS Json;
 
-                             UPSERT INTO video_frame_recognition(id, video_frame_id, recognized_title)
-                             VALUES ($id, $video_frame_id, $recognized_title);
+                             UPSERT INTO video_frame_recognition(id, video_id, video_frame_id, recognized_title)
+                             VALUES ($id, $video_id, $video_frame_id, $recognized_title);
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
