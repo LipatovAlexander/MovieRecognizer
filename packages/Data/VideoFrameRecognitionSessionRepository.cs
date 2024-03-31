@@ -60,6 +60,7 @@ public class VideoFrameRecognitionSessionRepository(Session session) : IVideoFra
     {
         const string query = """
                              DECLARE $id AS Utf8;
+                             DECLARE $video_id AS Utf8;
                              DECLARE $video_frame_id AS Utf8;
                              DECLARE $recognized_title AS Json;
 
