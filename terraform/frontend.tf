@@ -13,7 +13,7 @@ resource "yandex_container_registry_iam_binding" "frontend-sa-puller" {
 
 resource "yandex_serverless_container" "frontend-container" {
   name               = "frontend"
-  memory             = 128
+  memory             = 512
   service_account_id = yandex_iam_service_account.frontend-sa.id
   image {
     url         = "cr.yandex/${var.frontend_registry}/${var.frontend_repository}:${var.github_sha}"
