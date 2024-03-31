@@ -111,7 +111,6 @@ jobs:
         uses: dflook/terraform-apply@v1
         with:
           auto_approve: true
-          replace: yandex_ydb_table.video_frame_recognition
           path: terraform
           backend_config: |
             access_key=${{ secrets.YC_SA_ACCESS_KEY }}
