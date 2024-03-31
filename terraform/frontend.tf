@@ -16,7 +16,10 @@ resource "yandex_serverless_container" "frontend-container" {
   memory             = 128
   service_account_id = yandex_iam_service_account.frontend-sa.id
   image {
-    url = "cr.yandex/${var.frontend_registry}/${var.frontend_repository}:${var.github_sha}"
+    url         = "cr.yandex/${var.frontend_registry}/${var.frontend_repository}:${var.github_sha}"
+    environment = {
+      API_URL = yandex_serverless_container.test-container.url
+    }
   }
 }
 

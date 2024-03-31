@@ -9,7 +9,7 @@ export default function FramesGallery({ frames }: { frames: VideoFrame[] }) {
 
   return (
     <Center>
-      <Modal opened={opened} onClose={close} title="Frames gallery" centered size="auto">
+      <Modal opened={opened} onClose={close} title="Video frames" centered size="auto">
         <Carousel
           maw={1000}
           slideSize="20%"
@@ -31,7 +31,7 @@ export default function FramesGallery({ frames }: { frames: VideoFrame[] }) {
 
             return (
               <Carousel.Slide key={frame.fileUrl}>
-                <Image style={{ opacity: !!movie ? 1 : 0.3 }} fit="contain" src={frame.fileUrl} />
+                <Image style={{ opacity: !!movie ? 1 : 0.5 }} fit="contain" src={frame.fileUrl} />
                 {!!movie && (
                   <Text mt="sm">
                     <Link target="_blank" href={movie.link}>

@@ -8,6 +8,7 @@ import { Alert, Button, Group, Loader, Stack, Image, Text } from '@mantine/core'
 import { IconInfoCircle } from '@tabler/icons-react';
 import Link from 'next/link';
 import FramesGallery from '@/components/FramesGallery/FramesGallery';
+import TryAgainButton from '@/components/TryAgainButton/TryAgainButton';
 
 export default function RecognitionPage({ params }: { params: { id: string } }) {
   const [data, setData] = useState<ApiResponse<MovieRecognition>>();
@@ -40,9 +41,7 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
         <Alert variant="outline" color="red" icon={<IconInfoCircle />}>
           Error: {error}
         </Alert>
-        <Button maw={100} mx="auto" component={Link} href="/recognition">
-          Try again
-        </Button>
+        <TryAgainButton />
       </Stack>
     );
   }
@@ -71,9 +70,7 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   ) : (
     <>
       <Text fz="40px">Unfortunately we were unable to recognize the film :(</Text>
-      <Button mx="auto" w={100} component={Link} href="/recognition">
-        Try again
-      </Button>
+      <TryAgainButton />
     </>
   );
 
@@ -87,7 +84,7 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   );
 
   const frames = data.value.video?.video_frames;
-  const framesBlock = !!movie && !!frames && <FramesGallery frames={frames} />;
+  const framesBlock = !!frames && <FramesGallery frames={frames} />;
 
   return (
     <Stack gap="xl">
