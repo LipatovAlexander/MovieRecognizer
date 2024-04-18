@@ -28,7 +28,7 @@ export default function RecognitionPage() {
   }, [state]);
 
   return (
-    <Stack w="100%" maw={1000}>
+    <Stack>
       {!!error && (
         <Alert variant="outline" color="red" icon={<IconInfoCircle />}>
           Error: {error}

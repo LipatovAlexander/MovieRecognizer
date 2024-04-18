@@ -4,15 +4,17 @@ import ApiResponse from '@/types/ApiResponse';
 import MovieRecognition from '@/types/MovieRecognition';
 import { useEffect, useState } from 'react';
 import GetRecognition from './get-recognition';
-import { Alert, Group, Loader, Stack, Image, Text, Box } from '@mantine/core';
+import { Alert, Loader, Stack, Image, Text, Box, Grid, Center } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import Link from 'next/link';
 import FramesGallery from '@/components/FramesGallery/FramesGallery';
 import TryAgainButton from '@/components/TryAgainButton/TryAgainButton';
 import RecognitionProcess from '@/components/RecognitionProcess/RecognitionProcess';
+import useIsMobile from '@/helpers/useIsMobile';
 
 export default function RecognitionPage({ params }: { params: { id: string } }) {
   const [data, setData] = useState<ApiResponse<MovieRecognition>>();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +38,11 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   }, []);
 
   if (!data) {
-    return <Loader />;
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
   }
 
   if (!data.ok || data.value.status === 'Failed' || data.value.status === 'Invalid') {
@@ -58,23 +64,29 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
 
   const movie = data.value.recognized_movie;
   const movieBlock = !!movie ? (
-    <Group gap="xl">
-      <Image src={movie.thumbnail} radius="xs" h="400" w="auto" fit="contain" />
-      <Stack maw="580">
-        <Box>
-          <Text fw={900} size="xl">
-            {movie.title}
-          </Text>
-          <Text c="dimmed">{movie.subtitle}</Text>
-        </Box>
-        <Text>{movie.description}</Text>
-        <Text c="dimmed">
-          <Link target="_blank" href={movie.link}>
-            {movie.source}
-          </Link>
-        </Text>
-      </Stack>
-    </Group>
+    <Grid gutter="xl">
+      <Grid.Col span={isMobile ? 12 : 5}>
+        <Image src={movie.thumbnail} radius="xs" mah="400" fit="contain" />
+      </Grid.Col>
+      <Grid.Col span={isMobile ? 12 : 7}>
+        <Center h="100%">
+          <Stack>
+            <Box>
+              <Text fw={900} size="xl">
+                {movie.title}
+              </Text>
+              <Text c="dimmed">{movie.subtitle}</Text>
+            </Box>
+            <Text>{movie.description}</Text>
+            <Text c="dimmed">
+              <Link target="_blank" href={movie.link}>
+                {movie.source}
+              </Link>
+            </Text>
+          </Stack>
+        </Center>
+      </Grid.Col>
+    </Grid>
   ) : (
     <>
       <Text fz="40px">Unfortunately we were unable to recognize the film :(</Text>
