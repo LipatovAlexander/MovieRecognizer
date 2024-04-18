@@ -104,7 +104,7 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   );
 
   const frames = data.value.video?.video_frames;
-  const framesBlock = !!movie && !!frames && <FramesGallery frames={frames} />;
+  const framesBlock = !isMobile && !!movie && !!frames && <FramesGallery frames={frames} />;
 
   return (
     <Stack gap="xl">
