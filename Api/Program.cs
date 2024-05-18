@@ -21,6 +21,21 @@ services.AddSwaggerGen(x =>
         Name = AuthConstants.ApiKeyHeaderName,
         Type = SecuritySchemeType.ApiKey
     });
+
+    var scheme = new OpenApiSecurityScheme
+    {
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "ApiKey"
+        },
+        In = ParameterLocation.Header
+    };
+    var requirement = new OpenApiSecurityRequirement
+    {
+        [scheme] = []
+    };
+    x.AddSecurityRequirement(requirement);
 });
 
 services.AddData();
