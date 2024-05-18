@@ -72,6 +72,7 @@ public class GetMovieRecognitionEndpoint : IEndpoint<
 
     public static void AddRoute(IEndpointRouteBuilder builder)
     {
-        builder.MapGet("recognition/{id:guid}", HandleAsync);
+        builder.MapGet("recognition/{id:guid}", HandleAsync)
+            .RequireApiKeyAuthentication();
     }
 }

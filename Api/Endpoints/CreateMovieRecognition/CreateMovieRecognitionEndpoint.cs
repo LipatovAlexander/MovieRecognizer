@@ -33,6 +33,7 @@ public class CreateMovieRecognitionEndpoint : IEndpoint<
     public static void AddRoute(IEndpointRouteBuilder builder)
     {
         builder.MapPost("recognition", HandleAsync)
-            .AddValidationFilter();
+            .AddValidationFilter()
+            .RequireApiKeyAuthentication();
     }
 }

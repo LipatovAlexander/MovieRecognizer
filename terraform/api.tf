@@ -21,6 +21,10 @@ resource "yandex_iam_service_account_static_access_key" "api-sa-key" {
   service_account_id = yandex_iam_service_account.api-sa.id
 }
 
+resource "random_password" "api-key" {
+  length = 64
+}
+
 resource "yandex_serverless_container" "test-container" {
   name               = "api"
   memory             = 512
@@ -32,6 +36,7 @@ resource "yandex_serverless_container" "test-container" {
         AWS_ACCESS_KEY_ID     = yandex_iam_service_account_static_access_key.api-sa-key.access_key
         AWS_SECRET_ACCESS_KEY = yandex_iam_service_account_static_access_key.api-sa-key.secret_key
         AWS_DEFAULT_REGION    = "ru-central1"
+        API_KEY               = random_password.api-key.result
       },
       local.data_env,
       local.message_queue_env,
