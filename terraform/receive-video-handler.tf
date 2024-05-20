@@ -6,7 +6,8 @@ module "receive-video-handler" {
   deployer_secret_key = var.deployer_secret_key
   environment         = merge(
     local.data_env,
-    local.message_queue_env
+    local.message_queue_env,
+    local.proxy_env
   )
   folder_id   = var.folder_id
   github_sha  = var.github_sha

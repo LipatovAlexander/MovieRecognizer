@@ -35,3 +35,15 @@ variable github_sha {
 variable function_packages_bucket {
   type = string
 }
+
+variable proxy_address {
+  type = string
+}
+
+variable proxy_login {
+  type = string
+}
+
+variable proxy_password {
+  type = string
+}

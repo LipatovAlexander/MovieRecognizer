@@ -125,3 +125,6 @@ jobs:
             frontend_registry = "${{ secrets.YCR_REGISTRY }}"
             frontend_repository = "frontend"
             function_packages_bucket = "${{ secrets.FUNCTION_PACKAGES_BUCKET }}"
+            proxy_address = "${{ secrets.PROXY_ADDRESS }}"
+            proxy_login = "${{ secrets.PROXY_LOGIN }}"
+            proxy_password = "${{ secrets.PROXY_PASSWORD }}"

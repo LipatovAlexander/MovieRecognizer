@@ -16,4 +16,10 @@ locals {
     AWS_S3_SERVICE_URL = "https://s3.yandexcloud.net"
     S3_BUCKET          = yandex_storage_bucket.bucket.bucket
   }
+
+  proxy_env = {
+    PROXY_ADDRESS  = var.proxy_address
+    PROXY_LOGIN    = var.proxy_login
+    PROXY_PASSWORD = var.proxy_password
+  }
 }
