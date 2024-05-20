@@ -10,6 +10,7 @@ export default async function CreateRecognition(_: any, formData: FormData) {
 
   const url = new URL('/recognition', process.env.API_URL);
   const headers = new Headers();
+  headers.set('Content-Type', 'application/json');
   headers.set('x-api-key', process.env.API_KEY ?? 'Unknown');
 
   const userId = cookies().get('user_id')?.value;
@@ -26,6 +27,10 @@ export default async function CreateRecognition(_: any, formData: FormData) {
       videoUrl,
     }),
   });
+
+  if (response.status >= 299 || response.status < 200) {
+    throw new Error('Response was not successful');
+  }
 
   return (await response.json()) as ApiResponse<MovieRecognition>;
 }
