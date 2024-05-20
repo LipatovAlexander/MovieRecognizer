@@ -124,6 +124,7 @@ public class VideoFrameSessionRepository(Session session) : IVideoFrameSessionRe
                     Processed = processed
                 };
             })
+            .OrderBy(x => x.Timestamp)
             .ToArray();
 
         return (videoFrames, response.Tx);

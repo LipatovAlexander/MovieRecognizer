@@ -158,6 +158,7 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
                     FailureMessage = failureMessage
                 };
             })
+            .OrderByDescending(x => x.CreatedAt)
             .ToArray();
 
         return (movieRecognitions, response.Tx);
