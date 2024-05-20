@@ -17,7 +17,7 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
                              DECLARE $id AS Utf8;
 
                              SELECT *
-                             FROM `movie-recognition`
+                             FROM movie_recognition
                              WHERE id = $id;
                              """;
 
@@ -39,6 +39,7 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
         }
 
         var returnedId = Guid.Parse(row["id"].GetUtf8());
+        var userId = Guid.Parse(row["user_id"].GetUtf8());
         var videoUrl = new Uri(row["video_url"].GetUtf8());
         var status = Enum.Parse<MovieRecognitionStatus>(row["status"].GetUtf8());
         var createdAt = row["created_at"].GetDatetime();
@@ -50,7 +51,7 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
             : null;
         var failureMessage = row["failure_message"].GetOptionalUtf8();
 
-        var movieRecognition = new MovieRecognition(videoUrl)
+        var movieRecognition = new MovieRecognition(userId, videoUrl)
         {
             Id = returnedId,
             Status = status,
@@ -69,6 +70,7 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
     {
         const string query = """
                              DECLARE $id AS Utf8;
+                             DECLARE $user_id AS Utf8;
                              DECLARE $video_url AS Utf8;
                              DECLARE $created_at AS Datetime;
                              DECLARE $status AS Utf8;
@@ -76,13 +78,14 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
                              DECLARE $failure_message AS Utf8?;
                              DECLARE $recognized_movie AS Json?;
 
-                             UPSERT INTO `movie-recognition`(id, video_url, created_at, status, video_id, failure_message, recognized_movie)
-                             VALUES ($id, $video_url, $created_at, $status, $video_id, $failure_message, $recognized_movie);
+                             UPSERT INTO `movie-recognition`(id, user_id, video_url, created_at, status, video_id, failure_message, recognized_movie)
+                             VALUES ($id, $user_id, $video_url, $created_at, $status, $video_id, $failure_message, $recognized_movie);
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
         {
             ["$id"] = YdbValue.MakeUtf8(entity.Id.ToString()),
+            ["$user_id"] = YdbValue.MakeUtf8(entity.UserId.ToString()),
             ["$video_url"] = YdbValue.MakeUtf8(entity.VideoUrl.ToString()),
             ["$created_at"] = YdbValue.MakeDatetime(entity.CreatedAt),
             ["$status"] = YdbValue.MakeUtf8(entity.Status.ToString()),

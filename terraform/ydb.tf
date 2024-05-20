@@ -65,6 +65,54 @@ resource "yandex_ydb_table" "movie-recognition" {
   primary_key = ["id"]
 }
 
+resource "yandex_ydb_table" "movie_recognition" {
+  path              = "movie_recognition"
+  connection_string = yandex_ydb_database_serverless.main-db.ydb_full_endpoint
+
+  column {
+    name     = "id"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "user_id"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "video_url"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "created_at"
+    type     = "Datetime"
+    not_null = true
+  }
+  column {
+    name     = "status"
+    type     = "Utf8"
+    not_null = true
+  }
+  column {
+    name     = "video_id"
+    type     = "Utf8"
+    not_null = false
+  }
+  column {
+    name     = "recognized_movie"
+    type     = "Json"
+    not_null = false
+  }
+  column {
+    name     = "failure_message"
+    type     = "Utf8"
+    not_null = false
+  }
+
+  primary_key = ["id"]
+}
+
 resource "yandex_ydb_table" "video" {
   path              = "video"
   connection_string = yandex_ydb_database_serverless.main-db.ydb_full_endpoint

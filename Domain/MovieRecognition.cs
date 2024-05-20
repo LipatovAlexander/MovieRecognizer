@@ -1,14 +1,14 @@
 ﻿namespace Domain;
 
-public class MovieRecognition(Uri videoUrl)
+public class MovieRecognition(Guid userId, Uri videoUrl)
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public Uri VideoUrl { get; set; } = videoUrl;
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid UserId { get; } = userId;
+    public Uri VideoUrl { get; } = videoUrl;
     public MovieRecognitionStatus Status { get; set; } = MovieRecognitionStatus.Created;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public Guid? VideoId { get; set; }
     public RecognizedTitle? RecognizedMovie { get; set; }
-
     public string? FailureMessage { get; set; }
 }
 

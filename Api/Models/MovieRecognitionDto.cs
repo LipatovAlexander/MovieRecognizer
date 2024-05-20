@@ -7,6 +7,8 @@ public class MovieRecognitionDto
 {
     [JsonPropertyName("id")] public required Guid Id { get; set; }
 
+    [JsonPropertyName("user_id")] public required Guid UserId { get; set; }
+
     [JsonPropertyName("video_url")] public required Uri VideoUrl { get; set; }
 
     [JsonPropertyName("created_at")] public required DateTime CreatedAt { get; set; }

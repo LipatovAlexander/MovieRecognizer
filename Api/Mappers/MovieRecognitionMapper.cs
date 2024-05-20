@@ -10,6 +10,7 @@ public static class MovieRecognitionMapper
         return new MovieRecognitionDto
         {
             Id = movieRecognition.Id,
+            UserId = movieRecognition.UserId,
             VideoUrl = movieRecognition.VideoUrl,
             Status = movieRecognition.Status,
             CreatedAt = movieRecognition.CreatedAt,

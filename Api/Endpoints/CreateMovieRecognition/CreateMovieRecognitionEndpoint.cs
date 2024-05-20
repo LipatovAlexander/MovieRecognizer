@@ -7,6 +7,7 @@ using Data;
 using Domain;
 using MessageQueue;
 using MessageQueue.Messages;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Endpoints.CreateMovieRecognition;
 
@@ -17,12 +18,12 @@ public class CreateMovieRecognitionEndpoint : IEndpoint<
     IMessageQueueClient>
 {
     public static async Task<SuccessResponse<MovieRecognitionDto>> HandleAsync(
-        [AsParameters, Validate] CreateMovieRecognitionRequest request,
+        [FromBody, Validate] CreateMovieRecognitionRequest request,
         IDatabaseContext databaseContext,
         IMessageQueueClient messageQueueClient,
         CancellationToken cancellationToken)
     {
-        var movieRecognition = new MovieRecognition(request.VideoUrl);
+        var movieRecognition = new MovieRecognition(request.UserId, request.VideoUrl);
 
         await databaseContext.MovieRecognitions.SaveAsync(movieRecognition);
         await messageQueueClient.SendAsync(new ReceiveVideoMessage(movieRecognition.Id), cancellationToken);
