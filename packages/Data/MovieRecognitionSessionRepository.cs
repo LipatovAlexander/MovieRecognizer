@@ -78,7 +78,7 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
                              DECLARE $failure_message AS Utf8?;
                              DECLARE $recognized_movie AS Json?;
 
-                             UPSERT INTO `movie-recognition`(id, user_id, video_url, created_at, status, video_id, failure_message, recognized_movie)
+                             UPSERT INTO movie_recognition(id, user_id, video_url, created_at, status, video_id, failure_message, recognized_movie)
                              VALUES ($id, $user_id, $video_url, $created_at, $status, $video_id, $failure_message, $recognized_movie);
                              """;
 
