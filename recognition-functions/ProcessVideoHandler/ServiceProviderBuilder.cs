@@ -4,6 +4,7 @@ using Files;
 using MessageQueue;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Proxy;
 using YoutubeExplode;
 
 namespace ProcessVideoHandler;
@@ -15,6 +16,12 @@ public class ServiceProviderBuilder : ServiceProviderBuilderBase
         services.AddData();
         services.AddMessageQueue();
         services.AddFileStorage();
-        services.AddSingleton<YoutubeClient>();
+        services.AddProxyHttpClient();
+        services.AddSingleton(sp =>
+        {
+            var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+            var httpClient = httpClientFactory.CreateClient("proxy");
+            return new YoutubeClient(httpClient);
+        });
     }
 }

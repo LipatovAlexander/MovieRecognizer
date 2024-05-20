@@ -7,7 +7,8 @@ module "process-video-handler" {
   environment         = merge(
     local.data_env,
     local.message_queue_env,
-    local.file_storage_env
+    local.file_storage_env,
+    local.proxy_env
   )
   folder_id         = var.folder_id
   github_sha        = var.github_sha

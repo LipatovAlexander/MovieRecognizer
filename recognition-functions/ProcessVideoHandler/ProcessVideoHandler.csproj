@@ -12,6 +12,7 @@
         <ProjectReference Include="..\..\packages\Data\Data.csproj"/>
         <ProjectReference Include="..\..\packages\Files\Files.csproj"/>
         <ProjectReference Include="..\..\packages\MessageQueue\MessageQueue.csproj"/>
+        <ProjectReference Include="..\..\packages\Proxy\Proxy.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
