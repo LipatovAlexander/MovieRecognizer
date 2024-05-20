@@ -1,5 +1,6 @@
 using Api.Endpoints.CreateMovieRecognition;
 using Api.Endpoints.GetMovieRecognition;
+using Api.Endpoints.GetMovieRecognitionHistory;
 using Api.Infrastructure.Authentication;
 using Data;
 using Files;
@@ -56,5 +57,6 @@ app.UseSwaggerUI();
 
 app.MapEndpoint<CreateMovieRecognitionEndpoint>();
 app.MapEndpoint<GetMovieRecognitionEndpoint>();
+app.MapEndpoint<GetMovieRecognitionHistoryEndpoint>();
 
 app.Run();

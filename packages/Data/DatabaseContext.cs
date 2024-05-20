@@ -6,7 +6,7 @@ namespace Data;
 
 public interface IDatabaseContext
 {
-    IRepository<MovieRecognition, Guid> MovieRecognitions { get; }
+    IMovieRecognitionRepository MovieRecognitions { get; }
     IRepository<Video, Guid> Videos { get; }
     IVideoFrameRepository VideoFrames { get; }
     IVideoFrameRecognitionRepository VideoFrameRecognitions { get; }
@@ -19,7 +19,7 @@ public class DatabaseContext : IDatabaseContext
 {
     private readonly IYandexDbService _yandexDbService;
 
-    public IRepository<MovieRecognition, Guid> MovieRecognitions { get; }
+    public IMovieRecognitionRepository MovieRecognitions { get; }
     public IRepository<Video, Guid> Videos { get; }
     public IVideoFrameRepository VideoFrames { get; }
     public IVideoFrameRecognitionRepository VideoFrameRecognitions { get; }
@@ -28,7 +28,7 @@ public class DatabaseContext : IDatabaseContext
     {
         _yandexDbService = yandexDbService;
 
-        MovieRecognitions = new Repository<MovieRecognition, Guid>(this, session => session.MovieRecognitions);
+        MovieRecognitions = new MovieRecognitionRepository(this, session => session.MovieRecognitions);
         Videos = new Repository<Video, Guid>(this, session => session.Videos);
         VideoFrames = new VideoFrameRepository(this, session => session.VideoFrames);
         VideoFrameRecognitions = new VideoFrameRecognitionRepository(this, session => session.VideoFrameRecognitions);

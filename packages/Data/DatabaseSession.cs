@@ -5,7 +5,7 @@ namespace Data;
 
 public interface IDatabaseSession
 {
-    ISessionRepository<MovieRecognition, Guid> MovieRecognitions { get; }
+    IMovieRecognitionSessionRepository MovieRecognitions { get; }
     ISessionRepository<Video, Guid> Videos { get; }
     IVideoFrameSessionRepository VideoFrames { get; }
     IVideoFrameRecognitionSessionRepository VideoFrameRecognitions { get; }
@@ -13,7 +13,7 @@ public interface IDatabaseSession
 
 public class DatabaseSession(Session session) : IDatabaseSession
 {
-    public ISessionRepository<MovieRecognition, Guid> MovieRecognitions { get; } =
+    public IMovieRecognitionSessionRepository MovieRecognitions { get; } =
         new MovieRecognitionSessionRepository(session);
 
     public ISessionRepository<Video, Guid> Videos { get; } = new VideoSessionRepository(session);

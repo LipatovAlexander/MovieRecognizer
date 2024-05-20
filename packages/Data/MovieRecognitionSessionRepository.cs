@@ -5,7 +5,12 @@ using Ydb.Sdk.Value;
 
 namespace Data;
 
-public class MovieRecognitionSessionRepository(Session session) : ISessionRepository<MovieRecognition, Guid>
+public interface IMovieRecognitionSessionRepository : ISessionRepository<MovieRecognition, Guid>
+{
+    Task<(IReadOnlyCollection<MovieRecognition>, Transaction?)> ListByUserIdAsync(Guid userId, TxControl txControl);
+}
+
+public class MovieRecognitionSessionRepository(Session session) : IMovieRecognitionSessionRepository
 {
     private readonly Session _session = session;
 
@@ -102,5 +107,59 @@ public class MovieRecognitionSessionRepository(Session session) : ISessionReposi
         response.Status.EnsureSuccess();
 
         return response.Tx;
+    }
+
+    public async Task<(IReadOnlyCollection<MovieRecognition>, Transaction?)> ListByUserIdAsync(Guid userId,
+        TxControl txControl)
+    {
+        const string query = """
+                             DECLARE $user_id AS Utf8;
+
+                             SELECT *
+                             FROM movie_recognition VIEW idx_user AS mr
+                             WHERE mr.user_id = $user_id;
+                             """;
+
+        var parameters = new Dictionary<string, YdbValue>
+        {
+            ["$user_id"] = YdbValue.MakeUtf8(userId.ToString())
+        };
+
+        var response = await _session.ExecuteDataQuery(query, txControl, parameters);
+
+        response.Status.EnsureSuccess();
+
+        var resultSet = response.Result.ResultSets[0];
+        var rows = resultSet.Rows;
+
+        var movieRecognitions = rows
+            .Select(row =>
+            {
+                var id = Guid.Parse(row["id"].GetUtf8());
+                var returnedUserId = Guid.Parse(row["user_id"].GetUtf8());
+                var videoUrl = new Uri(row["video_url"].GetUtf8());
+                var status = Enum.Parse<MovieRecognitionStatus>(row["status"].GetUtf8());
+                var createdAt = row["created_at"].GetDatetime();
+                var rawVideoId = row["video_id"].GetOptionalUtf8();
+                var videoId = rawVideoId is null ? null as Guid? : Guid.Parse(rawVideoId);
+                var recognizedMovieJson = row["recognized_movie"].GetOptionalJson();
+                var recognizedMovie = recognizedMovieJson is not null
+                    ? JsonSerializer.Deserialize<RecognizedTitle>(recognizedMovieJson)
+                    : null;
+                var failureMessage = row["failure_message"].GetOptionalUtf8();
+
+                return new MovieRecognition(returnedUserId, videoUrl)
+                {
+                    Id = id,
+                    Status = status,
+                    CreatedAt = createdAt,
+                    VideoId = videoId,
+                    RecognizedMovie = recognizedMovie,
+                    FailureMessage = failureMessage
+                };
+            })
+            .ToArray();
+
+        return (movieRecognitions, response.Tx);
     }
 }
