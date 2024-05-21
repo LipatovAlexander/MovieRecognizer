@@ -2,12 +2,9 @@ using Api.Infrastructure.ApiResponses;
 
 namespace Api.Infrastructure.Authentication;
 
-public class ApiKeyAuthenticationEndpointFilter(
-    IConfiguration configuration,
-    ILogger<ApiKeyAuthenticationEndpointFilter> logger) : IEndpointFilter
+public class ApiKeyAuthenticationEndpointFilter(IConfiguration configuration) : IEndpointFilter
 {
     private readonly IConfiguration _configuration = configuration;
-    private readonly ILogger<ApiKeyAuthenticationEndpointFilter> _logger = logger;
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
@@ -18,8 +15,6 @@ public class ApiKeyAuthenticationEndpointFilter(
 
         if (!extractedApiKey.Equals(_configuration[AuthConstants.ApiKeyConfigurationKey]))
         {
-            _logger.LogInformation("Invalid api key '{ApiKey}'", extractedApiKey.ToString());
-
             return TypedResults.Extensions.Unauthorized(Responses.Error("invalid_api_key"));
         }
 

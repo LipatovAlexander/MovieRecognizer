@@ -28,11 +28,5 @@ export default async function CreateRecognition(_: any, formData: FormData) {
     }),
   });
 
-  if (!response.ok) {
-    throw new Error(
-      `Response was not successful. Status: ${response.status}. Text: ${await response.text()}`
-    );
-  }
-
   return (await response.json()) as ApiResponse<MovieRecognition>;
 }
