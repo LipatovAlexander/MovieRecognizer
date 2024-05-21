@@ -22,7 +22,9 @@ resource "yandex_iam_service_account_static_access_key" "api-sa-key" {
 }
 
 resource "random_password" "api-key" {
-  length = 64
+  length  = 64
+  special = false
+  upper   = false
 }
 
 resource "yandex_serverless_container" "test-container" {
