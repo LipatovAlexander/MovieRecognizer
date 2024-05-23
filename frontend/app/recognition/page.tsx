@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, Stack } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
+import RecognitionHistoryButton from '@/components/RecognitionHistoryButton/RecognitionHistoryButton';
 
 export default function RecognitionPage() {
   const [state, formAction] = useFormState(CreateRecognition, undefined);
@@ -37,6 +38,7 @@ export default function RecognitionPage() {
       <form action={formAction}>
         <VideoUrlForm />
       </form>
+      <RecognitionHistoryButton />
     </Stack>
   );
 }

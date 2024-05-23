@@ -4,6 +4,7 @@ import { MantineProvider, ColorSchemeScript } from '@mantine/core';
 import { theme } from '../theme';
 import './global.css';
 import '@mantine/carousel/styles.css';
+import { CookiesProvider } from 'next-client-cookies/server';
 
 export const metadata = {
   title: 'Movie Recognizer',
@@ -24,7 +25,7 @@ export default function RootLayout({ children }: { children: any }) {
       </head>
       <body>
         <MantineProvider defaultColorScheme="auto" theme={theme}>
-          {children}
+          <CookiesProvider>{children}</CookiesProvider>
         </MantineProvider>
       </body>
     </html>

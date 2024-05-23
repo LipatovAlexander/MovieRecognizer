@@ -12,6 +12,6 @@ interface MovieRecognition {
   recognized_movie?: RecognizedTitle;
 }
 
-type MovieRecognitionStatus = 'Created' | 'InProgress' | 'Failed' | 'Succeeded' | 'Invalid';
+export type MovieRecognitionStatus = 'Created' | 'InProgress' | 'Failed' | 'Succeeded' | 'Invalid';
 
 export default MovieRecognition;

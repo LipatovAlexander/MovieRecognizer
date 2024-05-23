@@ -1,3 +1,5 @@
+'use client';
+
 import { useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 

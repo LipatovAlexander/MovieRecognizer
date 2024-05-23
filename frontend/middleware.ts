@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
     const userId = uuidv4();
     const expires = new Date();
     expires.setFullYear(expires.getFullYear() + 100);
-    response.cookies.set('user_id', userId, { path: '/', httpOnly: true, expires });
+    response.cookies.set('user_id', userId, { path: '/', httpOnly: false, expires });
   }
 
   return response;
