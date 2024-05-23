@@ -18,9 +18,23 @@ public class GetMovieRecognitionHistoryEndpoint : IEndpoint<
         CancellationToken cancellationToken)
     {
         var movieRecognitions = await databaseContext.MovieRecognitions.ListByUserIdAsync(request.UserId);
-        var movieRecognitionDto = movieRecognitions.Select(m => m.ToDto()).ToArray();
+        var movieRecognitionDtos = new List<MovieRecognitionDto>();
+        
+        foreach (var movieRecognition in movieRecognitions)
+        {
+	        var movieRecognitionDto = movieRecognition.ToDto();
 
-        return TypedResults.Ok(Responses.Success<IReadOnlyCollection<MovieRecognitionDto>>(movieRecognitionDto));
+	        if (movieRecognition.VideoId is not null)
+	        {
+		        var video = await databaseContext.Videos.GetAsync(movieRecognition.VideoId.Value);
+
+		        movieRecognitionDto.Video = video.ToDto();
+	        }
+
+	        movieRecognitionDtos.Add(movieRecognitionDto);
+        }
+
+        return TypedResults.Ok(Responses.Success<IReadOnlyCollection<MovieRecognitionDto>>(movieRecognitionDtos));
     }
 
     public static void AddRoute(IEndpointRouteBuilder builder)
