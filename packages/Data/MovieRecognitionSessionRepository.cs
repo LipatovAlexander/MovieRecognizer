@@ -55,6 +55,7 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
             ? JsonSerializer.Deserialize<RecognizedTitle>(recognizedMovieJson)
             : null;
         var failureMessage = row["failure_message"].GetOptionalUtf8();
+        var recognizedCorrectly = row["recognized_correctly"].GetOptionalBool();
 
         var movieRecognition = new MovieRecognition(userId, videoUrl)
         {
@@ -63,7 +64,8 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
             CreatedAt = createdAt,
             VideoId = videoId,
             RecognizedMovie = recognizedMovie,
-            FailureMessage = failureMessage
+            FailureMessage = failureMessage,
+            RecognizedCorrectly = recognizedCorrectly
         };
 
         return (movieRecognition, response.Tx);
@@ -82,9 +84,10 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
                              DECLARE $video_id AS Utf8?;
                              DECLARE $failure_message AS Utf8?;
                              DECLARE $recognized_movie AS Json?;
+                             DECLARE $recognized_correctly AS Bool?;
 
-                             UPSERT INTO movie_recognition(id, user_id, video_url, created_at, status, video_id, failure_message, recognized_movie)
-                             VALUES ($id, $user_id, $video_url, $created_at, $status, $video_id, $failure_message, $recognized_movie);
+                             UPSERT INTO movie_recognition(id, user_id, video_url, created_at, status, video_id, failure_message, recognized_movie, recognized_correctly)
+                             VALUES ($id, $user_id, $video_url, $created_at, $status, $video_id, $failure_message, $recognized_movie, $recognized_correctly);
                              """;
 
         var parameters = new Dictionary<string, YdbValue>
@@ -99,7 +102,8 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
                 entity.RecognizedMovie is not null
                     ? JsonSerializer.Serialize(entity.RecognizedMovie)
                     : null),
-            ["$failure_message"] = YdbValue.MakeOptionalUtf8(entity.FailureMessage)
+            ["$failure_message"] = YdbValue.MakeOptionalUtf8(entity.FailureMessage),
+            ["$recognized_correctly"] = YdbValue.MakeOptionalBool(entity.RecognizedCorrectly)
         };
 
         var response = await _session.ExecuteDataQuery(query, txControl, parameters);
@@ -147,6 +151,7 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
                     ? JsonSerializer.Deserialize<RecognizedTitle>(recognizedMovieJson)
                     : null;
                 var failureMessage = row["failure_message"].GetOptionalUtf8();
+                var recognizedCorrectly = row["recognized_correctly"].GetOptionalBool();
 
                 return new MovieRecognition(returnedUserId, videoUrl)
                 {
@@ -155,7 +160,8 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
                     CreatedAt = createdAt,
                     VideoId = videoId,
                     RecognizedMovie = recognizedMovie,
-                    FailureMessage = failureMessage
+                    FailureMessage = failureMessage,
+                    RecognizedCorrectly = recognizedCorrectly
                 };
             })
             .OrderByDescending(x => x.CreatedAt)

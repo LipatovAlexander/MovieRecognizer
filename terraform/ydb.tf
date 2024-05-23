@@ -61,6 +61,11 @@ resource "yandex_ydb_table" "movie-recognition" {
     type     = "Utf8"
     not_null = false
   }
+  column {
+    name     = "recognized_correctly"
+    type     = "Bool"
+    not_null = false
+  }
 
   primary_key = ["id"]
 }

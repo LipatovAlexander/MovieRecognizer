@@ -1,3 +1,4 @@
+using Api.Endpoints.ConfirmRecognitionCorrectness;
 using Api.Endpoints.CreateMovieRecognition;
 using Api.Endpoints.GetMovieRecognition;
 using Api.Endpoints.GetMovieRecognitionHistory;
@@ -58,5 +59,6 @@ app.UseSwaggerUI();
 app.MapEndpoint<CreateMovieRecognitionEndpoint>();
 app.MapEndpoint<GetMovieRecognitionEndpoint>();
 app.MapEndpoint<GetMovieRecognitionHistoryEndpoint>();
+app.MapEndpoint<ConfirmRecognitionCorrectnessEndpoint>();
 
 app.Run();

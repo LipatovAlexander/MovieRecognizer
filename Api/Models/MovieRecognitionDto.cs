@@ -26,4 +26,7 @@ public class MovieRecognitionDto
     [JsonPropertyName("failure_message")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public required string? FailureMessage { get; set; }
+    
+    [JsonPropertyName("recognized_correctly")]
+    public required bool? RecognizedCorrectly { get; set; }
 }

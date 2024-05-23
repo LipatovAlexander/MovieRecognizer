@@ -15,7 +15,8 @@ public static class MovieRecognitionMapper
             Status = movieRecognition.Status,
             CreatedAt = movieRecognition.CreatedAt,
             RecognizedMovie = movieRecognition.RecognizedMovie?.ToDto(),
-            FailureMessage = movieRecognition.FailureMessage
+            FailureMessage = movieRecognition.FailureMessage,
+            RecognizedCorrectly = movieRecognition.RecognizedCorrectly
         };
     }
 }
