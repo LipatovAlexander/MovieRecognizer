@@ -10,6 +10,7 @@ interface MovieRecognition {
   failure_message?: string;
   video?: Video;
   recognized_movie?: RecognizedTitle;
+  recognized_correctly?: boolean;
 }
 
 export type MovieRecognitionStatus = 'Created' | 'InProgress' | 'Failed' | 'Succeeded' | 'Invalid';

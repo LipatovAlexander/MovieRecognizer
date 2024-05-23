@@ -11,10 +11,13 @@ import FramesGallery from '@/components/FramesGallery/FramesGallery';
 import TryAgainButton from '@/components/TryAgainButton/TryAgainButton';
 import RecognitionProcess from '@/components/RecognitionProcess/RecognitionProcess';
 import useIsMobile from '@/helpers/useIsMobile';
+import RecognitionConfirmation from '@/components/RecognitionConfirmation/RecognitionConfirmation';
+import useUserId from '@/helpers/useUserId';
 
 export default function RecognitionPage({ params }: { params: { id: string } }) {
   const [data, setData] = useState<ApiResponse<MovieRecognition>>();
   const isMobile = useIsMobile();
+  const userId = useUserId();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -106,11 +109,18 @@ export default function RecognitionPage({ params }: { params: { id: string } }) 
   const frames = data.value.video?.video_frames;
   const framesBlock = !isMobile && !!movie && !!frames && <FramesGallery frames={frames} />;
 
+  const recognitionConfirmationBlock = !!data.value.recognized_movie &&
+    data.value.user_id === userId &&
+    (data.value.recognized_correctly === null || data.value.recognized_correctly === undefined) && (
+      <RecognitionConfirmation movieRecognition={data.value} />
+    );
+
   return (
     <Stack gap="xl">
       {videoBlock}
       {movieBlock}
       {framesBlock}
+      {recognitionConfirmationBlock}
     </Stack>
   );
 }

@@ -1,6 +1,6 @@
 import { useCookies } from 'next-client-cookies';
 
-export default function getUserId() {
+export default function useUserId() {
   const cookies = useCookies();
 
   const userId = cookies.get('user_id');

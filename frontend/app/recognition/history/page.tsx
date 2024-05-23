@@ -1,6 +1,6 @@
 'use client';
 
-import getUserId from '@/helpers/getUserId';
+import useUserId from '@/helpers/useUserId';
 import { useEffect, useState } from 'react';
 import ApiResponse from '@/types/ApiResponse';
 import MovieRecognition from '@/types/MovieRecognition';
@@ -9,10 +9,10 @@ import { Box, Center, Loader, Stack, Table, Text, Title } from '@mantine/core';
 import { CallToAction } from '@/components/CallToAction/CallToAction';
 import Link from 'next/link';
 import truncate from '@/helpers/truncate';
-import { IconCheck, IconLink, IconLoader, IconX } from '@tabler/icons-react';
+import { IconLink } from '@tabler/icons-react';
 
 export default function RecognitionHistoryPage() {
-  const userId = getUserId();
+  const userId = useUserId();
   const [loading, setLoading] = useState(true);
   const [recognitionHistory, setRecognitionHistory] = useState<ApiResponse<MovieRecognition[]>>();
 
@@ -74,13 +74,13 @@ export default function RecognitionHistoryPage() {
       displayedRecognizedMovieText
     );
 
-    const statusIcon = {
-      Created: <IconLoader color="blue" />,
-      InProgress: <IconLoader color="blue" />,
-      Succeeded: <IconCheck color="green" />,
-      Failed: <IconX color="red" />,
-      Invalid: <IconX color="red" />,
-    }[movieRecognition.status];
+    const displayedRecognitionConfirmation =
+      movieRecognition.recognized_correctly === null ||
+      movieRecognition.recognized_correctly === undefined
+        ? ''
+        : movieRecognition.recognized_correctly
+          ? 'Yes'
+          : 'No';
 
     return (
       <Table.Tr key={movieRecognition.id}>
@@ -88,7 +88,7 @@ export default function RecognitionHistoryPage() {
           <Link href={movieRecognition.video_url}>{displayedVideoTitle}</Link>
         </Table.Td>
         <Table.Td>{displayedRecognizedMovie}</Table.Td>
-        <Table.Td>{statusIcon}</Table.Td>
+        <Table.Td>{displayedRecognitionConfirmation}</Table.Td>
         <Table.Td>
           <Link href={`/recognition/${movieRecognition.id}`}>
             <IconLink />
@@ -107,7 +107,7 @@ export default function RecognitionHistoryPage() {
         <Table.Thead>
           <Table.Th>Source video</Table.Th>
           <Table.Th>Recognized movie</Table.Th>
-          <Table.Th>Status</Table.Th>
+          <Table.Th>Recognized correctly</Table.Th>
           <Table.Th>Details</Table.Th>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
