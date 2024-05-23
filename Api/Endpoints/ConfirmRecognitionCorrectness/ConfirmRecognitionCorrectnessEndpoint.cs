@@ -24,6 +24,11 @@ public class ConfirmRecognitionCorrectnessEndpoint : IEndpoint<
 			return TypedResults.BadRequest(Responses.Error(CommonErrorCodes.NotFound));
 		}
 
+		if (movieRecognition.UserId != request.UserId)
+		{
+			return TypedResults.BadRequest(Responses.Error("invalid_user_id"));
+		}
+
 		movieRecognition.RecognizedCorrectly = request.RecognizedCorrectly;
 		await databaseContext.MovieRecognitions.SaveAsync(movieRecognition);
 
