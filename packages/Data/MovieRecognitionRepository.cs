@@ -6,6 +6,8 @@ namespace Data;
 public interface IMovieRecognitionRepository : IRepository<MovieRecognition, Guid>
 {
     Task<IReadOnlyCollection<MovieRecognition>> ListByUserIdAsync(Guid userId);
+
+    Task<MovieRecognitionStatistics> GetStatisticsAsync();
 }
 
 public class MovieRecognitionRepository(
@@ -26,5 +28,11 @@ public class MovieRecognitionRepository(
 
             return movieRecognitions;
         });
+    }
+
+    public async Task<MovieRecognitionStatistics> GetStatisticsAsync()
+    {
+	    return await _databaseContext.ExecuteAsync(
+		    async session => await session.MovieRecognitions.GetStatisticsAsync());
     }
 }
