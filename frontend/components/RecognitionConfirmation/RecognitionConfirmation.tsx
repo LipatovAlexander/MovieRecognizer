@@ -1,7 +1,7 @@
 import MovieRecognition from '@/types/MovieRecognition';
 import { Button, Center, Group, Stack, Text } from '@mantine/core';
 import { useCallback, useState } from 'react';
-import ConfirmRecognition from '@/app/recognition/[id]/confirm-recognition';
+import ConfirmRecognition from '@/api/confirm-recognition';
 
 export default function RecognitionConfirmation({
   movieRecognition,

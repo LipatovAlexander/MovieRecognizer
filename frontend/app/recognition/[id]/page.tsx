@@ -3,7 +3,6 @@
 import ApiResponse from '@/types/ApiResponse';
 import MovieRecognition from '@/types/MovieRecognition';
 import { useEffect, useState } from 'react';
-import GetRecognition from './get-recognition';
 import { Alert, Loader, Stack, Image, Text, Box, Grid, Center } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -13,6 +12,7 @@ import RecognitionProcess from '@/components/RecognitionProcess/RecognitionProce
 import useIsMobile from '@/helpers/useIsMobile';
 import RecognitionConfirmation from '@/components/RecognitionConfirmation/RecognitionConfirmation';
 import useUserId from '@/helpers/useUserId';
+import GetRecognition from '@/api/get-recognition';
 
 export default function RecognitionPage({ params }: { params: { id: string } }) {
   const [data, setData] = useState<ApiResponse<MovieRecognition>>();

@@ -4,12 +4,12 @@ import useUserId from '@/helpers/useUserId';
 import { useEffect, useState } from 'react';
 import ApiResponse from '@/types/ApiResponse';
 import MovieRecognition from '@/types/MovieRecognition';
-import GetRecognitionHistory from '@/app/recognition/get-recognition-history';
 import { Box, Center, Loader, Stack, Table, Text, Title } from '@mantine/core';
 import { CallToAction } from '@/components/CallToAction/CallToAction';
 import Link from 'next/link';
 import truncate from '@/helpers/truncate';
 import { IconLink } from '@tabler/icons-react';
+import GetRecognitionHistory from '@/api/get-recognition-history';
 
 export default function RecognitionHistoryPage() {
   const userId = useUserId();

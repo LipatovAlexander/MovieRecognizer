@@ -4,3 +4,11 @@ a:hover,
 a:active {
   color: inherit;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body:has(.requires-no-scroll) {
+  overflow: hidden;
+}

@@ -1,13 +1,13 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import CreateRecognition from './create-recognition';
 import VideoUrlForm from '@/components/VideoUrlForm/VideoUrlForm';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, Stack } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import RecognitionHistoryButton from '@/components/RecognitionHistoryButton/RecognitionHistoryButton';
+import CreateRecognition from '@/api/create-recognition';
 
 export default function RecognitionPage() {
   const [state, formAction] = useFormState(CreateRecognition, undefined);

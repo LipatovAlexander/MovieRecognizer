@@ -1,10 +1,12 @@
 import '@mantine/core/styles.css';
 import React from 'react';
 import { MantineProvider, ColorSchemeScript } from '@mantine/core';
-import { theme } from '../theme';
+import { theme } from '@/theme';
 import './global.css';
 import '@mantine/carousel/styles.css';
 import { CookiesProvider } from 'next-client-cookies/server';
+
+export const fetchCache = 'default-no-store';
 
 export const metadata = {
   title: 'Movie Recognizer',
