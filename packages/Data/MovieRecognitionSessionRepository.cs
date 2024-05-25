@@ -193,11 +193,15 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 
 		var recognitionCorrectness = recognitionCorrectnessRows
 			.Select(row =>
-				(Count: row["count"].GetUint64(), RecognizedCorrectly: row["recognized_correctly"].GetBool()))
+				(Count: row["count"].GetUint64(), RecognizedCorrectly: row["recognized_correctly"].GetOptionalBool()))
 			.ToArray();
 
-		var correctlyRecognized = recognitionCorrectness.Single(x => x.RecognizedCorrectly).Count;
-		var incorrectlyRecognized = recognitionCorrectness.Single(x => !x.RecognizedCorrectly).Count;
+		var correctlyRecognized = recognitionCorrectness
+			.Single(x => x.RecognizedCorrectly.HasValue && x.RecognizedCorrectly.Value)
+			.Count;
+		var incorrectlyRecognized = recognitionCorrectness
+			.Single(x => x.RecognizedCorrectly.HasValue && !x.RecognizedCorrectly.Value)
+			.Count;
 
 		const string totalRecognizedQuery = """
 		                                    SELECT COUNT_IF(recognized_movie IS NOT NULL) AS count
