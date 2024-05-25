@@ -5,7 +5,7 @@ import { Anchor, Box, Center } from '@mantine/core';
 
 export default function HomePage() {
   return (
-    <Box className="requires-no-scroll">
+    <Box className="requires-no-scroll" px={10}>
       <Box mih="100vh" id="main" pt={200}>
         <Welcome />
         <CallToAction />

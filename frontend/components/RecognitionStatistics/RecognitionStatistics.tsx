@@ -1,6 +1,7 @@
 import GetRecognitionStatistics from '@/api/get-recognition-statistics';
 import { Center, Stack, Title } from '@mantine/core';
 import RecognitionStatisticsText from '@/components/RecognitionStatistics/RecognitionStatisticsText';
+import classes from './RecognitionStatistics.module.css';
 
 export default async function RecognitionStatistics() {
   const statistics = await GetRecognitionStatistics();
@@ -16,7 +17,7 @@ export default async function RecognitionStatistics() {
   return (
     <Center>
       <Stack>
-        <Title fz="42px" ta="center">
+        <Title ta="center" className={classes.title}>
           Recognition statistics
         </Title>
         <RecognitionStatisticsText

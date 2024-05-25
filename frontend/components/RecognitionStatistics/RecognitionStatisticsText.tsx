@@ -1,4 +1,5 @@
 import { Highlight } from '@mantine/core';
+import classes from './RecognitionStatistics.module.css';
 
 export default function RecognitionStatisticsText({
   totalRecognized,
@@ -14,7 +15,6 @@ export default function RecognitionStatisticsText({
   return (
     <Highlight
       highlight={[totalRecognized.toString(), correctlyRecognized.toString(), `${accuracy}%`]}
-      fz="30px"
       highlightStyles={{
         backgroundImage:
           'linear-gradient(45deg, var(--mantine-color-cyan-5), var(--mantine-color-indigo-5))',
@@ -23,6 +23,7 @@ export default function RecognitionStatisticsText({
         WebkitTextFillColor: 'transparent',
         fontSize: '40px',
       }}
+      className={classes.text}
     >
       {text}
     </Highlight>
