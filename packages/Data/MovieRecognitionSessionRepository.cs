@@ -175,7 +175,7 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 	public async Task<MovieRecognitionStatistics> GetStatisticsAsync()
 	{
 		const string recognitionCorrectnessQuery = """
-		                                           SELECT COUNT(*) AS count, recognized_correctly
+		                                           SELECT CAST(COUNT(*) AS Int64) AS count, recognized_correctly
 		                                           FROM movie_recognition
 		                                           GROUP BY recognized_correctly
 		                                           HAVING recognized_correctly IS NOT NULL;
@@ -193,14 +193,14 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 
 		var recognitionCorrectness = recognitionCorrectnessRows
 			.Select(row =>
-				(Count: row["count"].GetInt32(), RecognizedCorrectly: row["recognized_correctly"].GetBool()))
+				(Count: row["count"].GetInt64(), RecognizedCorrectly: row["recognized_correctly"].GetBool()))
 			.ToArray();
 
 		var correctlyRecognized = recognitionCorrectness.Single(x => x.RecognizedCorrectly).Count;
 		var incorrectlyRecognized = recognitionCorrectness.Single(x => !x.RecognizedCorrectly).Count;
 
 		const string totalRecognizedQuery = """
-		                                    SELECT COUNT_IF(recognized_movie IS NOT NULL) AS count
+		                                    SELECT CAST(COUNT_IF(recognized_movie IS NOT NULL) AS Int64) AS count
 		                                    FROM movie_recognition;
 		                                    """;
 
@@ -211,7 +211,7 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 		totalRecognizedResponse.EnsureSuccess();
 
 		var totalRecognizedRow = totalRecognizedResponse.Result.ResultSets[0].Rows.First();
-		var totalRecognized = totalRecognizedRow["count"].GetInt32();
+		var totalRecognized = totalRecognizedRow["count"].GetInt64();
 
 		return new MovieRecognitionStatistics(totalRecognized, correctlyRecognized, incorrectlyRecognized);
 	}

@@ -1,3 +1,3 @@
 namespace Domain;
 
-public record MovieRecognitionStatistics(int TotalRecognized, int CorrectlyRecognized, int IncorrectlyRecognized);
+public record MovieRecognitionStatistics(long TotalRecognized, long CorrectlyRecognized, long IncorrectlyRecognized);
