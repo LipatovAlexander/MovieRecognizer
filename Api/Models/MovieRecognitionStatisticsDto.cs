@@ -5,11 +5,11 @@ namespace Api.Models;
 public class MovieRecognitionStatisticsDto
 {
 	[JsonPropertyName("total_recognized")]
-	public required long TotalRecognized { get; set; }
+	public required ulong TotalRecognized { get; set; }
 	
 	[JsonPropertyName("correctly_recognized")]
-	public required long CorrectlyRecognized { get; set; }
+	public required ulong CorrectlyRecognized { get; set; }
 	
 	[JsonPropertyName("incorrectly_recognized")]
-	public required long IncorrectlyRecognized { get; set; }
+	public required ulong IncorrectlyRecognized { get; set; }
 }
