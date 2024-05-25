@@ -10,14 +10,14 @@ export default function HomePage() {
         <Welcome />
         <CallToAction />
         <Center>
-          <Anchor href="#statistics" underline="never" fz={24} mt="lg">
+          <Anchor href="#statistics" underline="never" fz={24} mt="lg" c="inherit">
             Statistics ↓
           </Anchor>
         </Center>
       </Box>
       <Box mih="100vh" id="statistics">
         <Center mb={200}>
-          <Anchor href="#main" underline="never" fz={24} mt="lg">
+          <Anchor href="#main" underline="never" fz={24} mt="lg" c="inherit">
             Back ↑
           </Anchor>
         </Center>
