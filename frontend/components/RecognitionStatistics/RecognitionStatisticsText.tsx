@@ -1,5 +1,8 @@
+'use client';
+
 import { Highlight } from '@mantine/core';
 import classes from './RecognitionStatistics.module.css';
+import useIsMobile from '@/helpers/useIsMobile';
 
 export default function RecognitionStatisticsText({
   totalRecognitions,
@@ -10,6 +13,8 @@ export default function RecognitionStatisticsText({
   correctlyRecognized: number;
   accuracy: number;
 }) {
+  const isMobile = useIsMobile();
+
   const text = `${totalRecognitions} videos processed so far, ${correctlyRecognized} recognized correctly (${accuracy}% accuracy).`;
 
   return (
@@ -21,7 +26,7 @@ export default function RecognitionStatisticsText({
         fontWeight: 700,
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
-        fontSize: '40px',
+        fontSize: !isMobile ? '40px' : '30px',
       }}
       className={classes.text}
     >

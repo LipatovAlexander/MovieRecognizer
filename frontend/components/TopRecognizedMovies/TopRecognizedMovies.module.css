@@ -1,0 +1,7 @@
+.title {
+  font-size: rem(32px);
+
+  @media (max-width: $mantine-breakpoint-md) {
+    font-size: rem(24px);
+  }
+}
