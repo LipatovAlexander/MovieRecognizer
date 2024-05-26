@@ -236,7 +236,7 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 
 		                              select count(*) as count, title
 		                              from (
-		                                  select json_value(recognized_movie, "$.Title") as title
+		                                  select unwrap(json_value(recognized_movie, "$.Title")) as title
 		                                  from movie_recognition
 		                                  where json_value(recognized_movie, "$.Title") is not null
 		                              )
