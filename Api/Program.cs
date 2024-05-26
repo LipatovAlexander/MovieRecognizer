@@ -3,8 +3,10 @@ using Api.Endpoints.CreateMovieRecognition;
 using Api.Endpoints.GetMovieRecognition;
 using Api.Endpoints.GetMovieRecognitionHistory;
 using Api.Endpoints.GetMovieRecognitionStatistics;
+using Api.Endpoints.GetTopRecognizedMovies;
 using Api.Infrastructure.Authentication;
 using Data;
+using Data.Extensions;
 using Files;
 using MessageQueue;
 using Microsoft.OpenApi.Models;
@@ -62,5 +64,6 @@ app.MapEndpoint<GetMovieRecognitionEndpoint>();
 app.MapEndpoint<GetMovieRecognitionHistoryEndpoint>();
 app.MapEndpoint<ConfirmRecognitionCorrectnessEndpoint>();
 app.MapEndpoint<GetMovieRecognitionStatisticsEndpoint>();
+app.MapEndpoint<GetTopRecognizedMoviesEndpoint>();
 
 app.Run();

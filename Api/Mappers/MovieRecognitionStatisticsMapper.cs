@@ -1,5 +1,5 @@
 using Api.Models;
-using Domain;
+using Data.Models;
 
 namespace Api.Mappers;
 

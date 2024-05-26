@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Ydb.Sdk.Services.Table;
 
-namespace Data;
+namespace Data.Extensions;
 
 public static class TransactionExtensions
 {

@@ -1,7 +1,7 @@
 using Domain;
 using Ydb.Sdk.Services.Table;
 
-namespace Data;
+namespace Data.Repositories;
 
 public interface IVideoFrameRecognitionRepository : IRepository<VideoFrameRecognition, Guid>
 {

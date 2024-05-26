@@ -2,7 +2,7 @@ using Domain;
 using Ydb.Sdk.Services.Table;
 using Ydb.Sdk.Value;
 
-namespace Data;
+namespace Data.Repositories;
 
 public class VideoSessionRepository(Session session) : ISessionRepository<Video, Guid>
 {

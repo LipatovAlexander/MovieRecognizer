@@ -1,6 +1,7 @@
 using CloudFunctions;
 using CloudFunctions.MessageQueue;
 using Data;
+using Data.Extensions;
 using Domain;
 using MessageQueue;
 using MessageQueue.Messages;

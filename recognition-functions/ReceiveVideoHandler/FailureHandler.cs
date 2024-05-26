@@ -4,7 +4,6 @@ using Data;
 using Domain;
 using MessageQueue.Messages;
 using Microsoft.Extensions.DependencyInjection;
-using Ydb.Sdk.Services.Table;
 
 namespace ReceiveVideoHandler;
 

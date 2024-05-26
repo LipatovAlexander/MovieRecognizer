@@ -1,6 +1,6 @@
 using Ydb.Sdk.Services.Table;
 
-namespace Data;
+namespace Data.Repositories;
 
 public interface ISessionRepository<TEntity, in TId>
 {

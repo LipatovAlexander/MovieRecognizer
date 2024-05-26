@@ -1,15 +1,19 @@
 using System.Text.Json;
+using Data.Extensions;
+using Data.Models;
 using Domain;
 using Ydb.Sdk.Services.Table;
 using Ydb.Sdk.Value;
 
-namespace Data;
+namespace Data.Repositories;
 
 public interface IMovieRecognitionSessionRepository : ISessionRepository<MovieRecognition, Guid>
 {
 	Task<(IReadOnlyCollection<MovieRecognition>, Transaction?)> ListByUserIdAsync(Guid userId, TxControl txControl);
 
 	Task<MovieRecognitionStatistics> GetStatisticsAsync();
+
+	Task<IReadOnlyCollection<TopRecognizedTitle>> GetTopRecognizedMoviesAsync(int limit);
 }
 
 public class MovieRecognitionSessionRepository(Session session) : IMovieRecognitionSessionRepository
@@ -223,5 +227,70 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 			totalRecognized,
 			correctlyRecognized,
 			incorrectlyRecognized);
+	}
+
+	public async Task<IReadOnlyCollection<TopRecognizedTitle>> GetTopRecognizedMoviesAsync(int limit)
+	{
+		const string topTitlesQuery = """
+		                              declare $limit as Int32;
+
+		                              select count(*) as count, title
+		                              from (
+		                                  select json_value(recognized_movie, "$.Title") as title
+		                                  from movie_recognition
+		                                  where json_value(recognized_movie, "$.Title") is not null
+		                              )
+		                              group by title
+		                              order by count desc
+		                              limit $limit;
+		                              """;
+
+		const string moviesQuery = """
+		                           select unwrap(recognized_movie) as movie
+		                           from movie_recognition
+		                           where recognized_movie is not null;
+		                           """;
+
+		var topTitlesResponse = await _session.ExecuteDataQuery(topTitlesQuery, TxControl.BeginSerializableRW(),
+			new Dictionary<string, YdbValue>
+			{
+				["$limit"] = YdbValue.MakeInt32(limit)
+			});
+		topTitlesResponse.EnsureSuccess();
+		topTitlesResponse.Tx.EnsureNotNull();
+		var topTitles = topTitlesResponse
+			.Result
+			.ResultSets
+			.SelectMany(x => x.Rows)
+			.Select(row => new
+			{
+				Count = row["count"].GetUint64(),
+				Title = row["title"].GetUtf8()
+			})
+			.ToArray();
+
+		var moviesResponse = await _session.ExecuteDataQuery(moviesQuery, TxControl.Tx(topTitlesResponse.Tx).Commit());
+		moviesResponse.EnsureSuccess();
+		var movies = moviesResponse
+			.Result
+			.ResultSets
+			.SelectMany(x => x.Rows)
+			.Select(row =>
+			{
+				var json = row["movie"].GetJson();
+				var recognizedTitle = JsonSerializer.Deserialize<RecognizedTitle>(json)!;
+				return recognizedTitle;
+			})
+			.Where(m => topTitles.Any(x => x.Title == m.Title))
+			.Distinct()
+			.ToArray();
+
+		return movies
+			.Select(m =>
+			{
+				var count = topTitles.Single(x => x.Title == m.Title).Count;
+				return new TopRecognizedTitle(m, count);
+			})
+			.ToArray();
 	}
 }

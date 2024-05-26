@@ -1,5 +1,5 @@
 using CloudFunctions;
-using Data;
+using Data.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

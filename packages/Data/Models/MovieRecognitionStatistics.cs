@@ -1,4 +1,4 @@
-namespace Domain;
+namespace Data.Models;
 
 public record MovieRecognitionStatistics(
 	ulong TotalRecognitions,
