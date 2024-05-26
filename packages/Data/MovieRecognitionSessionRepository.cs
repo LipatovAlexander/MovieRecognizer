@@ -204,7 +204,7 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 			.Count;
 
 		const string totalRecognizedQuery = """
-		                                    SELECT COUNT_IF(recognized_movie IS NOT NULL) AS count
+		                                    SELECT COUNT_IF(recognized_movie IS NOT NULL) AS recognized_count, COUNT(*) AS total_count
 		                                    FROM movie_recognition;
 		                                    """;
 
@@ -214,9 +214,14 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 
 		totalRecognizedResponse.EnsureSuccess();
 
-		var totalRecognizedRow = totalRecognizedResponse.Result.ResultSets[0].Rows.First();
-		var totalRecognized = totalRecognizedRow["count"].GetUint64();
+		var totalRecognizedRow = totalRecognizedResponse.Result.ResultSets[0].Rows[0];
+		var totalRecognized = totalRecognizedRow["recognized_count"].GetUint64();
+		var totalRecognitions = totalRecognizedRow["total_count"].GetUint64();
 
-		return new MovieRecognitionStatistics(totalRecognized, correctlyRecognized, incorrectlyRecognized);
+		return new MovieRecognitionStatistics(
+			totalRecognitions,
+			totalRecognized,
+			correctlyRecognized,
+			incorrectlyRecognized);
 	}
 }

@@ -9,6 +9,7 @@ public static class MovieRecognitionStatisticsMapper
 	{
 		return new MovieRecognitionStatisticsDto
 		{
+			TotalRecognitions = movieRecognitionStatistics.TotalRecognitions,
 			TotalRecognized = movieRecognitionStatistics.TotalRecognized,
 			CorrectlyRecognized = movieRecognitionStatistics.CorrectlyRecognized,
 			IncorrectlyRecognized = movieRecognitionStatistics.IncorrectlyRecognized

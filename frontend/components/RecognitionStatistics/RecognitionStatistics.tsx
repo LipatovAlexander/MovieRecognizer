@@ -10,9 +10,9 @@ export default async function RecognitionStatistics() {
     return <></>;
   }
 
-  const totalRecognized = statistics.value.total_recognized;
+  const totalRecognitions = statistics.value.total_recognitions;
   const correctlyRecognized = statistics.value.correctly_recognized;
-  const accuracy = Math.round((correctlyRecognized / totalRecognized) * 100);
+  const accuracy = Math.round((correctlyRecognized / totalRecognitions) * 100);
 
   return (
     <Center>
@@ -21,7 +21,7 @@ export default async function RecognitionStatistics() {
           Recognition statistics
         </Title>
         <RecognitionStatisticsText
-          totalRecognized={totalRecognized}
+          totalRecognitions={totalRecognitions}
           correctlyRecognized={correctlyRecognized}
           accuracy={accuracy}
         />

@@ -2,19 +2,19 @@ import { Highlight } from '@mantine/core';
 import classes from './RecognitionStatistics.module.css';
 
 export default function RecognitionStatisticsText({
-  totalRecognized,
+  totalRecognitions,
   correctlyRecognized,
   accuracy,
 }: {
-  totalRecognized: number;
+  totalRecognitions: number;
   correctlyRecognized: number;
   accuracy: number;
 }) {
-  const text = `${totalRecognized} movies recognized so far, ${correctlyRecognized} correctly (${accuracy}% accuracy).`;
+  const text = `${totalRecognitions} videos processed so far, ${correctlyRecognized} recognized correctly (${accuracy}% accuracy).`;
 
   return (
     <Highlight
-      highlight={[totalRecognized.toString(), correctlyRecognized.toString(), `${accuracy}%`]}
+      highlight={[totalRecognitions.toString(), correctlyRecognized.toString(), `${accuracy}%`]}
       highlightStyles={{
         backgroundImage:
           'linear-gradient(45deg, var(--mantine-color-cyan-5), var(--mantine-color-indigo-5))',
