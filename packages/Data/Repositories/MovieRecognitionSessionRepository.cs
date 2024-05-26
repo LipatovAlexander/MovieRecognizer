@@ -291,6 +291,7 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 				var count = topTitles.Single(x => x.Title == m.Title).Count;
 				return new TopRecognizedTitle(m, count);
 			})
+			.OrderByDescending(t => t.Count)
 			.ToArray();
 	}
 }
