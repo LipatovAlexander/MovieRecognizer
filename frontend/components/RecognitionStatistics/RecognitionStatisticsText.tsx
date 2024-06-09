@@ -15,7 +15,7 @@ export default function RecognitionStatisticsText({
 }) {
   const isMobile = useIsMobile();
 
-  const text = `${totalRecognitions} videos processed so far, ${correctlyRecognized} recognized correctly (${accuracy}% accuracy).`;
+  const text = `${totalRecognitions} videos successfully processed so far, ${correctlyRecognized} recognized correctly (${accuracy}% accuracy).`;
 
   return (
     <Highlight

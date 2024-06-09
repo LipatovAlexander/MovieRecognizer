@@ -179,15 +179,22 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 	public async Task<MovieRecognitionStatistics> GetStatisticsAsync()
 	{
 		const string recognitionCorrectnessQuery = """
+		                                           DECLARE $status AS Utf8;
+
 		                                           SELECT COUNT(*) AS count, recognized_correctly
 		                                           FROM movie_recognition
+		                                           WHERE status = $status
 		                                           GROUP BY recognized_correctly
 		                                           HAVING recognized_correctly IS NOT NULL;
 		                                           """;
 
 		var recognitionCorrectnessResponse = await _session.ExecuteDataQuery(
 			recognitionCorrectnessQuery,
-			TxControl.BeginSerializableRW());
+			TxControl.BeginSerializableRW(),
+			new Dictionary<string, YdbValue>
+			{
+				["$status"] = YdbValue.MakeUtf8(nameof(MovieRecognitionStatus.Succeeded))
+			});
 
 		recognitionCorrectnessResponse.Status.EnsureSuccess();
 		recognitionCorrectnessResponse.Tx.EnsureNotNull();
@@ -208,13 +215,22 @@ public class MovieRecognitionSessionRepository(Session session) : IMovieRecognit
 			.Count;
 
 		const string totalRecognizedQuery = """
-		                                    SELECT COUNT_IF(recognized_movie IS NOT NULL) AS recognized_count, COUNT(*) AS total_count
-		                                    FROM movie_recognition;
+		                                    DECLARE $status AS Utf8;
+
+		                                    SELECT
+		                                        COUNT_IF(recognized_movie IS NOT NULL) AS recognized_count,
+		                                        COUNT(*) AS total_count
+		                                    FROM movie_recognition
+		                                    WHERE status = $status;
 		                                    """;
 
 		var totalRecognizedResponse = await _session.ExecuteDataQuery(
 			totalRecognizedQuery,
-			TxControl.Tx(recognitionCorrectnessResponse.Tx).Commit());
+			TxControl.Tx(recognitionCorrectnessResponse.Tx).Commit(),
+			new Dictionary<string, YdbValue>
+			{
+				["$status"] = YdbValue.MakeUtf8(nameof(MovieRecognitionStatus.Succeeded))
+			});
 
 		totalRecognizedResponse.EnsureSuccess();
 
